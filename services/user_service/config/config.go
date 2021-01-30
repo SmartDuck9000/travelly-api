@@ -1,4 +1,4 @@
-package user_service_config
+package config
 
 import (
 	"os"
@@ -23,10 +23,10 @@ type UserServiceConfig struct {
 func New() *UserServiceConfig {
 	return &UserServiceConfig{
 		DB: UserServiceDbConfig{
-			URL:             getEnv("USER_DB_URL", ""),
-			MaxIdleConn:     getIntEnv("USER_MAX_IDLE_CONN", 10),
-			MaxOpenConn:     getIntEnv("USER_MAX_OPEN_CONN", 100),
-			ConnMaxLifetime: getHoursEnv("USER_CONN_MAX_LIFETIME", 1),
+			URL:             getEnv("DB_URL", ""),
+			MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),
+			MaxOpenConn:     getIntEnv("MAX_OPEN_CONN", 100),
+			ConnMaxLifetime: getHoursEnv("CONN_MAX_LIFETIME", 1),
 		},
 		Host: getEnv("HOST", ""),
 		Port: getEnv("PORT", ""),
