@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/SmartDuck9000/travelly-api/services/user_service/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"time"
@@ -8,7 +9,7 @@ import (
 
 type TravellyDb interface {
 	Open() error
-	Close()
+	configureConnectionPools() error
 
 	GetUser(userId int) *User
 	GetTours(userId int) []Tour
@@ -16,13 +17,26 @@ type TravellyDb interface {
 
 	GetEvents(cityTourId int) []Event
 	GetRestaurantBookings(cityTourId int) []RestaurantBooking
-	GetTickets(cityTourId int) *Ticket
+	GetTickets(cityTourId int) []Ticket
 	GetHotel(cityTourId int) *Hotel
 }
 
 type TravellyPostgres struct {
-	url  string
-	conn *gorm.DB
+	url             string
+	maxIdleConn     int
+	maxOpenConn     int
+	connMaxLifetime time.Duration
+	conn            *gorm.DB
+}
+
+func CreateUserServiceDb(conf config.UserServiceDbConfig) *TravellyPostgres {
+	return &TravellyPostgres{
+		url:             conf.URL,
+		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool
+		maxOpenConn:     conf.MaxOpenConn,     // maximum number of open connections to the database
+		connMaxLifetime: conf.ConnMaxLifetime, // maximum amount of time a connection may be reused
+		conn:            nil,
+	}
 }
 
 func (db TravellyPostgres) Open() error {
@@ -40,14 +54,9 @@ func (db TravellyPostgres) configureConnectionPools() error {
 		return err
 	}
 
-	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
-	sqlDB.SetMaxIdleConns(10)
-
-	// SetMaxOpenConns sets the maximum number of open connections to the database.
-	sqlDB.SetMaxOpenConns(100)
-
-	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
-	sqlDB.SetConnMaxLifetime(time.Hour)
+	sqlDB.SetMaxIdleConns(db.maxIdleConn)
+	sqlDB.SetMaxOpenConns(db.maxOpenConn)
+	sqlDB.SetConnMaxLifetime(db.connMaxLifetime)
 
 	return nil
 }
@@ -56,7 +65,7 @@ func (db TravellyPostgres) GetUser(userId int) *User {
 	return nil
 }
 
-func (db TravellyPostgres) GetTour(tourId int) *Tour {
+func (db TravellyPostgres) GetTours(userId int) []Tour {
 	return nil
 }
 
@@ -72,10 +81,10 @@ func (db TravellyPostgres) GetRestaurantBookings(cityTourId int) []RestaurantBoo
 	return nil
 }
 
-func (db TravellyPostgres) GetTicket(ticketId int) *Ticket {
+func (db TravellyPostgres) GetTickets(cityTourId int) []Ticket {
 	return nil
 }
 
-func (db TravellyPostgres) GetHotel(hotelId int) *Hotel {
+func (db TravellyPostgres) GetHotel(cityTourId int) *Hotel {
 	return nil
 }
