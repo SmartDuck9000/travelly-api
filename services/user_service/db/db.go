@@ -97,7 +97,7 @@ func (db TravellyPostgres) GetEvents(cityTourId int) []Event {
 		Joins("JOIN events ON city_tours_events.event_id = events.id").
 		Joins("JOIN cities ON city_tours.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
-		Where("city_tour_id = ?", cityTourId).Scan(&events)
+		Where("city_tours.id = ?", cityTourId).Scan(&events)
 	return events
 }
 
@@ -111,14 +111,38 @@ func (db TravellyPostgres) GetRestaurantBookings(cityTourId int) []RestaurantBoo
 		Joins("JOIN restaurants ON restaurant_bookings.restaurant_id = restaurants.id").
 		Joins("JOIN cities ON city_tours.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
-		Where("city_tour_id = ?", cityTourId).Scan(&restaurantBookings)
+		Where("city_tours.id = ?", cityTourId).Scan(&restaurantBookings)
 	return restaurantBookings
 }
 
-func (db TravellyPostgres) GetTickets(cityTourId int) []Ticket {
-	return nil
+func (db TravellyPostgres) GetTickets(cityTourId int) [2]Ticket {
+	var arrivalTicket Ticket
+	var departureTicket Ticket
+	var cityTour CityTour
+
+	db.conn.
+		Table("city_tours").
+		Where("id = ?", cityTourId).Scan(&cityTour)
+
+	db.conn.
+		Table("tickets").
+		Where("id = ?", cityTour.ticketArrivalId).Scan(&arrivalTicket)
+
+	db.conn.
+		Table("tickets").
+		Where("id = ?", cityTour.ticketDepartureId).Scan(&departureTicket)
+
+	return [2]Ticket{arrivalTicket, departureTicket}
 }
 
 func (db TravellyPostgres) GetHotel(cityTourId int) *Hotel {
-	return nil
+	var hotel Hotel
+	db.conn.
+		Table("city_tours").
+		Select("hotels.id, hotel_name, hotel_description, hotel_addr, stars, hotel_rating, average_price, near_sea, country_name, city_name").
+		Joins("JOIN hotels ON city_tours.hotel_id = hotels.id").
+		Joins("JOIN cities ON city_tours.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("city_tours.id = ?", cityTourId).Scan(&hotel)
+	return &hotel
 }
