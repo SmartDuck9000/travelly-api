@@ -77,15 +77,42 @@ func (db TravellyPostgres) GetTours(userId int) []Tour {
 }
 
 func (db TravellyPostgres) GetCityTours(tourId int) []CityTour {
-	return nil
+	var cityTours []CityTour
+	db.conn.
+		Table("city_tours").
+		Select("city_tours.id, tour_id, country_name, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotel_name").
+		Joins("JOIN hotels ON city_tours.hotel_id = hotels.id").
+		Joins("JOIN cities ON city_tours.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("tour_id = ?", tourId).Scan(&cityTours)
+	return cityTours
 }
 
 func (db TravellyPostgres) GetEvents(cityTourId int) []Event {
-	return nil
+	var events []Event
+	db.conn.
+		Table("city_tours").
+		Select("events.id, event_name, event_description, event_addr, country_name, city_name, event_start, event_end, price, rating, max_persons, cur_persons, languages").
+		Joins("JOIN city_tours_events ON city_tours.id = city_tours_events.ct_id").
+		Joins("JOIN events ON city_tours_events.event_id = events.id").
+		Joins("JOIN cities ON city_tours.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("city_tour_id = ?", cityTourId).Scan(&events)
+	return events
 }
 
 func (db TravellyPostgres) GetRestaurantBookings(cityTourId int) []RestaurantBooking {
-	return nil
+	var restaurantBookings []RestaurantBooking
+	db.conn.
+		Table("city_tours").
+		Select("restaurant_bookings.id, restaurant_id, booking_time, restaurant_name, restaurant_description, restaurant_addr, average_price, rating, child_menu, smoking_room, country_name, city_name").
+		Joins("JOIN city_tours_rest_bookings ON city_tours.id = city_tours_rest_bookings.ct_id").
+		Joins("JOIN restaurant_bookings ON city_tours_rest_bookings.rb_id = restaurant_bookings.id").
+		Joins("JOIN restaurants ON restaurant_bookings.restaurant_id = restaurants.id").
+		Joins("JOIN cities ON city_tours.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("city_tour_id = ?", cityTourId).Scan(&restaurantBookings)
+	return restaurantBookings
 }
 
 func (db TravellyPostgres) GetTickets(cityTourId int) []Ticket {
