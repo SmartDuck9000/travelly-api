@@ -103,8 +103,9 @@ type Restaurant struct {
 }
 
 type RestaurantBooking struct {
-	restaurantId int
-	bookingTime  string
+	restaurantBookingId int
+	restaurantId        int
+	bookingTime         string
 
 	restaurantName        string
 	restaurantDescription string
