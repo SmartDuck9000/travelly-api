@@ -62,11 +62,18 @@ func (db TravellyPostgres) configureConnectionPools() error {
 }
 
 func (db TravellyPostgres) GetUser(userId int) *User {
-	return nil
+	var user User
+	db.conn.Table("users").Select("id, first_name, last_name, photo_url").Where("id = ?", userId).Scan(&user)
+	return &user
 }
 
 func (db TravellyPostgres) GetTours(userId int) []Tour {
-	return nil
+	var tours []Tour
+	db.conn.
+		Table("tours").
+		Select("id, user_id, tour_name, tour_price, tour_date_from, tour_date_to").
+		Where("user_id = ?", userId).Scan(&tours)
+	return tours
 }
 
 func (db TravellyPostgres) GetCityTours(tourId int) []CityTour {
