@@ -17,7 +17,7 @@ type TravellyDb interface {
 
 	GetEvents(cityTourId int) []Event
 	GetRestaurantBookings(cityTourId int) []RestaurantBooking
-	GetTickets(cityTourId int) []Ticket
+	GetTickets(cityTourId int) [2]Ticket
 	GetHotel(cityTourId int) *Hotel
 }
 
