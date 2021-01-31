@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/SmartDuck9000/travelly-api/services/user_service/config"
-	"github.com/SmartDuck9000/travelly-api/services/user_service/db"
+	"github.com/SmartDuck9000/travelly-api/services/user_service/server"
 	"github.com/joho/godotenv"
 	"log"
 )
@@ -15,9 +15,9 @@ func init() {
 
 func main() {
 	conf := config.New()
-	var userDb db.TravellyDb = db.CreateUserServiceDb(conf.DB)
+	var api server.UserServiceInterface = server.CreateServer(*conf)
+	err := api.Run()
 
-	err := userDb.Open()
 	if err != nil {
 		log.Print(err.Error())
 	}
