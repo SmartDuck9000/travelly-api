@@ -86,7 +86,7 @@ CREATE TABLE users(
     password text NOT NULL,
     first_name text NOT NULL,
     last_name text NOT NULL,
-    email text NOT NULL,
+    email text NOT NULL CONSTRAINT email_validation CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
     photo_url text
 );
 
