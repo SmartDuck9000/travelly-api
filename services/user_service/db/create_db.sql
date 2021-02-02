@@ -1,6 +1,4 @@
-CREATE DATABASE travelly_db;
-CREATE USER smart_duck WITH ENCRYPTED PASSWORD --*password*;
-GRANT ALL PRIVILEGES ON DATABASE travelly_db TO smart_duck;
+SET ROLE travelly_dba;
 
 CREATE TABLE countries(
     id SERIAL PRIMARY KEY,
