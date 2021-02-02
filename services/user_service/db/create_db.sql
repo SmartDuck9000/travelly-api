@@ -56,7 +56,7 @@ CREATE TABLE events(
     event_addr text,
     event_start date,
     event_end date,
-    event_price money CONSTRAINT event_price_validation CHECK (price > 0),
+    event_price money CONSTRAINT event_price_validation CHECK (event_price > 0),
     max_persons int,
     cur_persons int CONSTRAINT event_person_validation CHECK (cur_persons <= events.max_persons),
     languages text[],
