@@ -35,6 +35,11 @@ type CityTour struct {
 	hotelName string
 }
 
+type CityTourTicketID struct {
+	ticketArrivalId   int
+	ticketDepartureId int
+}
+
 type Ticket struct {
 	ticketId      int
 	transportType string

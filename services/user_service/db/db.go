@@ -115,24 +115,32 @@ func (db TravellyPostgres) GetRestaurantBookings(cityTourId int) []RestaurantBoo
 	return restaurantBookings
 }
 
+func (db TravellyPostgres) getTicket(ticketId int) *Ticket {
+	var ticket Ticket
+	db.conn.
+		Table("tickets").
+		Select("tickets.id, transport_type, price, ticket_date, orig_ts.station_name, orig_ts.station_addr, dest_ts.station_name, dest_ts.station_addr, company_name, company_rating").
+		Joins("JOIN transport_companies on tickets.company_id = transport_companies.id").
+		Joins("JOIN transport_stations orig_ts ON tickets.orig_station_id = orig_ts.id").
+		Joins("JOIN transport_stations dest_ts ON tickets.dest_station_id = dest_ts.id").
+		Where("id = ?", ticketId).Scan(&ticket)
+
+	return &ticket
+}
+
 func (db TravellyPostgres) GetTickets(cityTourId int) [2]Ticket {
-	var arrivalTicket Ticket
-	var departureTicket Ticket
-	var cityTour CityTour
+	var ticketIds CityTourTicketID
+	var tickets [2]Ticket
 
 	db.conn.
 		Table("city_tours").
-		Where("id = ?", cityTourId).Scan(&cityTour)
+		Select("ticket_arrival_id, ticket_departure_id").
+		Where("id = ?", cityTourId).Scan(&ticketIds)
 
-	db.conn.
-		Table("tickets").
-		Where("id = ?", cityTour.ticketArrivalId).Scan(&arrivalTicket)
+	tickets[0] = *db.getTicket(ticketIds.ticketArrivalId)
+	tickets[1] = *db.getTicket(ticketIds.ticketDepartureId)
 
-	db.conn.
-		Table("tickets").
-		Where("id = ?", cityTour.ticketDepartureId).Scan(&departureTicket)
-
-	return [2]Ticket{arrivalTicket, departureTicket}
+	return tickets
 }
 
 func (db TravellyPostgres) GetHotel(cityTourId int) *Hotel {
