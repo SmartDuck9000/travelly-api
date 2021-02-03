@@ -83,7 +83,3 @@ $$ language plpython3u;
 CREATE OR REPLACE FUNCTION insert_ct_tour_price() RETURNS TRIGGER AS $$
 
 $$ language plpython3u;
-
-CREATE OR REPLACE FUNCTION insert_tour_tour_price() RETURNS TRIGGER AS $$
-
-$$ language plpython3u;
