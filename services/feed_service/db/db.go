@@ -57,13 +57,40 @@ func (db FeedPostgres) configureConnectionPools() error {
 }
 
 func (db FeedPostgres) GetHotels(orderedBy string) []Hotel {
-	return nil
+	var hotels []Hotel
+
+	db.conn.
+		Table("hotels").
+		Select("hotels.id, hotel_name, hotel_description, hotel_addr, stars, hotel_rating, avg_price, near_sea, country_name, city_name").
+		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Order(orderedBy).Scan(&hotels)
+
+	return hotels
 }
 
 func (db FeedPostgres) GetEvents(orderedBy string) []Event {
-	return nil
+	var events []Event
+
+	db.conn.
+		Table("events").
+		Select("events.id, event_name, event_description, event_addr, country_name, city_name, event_start, event_end, event_price, event_rating, max_persons, cur_persons, languages").
+		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Order(orderedBy).Scan(&events)
+
+	return events
 }
 
 func (db FeedPostgres) GetRestaurants(orderedBy string) []Restaurant {
-	return nil
+	var restaurants []Restaurant
+
+	db.conn.
+		Table("restaurants").
+		Select("restaurants.id, rest_name, rest_description, rest_addr, avg_price, rest_rating, child_menu, smoking_room, country_name, city_name").
+		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Order(orderedBy).Scan(&restaurants)
+
+	return restaurants
 }
