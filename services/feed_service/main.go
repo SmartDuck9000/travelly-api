@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/SmartDuck9000/travelly-api/services/feed_service/config"
+	"github.com/SmartDuck9000/travelly-api/services/feed_service/server"
 	"github.com/joho/godotenv"
 	"log"
 )
@@ -12,5 +14,11 @@ func init() {
 }
 
 func main() {
-	//conf := config.New()
+	conf := config.New()
+	var api server.FeedServiceInterface = server.CreateServer(*conf)
+	err := api.Run()
+
+	if err != nil {
+		log.Print(err.Error())
+	}
 }

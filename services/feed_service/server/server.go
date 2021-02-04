@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserServiceInterface interface {
+type FeedServiceInterface interface {
 	Run() error
 }
 
