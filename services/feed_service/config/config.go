@@ -13,15 +13,15 @@ type FeedDBConfig struct {
 	ConnMaxLifetime time.Duration
 }
 
-type UserServiceConfig struct {
+type FeedServiceConfig struct {
 	DB   FeedDBConfig
 	Host string
 	Port string
 }
 
 // New returns a new Config struct
-func New() *UserServiceConfig {
-	return &UserServiceConfig{
+func New() *FeedServiceConfig {
+	return &FeedServiceConfig{
 		DB: FeedDBConfig{
 			URL:             getEnv("DB_URL", ""),
 			MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),

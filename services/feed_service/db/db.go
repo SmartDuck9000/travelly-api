@@ -55,3 +55,15 @@ func (db FeedPostgres) configureConnectionPools() error {
 
 	return nil
 }
+
+func (db FeedPostgres) GetHotels(orderedBy string) []Hotel {
+	return nil
+}
+
+func (db FeedPostgres) GetEvents(orderedBy string) []Event {
+	return nil
+}
+
+func (db FeedPostgres) GetRestaurants(orderedBy string) []Restaurant {
+	return nil
+}
