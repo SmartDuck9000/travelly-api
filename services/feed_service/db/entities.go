@@ -1,52 +1,34 @@
 package db
 
 type Hotel struct {
-	hotelId          int
-	hotelName        string
-	hotelDescription string
-	hotelAddr        string
-
-	stars        int
-	hotelRating  float64
-	averagePrice float64
-
-	nearSea bool
+	hotelId     int
+	hotelName   string
+	stars       int
+	hotelRating float64
 
 	countryName string
 	cityName    string
 }
 
 type Event struct {
-	eventId          int
-	eventName        string
-	eventDescription string
-	eventAddr        string
-
-	countryName string
-	cityName    string
+	eventId   int
+	eventName string
 
 	eventStart string
 	eventEnd   string
-	price      float64
 	rating     float64
 
 	maxPersons int
 	curPersons int
-	languages  []string
+
+	countryName string
+	cityName    string
 }
 
 type Restaurant struct {
-	restaurantId int
-
-	restaurantName        string
-	restaurantDescription string
-	restaurantAddr        string
-
-	averagePrice float64
-	rating       float64
-
-	childMenu   bool
-	smokingRoom bool
+	restaurantId   int
+	restaurantName string
+	rating         float64
 
 	countryName string
 	cityName    string
