@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/SmartDuck9000/travelly-api/services/full_info_service/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"time"
@@ -43,6 +44,16 @@ func (db FullInfoPostgres) configureConnectionPools() error {
 	sqlDB.SetConnMaxLifetime(db.connMaxLifetime)
 
 	return nil
+}
+
+func CreateUserServiceDb(conf config.FullInfoDBConfig) *FullInfoPostgres {
+	return &FullInfoPostgres{
+		url:             conf.URL,
+		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool
+		maxOpenConn:     conf.MaxOpenConn,     // maximum number of open connections to the database
+		connMaxLifetime: conf.ConnMaxLifetime, // maximum amount of time a connection may be reused
+		conn:            nil,
+	}
 }
 
 func (db FullInfoPostgres) GetHotel(id string) *Hotel {
