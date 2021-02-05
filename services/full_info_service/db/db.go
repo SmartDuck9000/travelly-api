@@ -44,3 +44,42 @@ func (db FullInfoPostgres) configureConnectionPools() error {
 
 	return nil
 }
+
+func (db FullInfoPostgres) GetHotel(id string) *Hotel {
+	var hotel Hotel
+
+	db.conn.
+		Table("hotels").
+		Select("hotels.id, hotel_name, hotel_description, hotel_addr, stars, hotel_rating, avg_price, near_sea, country_name, city_name").
+		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("hotels.id = ?", id).Scan(&hotel)
+
+	return &hotel
+}
+
+func (db FullInfoPostgres) GetEvent(id string) *Event {
+	var event Event
+
+	db.conn.
+		Table("events").
+		Select("events.id, event_name, event_description, event_addr, country_name, city_name, event_start, event_end, event_price, event_rating, max_persons, cur_persons, languages").
+		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("events.id = ?", id).Scan(&event)
+
+	return &event
+}
+
+func (db FullInfoPostgres) GetRestaurant(id string) *Restaurant {
+	var restaurant Restaurant
+
+	db.conn.
+		Table("restaurants").
+		Select("restaurants.id, rest_name, rest_description, rest_addr, avg_price, rest_rating, child_menu, smoking_room, country_name, city_name").
+		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("restaurants.id = ?", id).Scan(&restaurant)
+
+	return &restaurant
+}
