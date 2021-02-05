@@ -46,7 +46,7 @@ func (db FullInfoPostgres) configureConnectionPools() error {
 	return nil
 }
 
-func CreateUserServiceDb(conf config.FullInfoDBConfig) *FullInfoPostgres {
+func CreateFullInfoDB(conf config.FullInfoDBConfig) *FullInfoPostgres {
 	return &FullInfoPostgres{
 		url:             conf.URL,
 		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool
