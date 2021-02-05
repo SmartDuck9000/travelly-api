@@ -56,7 +56,7 @@ func CreateFullInfoDB(conf config.FullInfoDBConfig) *FullInfoPostgres {
 	}
 }
 
-func (db FullInfoPostgres) GetHotel(id string) *Hotel {
+func (db FullInfoPostgres) GetHotel(id int) *Hotel {
 	var hotel Hotel
 
 	db.conn.
@@ -69,7 +69,7 @@ func (db FullInfoPostgres) GetHotel(id string) *Hotel {
 	return &hotel
 }
 
-func (db FullInfoPostgres) GetEvent(id string) *Event {
+func (db FullInfoPostgres) GetEvent(id int) *Event {
 	var event Event
 
 	db.conn.
@@ -82,7 +82,7 @@ func (db FullInfoPostgres) GetEvent(id string) *Event {
 	return &event
 }
 
-func (db FullInfoPostgres) GetRestaurant(id string) *Restaurant {
+func (db FullInfoPostgres) GetRestaurant(id int) *Restaurant {
 	var restaurant Restaurant
 
 	db.conn.
