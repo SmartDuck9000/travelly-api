@@ -56,29 +56,16 @@ type Ticket struct {
 }
 
 type Hotel struct {
-	hotelId          int
-	hotelName        string
-	hotelDescription string
-	hotelAddr        string
+	hotelId   int
+	hotelName string
 
-	stars        int
-	hotelRating  float64
-	averagePrice float64
-
-	nearSea bool
-
-	countryName string
-	cityName    string
+	stars       int
+	hotelRating float64
 }
 
 type Event struct {
-	eventId          int
-	eventName        string
-	eventDescription string
-	eventAddr        string
-
-	countryName string
-	cityName    string
+	eventId   int
+	eventName string
 
 	eventStart string
 	eventEnd   string
@@ -87,41 +74,15 @@ type Event struct {
 
 	maxPersons int
 	curPersons int
-	languages  []string
-}
-
-type Restaurant struct {
-	restaurantId int
-
-	restaurantName        string
-	restaurantDescription string
-	restaurantAddr        string
-
-	averagePrice float64
-	rating       float64
-
-	childMenu   bool
-	smokingRoom bool
-
-	countryName string
-	cityName    string
 }
 
 type RestaurantBooking struct {
 	restaurantBookingId int
 	restaurantId        int
-	bookingTime         string
 
-	restaurantName        string
-	restaurantDescription string
-	restaurantAddr        string
+	bookingTime    string
+	restaurantName string
 
 	averagePrice float64
 	rating       float64
-
-	childMenu   bool
-	smokingRoom bool
-
-	countryName string
-	cityName    string
 }
