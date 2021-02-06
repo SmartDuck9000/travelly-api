@@ -10,6 +10,9 @@ import (
 type AuthDB interface {
 	Open() error
 	configureConnectionPools() error
+
+	CreateUser(user User) *User
+	GetUser(email string) *User
 }
 
 type AuthPostgres struct {
@@ -18,6 +21,14 @@ type AuthPostgres struct {
 	maxOpenConn     int
 	connMaxLifetime time.Duration
 	conn            *gorm.DB
+}
+
+type User struct {
+	ID        int
+	Email     string
+	Password  string
+	FirstName string
+	LastName  string
 }
 
 func CreateAuthDB(conf config.AuthDBConfig) *AuthPostgres {
@@ -50,4 +61,14 @@ func (db AuthPostgres) configureConnectionPools() error {
 	sqlDB.SetConnMaxLifetime(db.connMaxLifetime)
 
 	return nil
+}
+
+func (db AuthPostgres) CreateUser(user User) *User {
+	var userData User
+	return &userData
+}
+
+func (db AuthPostgres) GetUser(email string) *User {
+	var user User
+	return &user
 }
