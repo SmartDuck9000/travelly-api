@@ -81,11 +81,10 @@ CREATE TABLE restaurant_bookings(
 
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,
-    login text NOT NULL,
+    email text NOT NULL UNIQUE CONSTRAINT email_validation CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
     password text NOT NULL,
     first_name text NOT NULL,
     last_name text NOT NULL,
-    email text NOT NULL CONSTRAINT email_validation CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'),
     photo_url text
 );
 
