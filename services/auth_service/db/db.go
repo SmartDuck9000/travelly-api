@@ -29,6 +29,7 @@ type User struct {
 	Password  string
 	FirstName string
 	LastName  string
+	PhotoURL  string
 }
 
 func CreateAuthDB(conf config.AuthDBConfig) *AuthPostgres {
@@ -64,11 +65,18 @@ func (db AuthPostgres) configureConnectionPools() error {
 }
 
 func (db AuthPostgres) CreateUser(user User) *User {
-	var userData User
-	return &userData
+	var userData *User = nil
+	db.conn.Select("Email, Password, FirstName, LastName, PhotoURL").Create(userData)
+	return userData
 }
 
 func (db AuthPostgres) GetUser(email string) *User {
-	var user User
-	return &user
+	var user *User = nil
+
+	db.conn.
+		Table("users").
+		Select("id, email, password, first_name, last_name, photo_url").
+		Where("email = ?", email).Scan(user)
+
+	return user
 }
