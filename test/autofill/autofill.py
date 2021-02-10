@@ -20,7 +20,7 @@ def fill_countries_cities(pg: Postgres):
             if country_name not in countries.keys():
                 countries[country_name] = pg.insert('countries', {
                     'country_name': country_name
-                })
+                })[0]['id']
 
             pg.insert('cities', {
                 'country_id': countries[country_name],
