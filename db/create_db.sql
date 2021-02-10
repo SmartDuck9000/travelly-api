@@ -14,7 +14,7 @@ CREATE TABLE cities(
 CREATE TABLE transport_companies(
     id SERIAL PRIMARY KEY,
     company_name text,
-    company_rating numeric(1, 1) CONSTRAINT tc_rating_validation CHECK (1.0 <= company_rating AND company_rating <= 5.0)
+    company_rating numeric(2, 1) CONSTRAINT tc_rating_validation CHECK (1.0 <= company_rating AND company_rating <= 5.0)
 );
 
 CREATE TABLE transport_stations(
@@ -41,7 +41,7 @@ CREATE TABLE hotels(
     hotel_description text,
     hotel_addr text,
     stars int CONSTRAINT hotel_stars_validation CHECK (1 <= stars AND stars <= 5),
-    hotel_rating numeric(1, 1) CONSTRAINT hotel_rating_validation CHECK (1.0 <= hotel_rating AND hotel_rating <= 5.0),
+    hotel_rating numeric(2, 1) CONSTRAINT hotel_rating_validation CHECK (1.0 <= hotel_rating AND hotel_rating <= 5.0),
     avg_price money CONSTRAINT hotel_price_validation CHECK (avg_price::numeric > 0),
     near_sea bool
 );
@@ -58,7 +58,7 @@ CREATE TABLE events(
     max_persons int,
     cur_persons int CONSTRAINT event_person_validation CHECK (cur_persons <= events.max_persons),
     languages text[],
-    event_rating numeric(1, 1) CONSTRAINT event_rating_validation CHECK (1.0 <= event_rating AND event_rating <= 5.0)
+    event_rating numeric(2, 1) CONSTRAINT event_rating_validation CHECK (1.0 <= event_rating AND event_rating <= 5.0)
 );
 
 CREATE TABLE restaurants(
@@ -68,7 +68,7 @@ CREATE TABLE restaurants(
     rest_description text,
     rest_addr text,
     avg_price money CONSTRAINT restaurant_price_validation CHECK (avg_price::numeric > 0),
-    rest_rating numeric(1, 1) CONSTRAINT rest_rating_validation CHECK (1.0 <= rest_rating AND rest_rating <= 5.0),
+    rest_rating numeric(2, 1) CONSTRAINT rest_rating_validation CHECK (1.0 <= rest_rating AND rest_rating <= 5.0),
     child_menu bool,
     smoking_room bool
 );
