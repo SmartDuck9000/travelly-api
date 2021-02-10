@@ -2,7 +2,7 @@ SET ROLE travelly_dba;
 
 CREATE TABLE countries(
     id SERIAL PRIMARY KEY,
-    country_name text
+    country_name text UNIQUE
 );
 
 CREATE TABLE cities(
