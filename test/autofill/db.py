@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2 import sql, extras
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+from termcolor import colored
 
 class Postgres:
     def __init__(self, db_name, db_username, db_password, db_host, db_port, log_file):
@@ -17,12 +18,12 @@ class Postgres:
             print(colored(e, color='red'))
             return
 
-    self.host = db_host
-    self.port = db_port
-    self.user = db_username
+        self.host = db_host
+        self.port = db_port
+        self.user = db_username
 
-    self.log_file = log_file
-    print(colored('[*] connect to postgres server: ' + db_host + ':' + db_port, color='green'))
+        self.log_file = log_file
+        print(colored('[*] connect to postgres server: ' + db_host + ':' + db_port, color='green'))
 
     def __del__(self):
         self._connection.close()
