@@ -1,3 +1,5 @@
+import csv
+
 import os
 from dotenv import load_dotenv
 
@@ -6,12 +8,24 @@ from termcolor import colored
 from db import Postgres
 
 
-def fill_countries(pg: Postgres):
-    pass
+def fill_countries_cities(pg: Postgres):
+    with open('data/country_cities.csv') as csv_file:
+        reader = csv.DictReader(csv_file, delimiter=',')
+        countries = dict()
 
+        for row in reader:
+            country_name = row['country']
+            city_name = row['city_ascii']
 
-def fill_cities(pg: Postgres):
-    pass
+            if country_name not in countries.keys():
+                countries[country_name] = pg.insert('countries', {
+                    'country_name': country_name
+                })
+
+            pg.insert('cities', {
+                'country_id': countries[country_name],
+                'city_name': city_name
+            })
 
 
 def fill_transport_stations(pg: Postgres):
@@ -84,8 +98,7 @@ def init_db(config_file):
 
 if __name__ == '__main__':
     db_pg = init_db('.env')
-    fill_countries(db_pg)
-    fill_cities(db_pg)
+    fill_countries_cities(db_pg)
     fill_transport_stations(db_pg)
     fill_transport_companies(db_pg)
     fill_tickets(db_pg)
