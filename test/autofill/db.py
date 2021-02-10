@@ -5,7 +5,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from termcolor import colored
 
 class Postgres:
-    def __init__(self, db_name, db_username, db_password, db_host, db_port, log_file):
+    def __init__(self, db_name, db_username, db_password, db_host, db_port):
         try:
             self._connection = psycopg2.connect(dbname=db_name,
                                                 user=db_username,
@@ -22,7 +22,6 @@ class Postgres:
         self.port = db_port
         self.user = db_username
 
-        self.log_file = log_file
         print(colored('[*] connect to postgres server: ' + db_host + ':' + db_port, color='green'))
 
     def __del__(self):
