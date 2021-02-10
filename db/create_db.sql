@@ -30,7 +30,7 @@ CREATE TABLE tickets(
     orig_station_id int NOT NULL REFERENCES transport_stations(id),
     dest_station_id int NOT NULL REFERENCES transport_stations(id),
     transport_type text,
-    price money CONSTRAINT ticket_price_validation CHECK (price > 0),
+    price money CONSTRAINT ticket_price_validation CHECK (price::numeric > 0),
     ticket_date date
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE hotels(
     hotel_addr text,
     stars int CONSTRAINT hotel_stars_validation CHECK (1 <= stars AND stars <= 5),
     hotel_rating numeric(1, 1) CONSTRAINT hotel_rating_validation CHECK (1.0 <= hotel_rating AND hotel_rating <= 5.0),
-    avg_price money CONSTRAINT hotel_price_validation CHECK (avg_price > 0),
+    avg_price money CONSTRAINT hotel_price_validation CHECK (avg_price::numeric > 0),
     near_sea bool
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE events(
     event_addr text,
     event_start date,
     event_end date,
-    event_price money CONSTRAINT event_price_validation CHECK (event_price > 0),
+    event_price money CONSTRAINT event_price_validation CHECK (event_price::numeric > 0),
     max_persons int,
     cur_persons int CONSTRAINT event_person_validation CHECK (cur_persons <= events.max_persons),
     languages text[],
@@ -67,7 +67,7 @@ CREATE TABLE restaurants(
     rest_name text,
     rest_description text,
     rest_addr text,
-    avg_price money CONSTRAINT restaurant_price_validation CHECK (avg_price > 0),
+    avg_price money CONSTRAINT restaurant_price_validation CHECK (avg_price::numeric > 0),
     rest_rating numeric(1, 1) CONSTRAINT rest_rating_validation CHECK (1.0 <= rest_rating AND rest_rating <= 5.0),
     child_menu bool,
     smoking_room bool
@@ -92,7 +92,7 @@ CREATE TABLE tours(
     id SERIAL PRIMARY KEY,
     user_id int NOT NULL REFERENCES users(id),
     tour_name text,
-    tour_price money CONSTRAINT tour_price_validation CHECK (tour_price >= 0),
+    tour_price money CONSTRAINT tour_price_validation CHECK (tour_price::numeric >= 0),
     tour_date_from date,
     tour_date_to date
 );
@@ -101,7 +101,7 @@ CREATE TABLE city_tours(
     id SERIAL PRIMARY KEY,
     tour_id int NOT NULL REFERENCES tours(id),
     city_id int NOT NULL REFERENCES cities(id),
-    city_tour_price money CONSTRAINT ct_price_validation CHECK (city_tour_price >= 0),
+    city_tour_price money CONSTRAINT ct_price_validation CHECK (city_tour_price::numeric >= 0),
     date_from date,
     date_to date,
     ticket_arrival_id int NOT NULL REFERENCES tickets(id),
