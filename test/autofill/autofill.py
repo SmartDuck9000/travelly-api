@@ -1,8 +1,8 @@
 import csv
-
+import random
 import os
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 from termcolor import colored
 
 from db import Postgres
@@ -33,7 +33,15 @@ def fill_transport_stations(pg: Postgres):
 
 
 def fill_transport_companies(pg: Postgres):
-    pass
+    with open('data/airlines.csv') as csv_file:
+        reader = csv.DictReader(csv_file, delimiter=',')
+
+        for row in reader:
+            if row['Active'] == 'Y':
+                pg.insert('transport_companies', {
+                    'company_name': row['Name'],
+                    'company_rating': round(random.uniform(2, 5), 1)
+                })
 
 
 def fill_tickets(pg: Postgres):
@@ -98,7 +106,7 @@ def init_db(config_file):
 
 if __name__ == '__main__':
     db_pg = init_db('.env')
-    fill_countries_cities(db_pg)
+    # fill_countries_cities(db_pg)
     fill_transport_stations(db_pg)
     fill_transport_companies(db_pg)
     fill_tickets(db_pg)
