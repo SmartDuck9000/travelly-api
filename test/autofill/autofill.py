@@ -69,9 +69,9 @@ def init_db(config_file):
             load_dotenv(dotenv_path)
 
         db = Postgres(
-            db_name=os.environ.get('POSTGRES_DB'),
-            db_username=os.environ.get('POSTGRES_USER'),
-            db_password=os.environ.get('POSTGRES_PASSWORD'),
+            db_name=os.environ.get('DB_NAME'),
+            db_username=os.environ.get('DB_USER'),
+            db_password=os.environ.get('DB_PASSWORD'),
             db_host=os.environ.get('DB_HOST'),
             db_port=os.environ.get('DB_PORT')
         )
