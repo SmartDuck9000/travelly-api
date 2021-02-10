@@ -16,6 +16,10 @@ for ct in city_tours:
 return TD['new']
 $$ language plpython3u;
 
+CREATE TRIGGER ct_price_after_event_update
+AFTER UPDATE OF event_price ON events
+FOR EACH ROW EXECUTE FUNCTION update_event_ct_price();
+
 CREATE OR REPLACE FUNCTION update_restaurant_ct_price() RETURNS TRIGGER AS $$
 old = TD['old']
 new = TD['new']
@@ -31,6 +35,10 @@ for ct in city_tours:
 
 return TD['new']
 $$ language plpython3u;
+
+CREATE TRIGGER ct_price_after_rest_update
+AFTER UPDATE OF avg_price ON restaurants
+FOR EACH ROW EXECUTE FUNCTION update_restaurant_ct_price();
 
 CREATE OR REPLACE FUNCTION update_hotel_ct_price() RETURNS TRIGGER AS $$
 old = TD['old']
@@ -48,6 +56,10 @@ for ct in city_tours:
 return TD['new']
 $$ language plpython3u;
 
+CREATE TRIGGER ct_price_after_hotel_update
+AFTER UPDATE OF avg_price ON hotels
+FOR EACH ROW EXECUTE FUNCTION update_hotel_ct_price();
+
 CREATE OR REPLACE FUNCTION update_tickets_ct_price() RETURNS TRIGGER AS $$
 old = TD['old']
 new = TD['new']
@@ -64,6 +76,10 @@ for ct in city_tours:
 return TD['new']
 $$ language plpython3u;
 
+CREATE TRIGGER ct_price_after_ticket_update
+AFTER UPDATE OF price ON tickets
+FOR EACH ROW EXECUTE FUNCTION update_tickets_ct_price();
+
 CREATE OR REPLACE FUNCTION update_ct_tour_price() RETURNS TRIGGER AS $$
 old = TD['old']
 new = TD['new']
@@ -79,6 +95,10 @@ for tour in tours:
 
 return TD['new']
 $$ language plpython3u;
+
+CREATE TRIGGER tour_price_after_ct_update
+AFTER UPDATE OF city_tour_price ON city_tours
+FOR EACH ROW EXECUTE FUNCTION update_ct_tour_price();
 
 CREATE OR REPLACE FUNCTION insert_ct_price() RETURNS TRIGGER AS $$
 new = TD['new']
@@ -105,6 +125,10 @@ TD['new']['city_tour_price'] = sum_price
 return TD['new']
 $$ language plpython3u;
 
+CREATE TRIGGER ct_price_after_ct_insert
+AFTER INSERT ON city_tours
+FOR EACH ROW EXECUTE FUNCTION insert_ct_price();
+
 CREATE OR REPLACE FUNCTION insert_ct_tour_price() RETURNS TRIGGER AS $$
 new = TD['new']
 update_request = plpy.prepare('UPDATE tours SET tour_price = $1 WHERE id = $2', ['int', 'int'])
@@ -115,3 +139,7 @@ plpy.execute(update_request, tour['tour_price'] + new['city_tour_price'], new['t
 
 return TD['new']
 $$ language plpython3u;
+
+CREATE TRIGGER tour_price_after_ct_insert
+AFTER INSERT ON city_tours
+FOR EACH ROW EXECUTE FUNCTION insert_ct_tour_price();
