@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from termcolor import colored
 from faker import Faker
+from password_generator import PasswordGenerator
 
 from db import Postgres
 
@@ -113,7 +114,17 @@ def fill_rest_bookings(pg: Postgres):
 
 
 def fill_users(pg: Postgres):
-    pass
+    fake = Faker()
+    pw_generator = PasswordGenerator()
+
+    for i in range(1000):
+        pg.insert('users', {
+            'email': fake.ascii_free_email(),
+            'password': pw_generator.shuffle_password('qwertyuioplkjhgfdsazxcvbnm0123456789', 20),
+            'first_name': fake.first_name(),
+            'last_name': fake.last_name(),
+            'photo_url': fake.image_url()
+        })
 
 
 def fill_ct_events(pg: Postgres):
@@ -162,7 +173,7 @@ if __name__ == '__main__':
     fill_events(db_pg)
     fill_restaurants(db_pg)
     fill_rest_bookings(db_pg)
-    fill_users(db_pg)
+    # fill_users(db_pg)
     fill_ct_events(db_pg)
     fill_ct_rb(db_pg)
     fill_tours(db_pg)
