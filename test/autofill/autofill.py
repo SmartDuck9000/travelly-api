@@ -76,7 +76,24 @@ def fill_transport_companies(pg: Postgres):
 
 
 def fill_tickets(pg: Postgres):
-    pass
+    fake = Faker()
+    for i in range(1000):
+        date = fake.date_between(start_date='+90d', end_date='+1y')
+        date_str = str(date.year) + "-" + str(date.month) + "-" + str(date.day)
+        orig_station_id = random.randint(1, 6341)
+        dest_station_id = random.randint(1, 6341)
+
+        while dest_station_id == orig_station_id:
+            dest_station_id = random.randint(1, 6341)
+
+        pg.insert('tickets', {
+            'company_id': random.randint(1, 1254),
+            'orig_station_id': orig_station_id,
+            'dest_station_id': dest_station_id,
+            'transport_type': "aircraft",
+            'price': random.randrange(200, 500),
+            'ticket_date': date_str
+        })
 
 
 def fill_hotels(pg: Postgres):
@@ -138,9 +155,9 @@ def init_db(config_file):
 if __name__ == '__main__':
     db_pg = init_db('.env')
     # fill_countries_cities(db_pg)
-    fill_transport_stations(db_pg)
+    # fill_transport_stations(db_pg)
     # fill_transport_companies(db_pg)
-    fill_tickets(db_pg)
+    # fill_tickets(db_pg)
     fill_hotels(db_pg)
     fill_events(db_pg)
     fill_restaurants(db_pg)
