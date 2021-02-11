@@ -37,6 +37,14 @@ class Postgres:
 
         return self.__execute(query, commit=True, fetch=True)
 
+    def get_city_id(self, city_name):
+        query = sql.SQL("SELECT id from cities WHERE city_name = {city_name}").format(city_name=sql.Literal(city_name))
+        return self.__execute(query)
+
+    def get_country_id(self, country_name):
+        query = sql.SQL("SELECT id from countries WHERE country_name = {country_name}").format(country_name=sql.Literal(country_name))
+        return self.__execute(query)
+
     def __execute(self, query, commit=False, fetch=True):
         try:
             self._cursor.execute(query)

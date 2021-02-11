@@ -4,6 +4,7 @@ import os
 
 from dotenv import load_dotenv
 from termcolor import colored
+from faker import Faker
 
 from db import Postgres
 
@@ -29,7 +30,37 @@ def fill_countries_cities(pg: Postgres):
 
 
 def fill_transport_stations(pg: Postgres):
-    pass
+    with open('data/airports.csv') as csv_file:
+        reader = csv.DictReader(csv_file, delimiter=',')
+        fake = Faker()
+
+        for row in reader:
+            country_name = row['country']
+            city_name = row['city']
+            station_name = row['name']
+
+            country_ids = pg.get_country_id(country_name)
+            if len(country_ids) == 0:
+                country_id = pg.insert('countries', {
+                    'country_name': country_name
+                })
+            else:
+                country_id = country_ids[0]['id']
+
+            city_ids = pg.get_city_id(city_name)
+            if len(city_ids) == 0:
+                city_id = pg.insert('cities', {
+                    'country_id': country_id,
+                    'city_name': city_name
+                })
+            else:
+                city_id = city_ids[0]['id']
+
+            pg.insert('transport_stations', {
+                'city_id': city_id,
+                'station_name': station_name,
+                'station_addr': fake.address().split('\n')[0]
+            })
 
 
 def fill_transport_companies(pg: Postgres):
@@ -108,7 +139,7 @@ if __name__ == '__main__':
     db_pg = init_db('.env')
     # fill_countries_cities(db_pg)
     fill_transport_stations(db_pg)
-    fill_transport_companies(db_pg)
+    # fill_transport_companies(db_pg)
     fill_tickets(db_pg)
     fill_hotels(db_pg)
     fill_events(db_pg)
