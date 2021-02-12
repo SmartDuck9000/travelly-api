@@ -111,16 +111,6 @@ sum_price += plpy.execute(ticket_request, new['ticket_departure_id'])[0]['price'
 hotel_request = plpy.prepare('SELECT avg_price FROM hotels WHERE hotel.id = $1', ['int'])
 sum_price += plpy.execute(hotel_request, new['hotel_id'])[0]['avg_price']
 
-event_request = plpy.prepare('SELECT event_price FROM city_tours ct JOIN city_tours_events cte on ct.id = cte.ct_id JOIN events e ON cte.event_id = e.id WHERE ct.id = $1', ['int'])
-events = plpy.execute(event_request, new['id'])
-for event in events:
-    sum_price += event['event_price']
-
-rest_request = plpy.prepare('SELECT avg_price FROM city_tours ct JOIN city_tours_rest_bookings ctr on ct.id = ctr.ct_id JOIN restaurant_bookings rb ON ctr.rb_id = rb.id WHERE ct.id = $1', ['int'])
-restaurants = plpy.execute(rest_request, new['id'])
-for rest in restaurants:
-    sum_price += rest['avg_price']
-
 TD['new']['city_tour_price'] = sum_price
 return TD['new']
 $$ language plpython3u;
@@ -129,8 +119,37 @@ CREATE TRIGGER ct_price_after_ct_insert
 AFTER INSERT ON city_tours
 FOR EACH ROW EXECUTE FUNCTION insert_ct_price();
 
-CREATE OR REPLACE FUNCTION insert_ct_tour_price() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION insert_ct_events_price() RETURNS TRIGGER AS $$
 new = TD['new']
+update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
+event_request = plpy.prepare('SELECT city_tour_price, event_price FROM city_tours ct JOIN city_tours_events cte on ct.id = cte.ct_id JOIN events e ON cte.event_id = e.id WHERE ct.id = $1 and e.id = $2', ['int', 'int'])
+
+cte = plpy.execute(event_request, new['ct_id'], new['event_id'])[0]
+plpy.execute(update_request, cte['city_tour_price'] + cte['event_price'], new['ct_id'])
+
+return TD['new']
+$$ language plpython3u;
+
+CREATE TRIGGER ct_price_after_cte_insert
+AFTER INSERT ON city_tours_events
+FOR EACH ROW EXECUTE FUNCTION insert_ct_events_price();
+
+CREATE OR REPLACE FUNCTION insert_ct_rb_price() RETURNS TRIGGER AS $$
+new = TD['new']
+update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
+rest_request = plpy.prepare('SELECT city_tour_price, avg_price FROM city_tours ct JOIN city_tours_rest_bookings ctr on ct.id = ctr.ct_id JOIN restaurant_bookings rb ON ctr.rb_id = rb.id WHERE ct.id = $1 AND rb.id = $2', ['int', 'int'])
+
+ct_rb = plpy.execute(rest_request, new['ct_id'], new['rb_id'])[0]
+plpy.execute(update_request, ct_rb['city_tour_price'] + ct_rb['avg_price'], new['ct_id'])
+
+return TD['new']
+$$ language plpython3u;
+
+CREATE TRIGGER ct_price_after_ct_rb_insert
+AFTER INSERT ON city_tours_rest_bookings
+FOR EACH ROW EXECUTE FUNCTION insert_ct_rb_price();
+
+CREATE OR REPLACE FUNCTION insert_ct_tour_price() RETURNS TRIGGER AS $$new = TD['new']
 update_request = plpy.prepare('UPDATE tours SET tour_price = $1 WHERE id = $2', ['int', 'int'])
 
 request = plpy.prepare('SELECT tour_price FROM tours WHERE tours.id = $1', ['int'])
