@@ -80,6 +80,75 @@ CREATE TRIGGER ct_price_after_ticket_update
 AFTER UPDATE OF price ON tickets
 FOR EACH ROW EXECUTE FUNCTION update_tickets_ct_price();
 
+CREATE OR REPLACE FUNCTION update_ct_hotel_ct_price() RETURNS TRIGGER AS $$
+old = TD['old']
+new = TD['new']
+
+update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
+hotel_request = plpy.prepare('SELECT avg_price FROM hotels WHERE id = $1', ['int'])
+old_price = plpy.execute(hotel_request, old['hotel_id'])[0]['avg_price']
+new_hotel = plpy.execute(hotel_request, new['hotel_id'])
+
+new_price = 0
+if len(new_hotel) > 0:
+    new_price = new_hotel[0]['avg_price']
+diff_price = new_price - old_price
+
+plpy.execute(update_request, new['city_tour_price'] + diff_price, new['id'])
+
+return TD['new']
+$$ language plpython3u;
+
+CREATE TRIGGER ct_price_after_ct_hotel_update
+AFTER UPDATE OF hotel_id ON city_tours
+FOR EACH ROW EXECUTE FUNCTION update_ct_hotel_ct_price();
+
+CREATE OR REPLACE FUNCTION update_ct_arr_ticket_ct_price() RETURNS TRIGGER AS $$
+old = TD['old']
+new = TD['new']
+
+update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
+ticket_request = plpy.prepare('SELECT price FROM tickets WHERE id = $1', ['int'])
+old_price = plpy.execute(ticket_request, old['ticket_arrival_id'])[0]['avg_price']
+new_ticket = plpy.execute(ticket_request, new['ticket_arrival_id'])
+
+new_price = 0
+if len(new_ticket) > 0:
+    new_price = new_ticket[0]['avg_price']
+diff_price = new_price - old_price
+
+plpy.execute(update_request, new['city_tour_price'] + diff_price, new['id'])
+
+return TD['new']
+$$ language plpython3u;
+
+CREATE TRIGGER ct_price_after_ct_arr_ticket_update
+AFTER UPDATE OF ticket_arrival_id ON city_tours
+FOR EACH ROW EXECUTE FUNCTION update_ct_arr_ticket_ct_price();
+
+CREATE OR REPLACE FUNCTION update_ct_dep_ticket_ct_price() RETURNS TRIGGER AS $$
+old = TD['old']
+new = TD['new']
+
+update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
+ticket_request = plpy.prepare('SELECT price FROM tickets WHERE id = $1', ['int'])
+old_price = plpy.execute(ticket_request, old['ticket_departure_id'])[0]['avg_price']
+new_ticket = plpy.execute(ticket_request, new['ticket_departure_id'])
+
+new_price = 0
+if len(new_ticket) > 0:
+    new_price = new_ticket[0]['avg_price']
+diff_price = new_price - old_price
+
+plpy.execute(update_request, new['city_tour_price'] + diff_price, new['id'])
+
+return TD['new']
+$$ language plpython3u;
+
+CREATE TRIGGER ct_price_after_ct_dep_ticket_update
+AFTER UPDATE OF ticket_departure_id ON city_tours
+FOR EACH ROW EXECUTE FUNCTION update_ct_dep_ticket_ct_price();
+
 CREATE OR REPLACE FUNCTION update_ct_tour_price() RETURNS TRIGGER AS $$
 old = TD['old']
 new = TD['new']
