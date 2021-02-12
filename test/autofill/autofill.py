@@ -1,14 +1,16 @@
 import csv
 import random
 import os
+import math
 
 from dotenv import load_dotenv
 from termcolor import colored
 from faker import Faker
 from password_generator import PasswordGenerator
 
-from db import Postgres
+from db import Postgres, literal_arr
 
+from psycopg2 import sql
 
 def fill_countries_cities(pg: Postgres):
     with open('data/country_cities.csv') as csv_file:
@@ -98,11 +100,75 @@ def fill_tickets(pg: Postgres):
 
 
 def fill_hotels(pg: Postgres):
-    pass
+    fake = Faker()
+    for i in range(1000):
+        stars = random.randint(3, 5)
+        rating = round(random.uniform(2, 5), 1)
+        k_price = 1 - math.fabs(1 - (rating / stars))
+
+        pg.insert('hotels', {
+            'city_id': random.randint(1, 30000),
+            'hotel_name': fake.company(),
+            'hotel_addr': fake.address().split('\n')[0],
+            'stars': stars,
+            'hotel_rating': rating,
+            'avg_price': round(k_price * random.randrange(20, 100)),
+            'near_sea': bool(random.randint(0, 1))
+        })
 
 
 def fill_events(pg: Postgres):
-    pass
+    fake = Faker()
+
+    langArr = ["\"Русский\"",
+               "\"Немецкий\"",
+               "\"Французский\"",
+               "\"Китайский\"",
+               "\"Японский\"",
+               "\"Испанский\"",
+               "\"Итальянский\"",
+               "\"Польский\""]
+
+    places = ["Museum",
+              "Gallery",
+              "Park",
+              "street",
+              "mountains"]
+
+    for i in range(1000):
+        rating = round(random.uniform(2, 5), 1)
+        date_start = fake.date_time_between(start_date='+90d', end_date='+1y')
+        if date_start.hour == 23:
+            date_start.replace(hour=date_start.hour - random.randint(1, 5))
+
+        end_hour = (date_start.hour + random.randint(1, 5))
+        if end_hour >= 24:
+            end_hour = 23
+        date_end = date_start.replace(hour=end_hour)
+
+        languages = set()
+        languages.add("\"Английский\"")
+        while len(languages) < 2:
+            languages.add(langArr[random.randint(0, len(langArr) - 1)])
+
+        place_index = random.randint(0, len(places) - 1)
+        if place_index in [0, 1, 2]:
+            name = places[place_index] + " of " + fake.first_name() + " " + fake.last_name()
+        else:
+            name = fake.last_name() + " " + places[place_index]
+
+        pg.insert('events', {
+            'city_id': random.randint(1, 30000),
+            'event_name': name,
+            'event_addr': fake.address().split('\n')[0],
+            'event_start': str(date_start),
+            'event_end': str(date_end),
+            'event_price': round((rating / 5.0) * random.randrange(20, 100)),
+            'max_persons': random.randint(5, 20),
+            'cur_persons': 0,
+            'languages': literal_arr(languages),
+            'event_rating': rating
+        })
 
 
 def fill_restaurants(pg: Postgres):
@@ -183,7 +249,7 @@ if __name__ == '__main__':
     # fill_transport_stations(db_pg)
     # fill_transport_companies(db_pg)
     # fill_tickets(db_pg)
-    fill_hotels(db_pg)
+    # fill_hotels(db_pg)
     fill_events(db_pg)
-    fill_restaurants(db_pg)
+    # fill_restaurants(db_pg)
     # fill_users(db_pg)

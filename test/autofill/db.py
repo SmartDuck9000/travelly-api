@@ -56,3 +56,11 @@ class Postgres:
             print(colored(e, color='red'))
 
         return None
+
+def literal_arr(arr):
+    liter = '{'
+    for elem in arr:
+        liter += elem + ", "
+    liter = liter[:-2]
+    liter += '}'
+    return liter
