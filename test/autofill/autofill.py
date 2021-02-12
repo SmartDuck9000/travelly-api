@@ -10,8 +10,6 @@ from password_generator import PasswordGenerator
 
 from db import Postgres, literal_arr
 
-from psycopg2 import sql
-
 def fill_countries_cities(pg: Postgres):
     with open('data/country_cities.csv') as csv_file:
         reader = csv.DictReader(csv_file, delimiter=',')
@@ -250,6 +248,6 @@ if __name__ == '__main__':
     # fill_transport_companies(db_pg)
     # fill_tickets(db_pg)
     # fill_hotels(db_pg)
-    fill_events(db_pg)
+    # fill_events(db_pg)
     # fill_restaurants(db_pg)
     # fill_users(db_pg)
