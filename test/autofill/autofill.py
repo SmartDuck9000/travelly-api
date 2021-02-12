@@ -44,7 +44,7 @@ def fill_transport_stations(pg: Postgres):
             if len(country_ids) == 0:
                 country_id = pg.insert('countries', {
                     'country_name': country_name
-                })
+                })[0]['id']
             else:
                 country_id = country_ids[0]['id']
 
@@ -53,7 +53,7 @@ def fill_transport_stations(pg: Postgres):
                 city_id = pg.insert('cities', {
                     'country_id': country_id,
                     'city_name': city_name
-                })
+                })[0]['id']
             else:
                 city_id = city_ids[0]['id']
 
@@ -106,11 +106,41 @@ def fill_events(pg: Postgres):
 
 
 def fill_restaurants(pg: Postgres):
-    pass
+    with open('data/restaurants.csv') as csv_file:
+        reader = csv.DictReader(csv_file, delimiter=',')
+        fake = Faker()
 
+        for row in reader:
+            country = row['region']
+            city = row['city']
+            rest = row['name']
 
-def fill_rest_bookings(pg: Postgres):
-    pass
+            country_ids = pg.get_country_id(country)
+            if len(country_ids) == 0:
+                country_id = pg.insert('countries', {
+                    'country_name': country
+                })[0]['id']
+            else:
+                country_id = country_ids[0]['id']
+
+            city_ids = pg.get_city_id(city)
+            if len(city_ids) == 0:
+                city_id = pg.insert('cities', {
+                    'country_id': country_id,
+                    'city_name': city
+                })[0]['id']
+            else:
+                city_id = city_ids[0]['id']
+
+            pg.insert('restaurants', {
+                'city_id': city_id,
+                'rest_name': rest,
+                'rest_addr': fake.address().split('\n')[0],
+                'avg_price': len(row['price']) * 50,
+                'rest_rating': round(random.uniform(3, 5), 1),
+                'child_menu': bool(random.randint(0, 1)),
+                'smoking_room': bool(random.randint(0, 1))
+            })
 
 
 def fill_users(pg: Postgres):
@@ -125,22 +155,6 @@ def fill_users(pg: Postgres):
             'last_name': fake.last_name(),
             'photo_url': fake.image_url()
         })
-
-
-def fill_ct_events(pg: Postgres):
-    pass
-
-
-def fill_ct_rb(pg: Postgres):
-    pass
-
-
-def fill_tours(pg: Postgres):
-    pass
-
-
-def fill_city_tours(pg: Postgres):
-    pass
 
 
 def init_db(config_file):
@@ -172,9 +186,4 @@ if __name__ == '__main__':
     fill_hotels(db_pg)
     fill_events(db_pg)
     fill_restaurants(db_pg)
-    fill_rest_bookings(db_pg)
     # fill_users(db_pg)
-    fill_ct_events(db_pg)
-    fill_ct_rb(db_pg)
-    fill_tours(db_pg)
-    fill_city_tours(db_pg)
