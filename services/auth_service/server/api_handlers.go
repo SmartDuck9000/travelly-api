@@ -14,13 +14,13 @@ func (api AuthAPI) register(c *gin.Context) {
 			"error": err.Error(),
 		})
 	} else {
-		userData := api.db.CreateUser(user)
-		if userData == nil {
+		err := api.db.CreateUser(&user)
+		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "User with this email already exist",
+				"error": err.Error(),
 			})
 		} else {
-			c.JSON(http.StatusOK, *userData)
+			c.JSON(http.StatusOK, user)
 		}
 	}
 }

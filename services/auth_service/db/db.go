@@ -11,7 +11,7 @@ type AuthDB interface {
 	Open() error
 	configureConnectionPools() error
 
-	CreateUser(user User) *User
+	CreateUser(user *User) error
 	GetUser(email string) *User
 }
 
@@ -24,12 +24,12 @@ type AuthPostgres struct {
 }
 
 type User struct {
-	ID        int
-	Email     string
-	Password  string
-	FirstName string
-	LastName  string
-	PhotoURL  string
+	ID        int    `json:"id"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	PhotoURL  string `json:"photo_url"`
 }
 
 func CreateAuthDB(conf config.AuthDBConfig) *AuthPostgres {
@@ -64,10 +64,9 @@ func (db AuthPostgres) configureConnectionPools() error {
 	return nil
 }
 
-func (db AuthPostgres) CreateUser(user User) *User {
-	var userData *User = nil
-	db.conn.Select("Email, Password, FirstName, LastName, PhotoURL").Create(userData)
-	return userData
+func (db AuthPostgres) CreateUser(user *User) error {
+	res := db.conn.Select("Email", "Password", "FirstName", "LastName").Create(user)
+	return res.Error
 }
 
 func (db AuthPostgres) GetUser(email string) *User {
