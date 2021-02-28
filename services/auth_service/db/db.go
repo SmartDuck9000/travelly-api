@@ -42,7 +42,7 @@ func CreateAuthDB(conf config.AuthDBConfig) *AuthPostgres {
 	}
 }
 
-func (db AuthPostgres) Open() error {
+func (db *AuthPostgres) Open() error {
 	var err error
 	db.conn, err = gorm.Open(postgres.Open(db.url), &gorm.Config{})
 	if err == nil {
