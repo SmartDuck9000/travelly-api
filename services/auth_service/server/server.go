@@ -18,6 +18,8 @@ type AuthAPI struct {
 }
 
 func CreateServer(conf config.AuthServiceConfig) *AuthAPI {
+	gin.SetMode(gin.ReleaseMode)
+
 	var api = AuthAPI{
 		server: gin.Default(),
 		db:     db.CreateAuthDB(conf.DB),
