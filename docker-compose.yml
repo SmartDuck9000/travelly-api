@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+    nginx:
+        image: nginx:mainline-alpine
+        restart: unless-stopped
+        container_name: travelly_nginx
+        depends_on:
+            - auth
+        volumes:
+            - ./.docker/etc/nginx/nginx.conf:/usr/local/etc/nginx/nginx.conf
+        ports:
+            - 5050:5050
+
+    postgres:
+        image: postgres:13-alpine
+        restart: unless-stopped
+        container_name: travelly_pg
+        environment:
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-gak597229}
+            - POSTGRES_USER=${POSTGRES_USER:-smart_duck}
+            - POSTGRES_DB=${POSTGRES_DB:-travelly_db}
+        volumes:
+            - ./.docker/data/postgresql/:/Library/PostgreSQL/13/data/
+        ports:
+            - 5432
+
+    auth:
+        build: ./services/auth_service
+        restart: unless-stopped
+        container_name: travelly_api_auth
+        depends_on:
+            - postgres
+        ports:
+            - 5002:5002
