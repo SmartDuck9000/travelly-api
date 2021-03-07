@@ -70,12 +70,12 @@ func (db AuthPostgres) CreateUser(user *User) error {
 }
 
 func (db AuthPostgres) GetUser(email string) *User {
-	var user *User = nil
+	var user User
 
 	db.conn.
 		Table("users").
 		Select("id, email, password, first_name, last_name, photo_url").
-		Where("email = ?", email).Scan(user)
+		Where("email = ?", email).Scan(&user)
 
-	return user
+	return &user
 }
