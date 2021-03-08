@@ -11,20 +11,22 @@ type AuthInterface interface {
 }
 
 type AuthAPI struct {
-	server *gin.Engine
-	db     db.AuthDB
-	host   string
-	port   string
+	server       *gin.Engine
+	db           db.AuthDB
+	tokenManager TokenManager
+	host         string
+	port         string
 }
 
 func CreateServer(conf config.AuthServiceConfig) *AuthAPI {
 	gin.SetMode(gin.ReleaseMode)
 
 	var api = AuthAPI{
-		server: gin.Default(),
-		db:     db.CreateAuthDB(conf.DB),
-		host:   conf.Host,
-		port:   conf.Port,
+		server:       gin.Default(),
+		db:           db.CreateAuthDB(conf.DB),
+		tokenManager: CreateJWTManager(conf.Token),
+		host:         conf.Host,
+		port:         conf.Port,
 	}
 
 	api.server.POST("/api/auth/email_register", api.register)
