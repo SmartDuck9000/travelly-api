@@ -4,6 +4,7 @@ import (
 	"github.com/SmartDuck9000/travelly-api/services/auth_service/db"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 func (api AuthAPI) register(c *gin.Context) {
@@ -51,6 +52,41 @@ func (api AuthAPI) login(c *gin.Context) {
 	} else {
 		api.returnTokens(c, userData.ID)
 	}
+}
+
+func (api AuthAPI) refreshToken(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "No authorization header",
+		})
+		return
+	}
+
+	headerParts := strings.Split(authHeader, " ")
+	if len(headerParts) != 2 {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Wrong length of header",
+		})
+		return
+	}
+
+	if headerParts[0] != "Bearer" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Wrong header",
+		})
+		return
+	}
+
+	claims, err := api.tokenManager.ParseToken(headerParts[1])
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	api.returnTokens(c, claims.ID)
 }
 
 func (api AuthAPI) returnTokens(c *gin.Context, userID int) {

@@ -29,6 +29,7 @@ func CreateServer(conf config.AuthServiceConfig) *AuthAPI {
 		port:         conf.Port,
 	}
 
+	api.server.GET("/api/auth/", api.refreshToken)
 	api.server.POST("/api/auth/email_register", api.register)
 	api.server.POST("/api/auth/login", api.login)
 
