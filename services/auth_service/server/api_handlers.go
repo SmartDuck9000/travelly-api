@@ -20,7 +20,11 @@ func (api AuthAPI) register(c *gin.Context) {
 				"error": err.Error(),
 			})
 		} else {
-			c.JSON(http.StatusOK, user)
+			var userID = user.ID
+			c.JSON(http.StatusOK, gin.H{
+				"access_token":  api.tokenManager.CreateAccessToken(userID),
+				"refresh_token": api.tokenManager.CreateRefreshToken(userID),
+			})
 		}
 	}
 }
@@ -44,7 +48,11 @@ func (api AuthAPI) login(c *gin.Context) {
 					"error": "Wrong password",
 				})
 			} else {
-				c.JSON(http.StatusOK, *userData)
+				var userID = userData.ID
+				c.JSON(http.StatusOK, gin.H{
+					"access_token":  api.tokenManager.CreateAccessToken(userID),
+					"refresh_token": api.tokenManager.CreateRefreshToken(userID),
+				})
 			}
 		}
 	}
