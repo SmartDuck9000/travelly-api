@@ -13,19 +13,16 @@ func (api AuthAPI) register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		return
+	}
+
+	err = api.db.CreateUser(&user)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
 	} else {
-		err := api.db.CreateUser(&user)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": err.Error(),
-			})
-		} else {
-			var userID = user.ID
-			c.JSON(http.StatusOK, gin.H{
-				"access_token":  api.tokenManager.CreateAccessToken(userID),
-				"refresh_token": api.tokenManager.CreateRefreshToken(userID),
-			})
-		}
+		api.returnTokens(c, user.ID)
 	}
 }
 
@@ -36,24 +33,45 @@ func (api AuthAPI) login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
-	} else {
-		userData := api.db.GetUser(user.Email)
-		if userData == nil {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "User with this email doesn't exist",
-			})
-		} else {
-			if user.Password != userData.Password {
-				c.JSON(http.StatusUnauthorized, gin.H{
-					"error": "Wrong password",
-				})
-			} else {
-				var userID = userData.ID
-				c.JSON(http.StatusOK, gin.H{
-					"access_token":  api.tokenManager.CreateAccessToken(userID),
-					"refresh_token": api.tokenManager.CreateRefreshToken(userID),
-				})
-			}
-		}
+		return
 	}
+
+	userData := api.db.GetUser(user.Email)
+	if userData == nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "User with this email doesn't exist",
+		})
+		return
+	}
+
+	if user.Password != userData.Password {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Wrong password",
+		})
+	} else {
+		api.returnTokens(c, userData.ID)
+	}
+}
+
+func (api AuthAPI) returnTokens(c *gin.Context, userID int) {
+	accessToken, accessTokenErr := api.tokenManager.CreateAccessToken(userID)
+	if accessTokenErr != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": accessTokenErr.Error(),
+		})
+		return
+	}
+
+	refreshToken, refreshTokenErr := api.tokenManager.CreateRefreshToken(userID)
+	if refreshTokenErr != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": refreshTokenErr.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+	})
 }

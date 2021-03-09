@@ -43,7 +43,7 @@ func (m JWTManager) CreateAccessToken(id int) (string, error) {
 		ID: id,
 	})
 
-	return token.SignedString(m.accessKey)
+	return token.SignedString([]byte(m.accessKey))
 }
 
 func (m JWTManager) CreateRefreshToken(id int) (string, error) {
@@ -55,5 +55,5 @@ func (m JWTManager) CreateRefreshToken(id int) (string, error) {
 		ID: id,
 	})
 
-	return token.SignedString(m.refreshKey)
+	return token.SignedString([]byte(m.refreshKey))
 }
