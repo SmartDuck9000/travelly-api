@@ -23,7 +23,7 @@ func (api AuthAPI) register(c *gin.Context) {
 			"error": err.Error(),
 		})
 	} else {
-		api.returnTokens(c, user.ID)
+		api.returnAuthData(c, user.ID)
 	}
 }
 
@@ -50,7 +50,7 @@ func (api AuthAPI) login(c *gin.Context) {
 			"error": "Wrong password",
 		})
 	} else {
-		api.returnTokens(c, userData.ID)
+		api.returnAuthData(c, userData.ID)
 	}
 }
 
@@ -86,10 +86,10 @@ func (api AuthAPI) refreshToken(c *gin.Context) {
 		return
 	}
 
-	api.returnTokens(c, claims.ID)
+	api.returnAuthData(c, claims.ID)
 }
 
-func (api AuthAPI) returnTokens(c *gin.Context, userID int) {
+func (api AuthAPI) returnAuthData(c *gin.Context, userID int) {
 	accessToken, accessTokenErr := api.tokenManager.CreateAccessToken(userID)
 	if accessTokenErr != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -107,6 +107,7 @@ func (api AuthAPI) returnTokens(c *gin.Context, userID int) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"user_id":       userID,
 		"access_token":  accessToken,
 		"refresh_token": refreshToken,
 	})
