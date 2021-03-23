@@ -3,11 +3,22 @@ API for travelly app(app, that helps people to organize their travel plan)
 
 # Authorization
 
-All methods returning two tokens `access_token` and `refresh_token`
+`api/auth/` returns two tokens `access_token` and `refresh_token`
+
+Two other methods return user id and two tokens
 
 JSON with tokens example:
 ```json
 {
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMzM0NTc3ODkwIiwibmFtZSI6IkdvZ2kiLCJpYXQiOjM1MTYyMzkwMjJ9.pZm2pmR7FoyI0hwfSF_OMuE7tD3MVqeN6-D2UuVSYnQ.eyJzdWIiOiIxMzM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9yaWFuIiwiaWF0IjoxNTE2MjM5MDIyfQ.UCSQHuC44ByGLwA7F5gcYea2rruRlbH6_kXuVv7_6Rg"
+}
+```
+
+JSON with user id and tokens example:
+```json
+{
+  "user_id": 1,
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMzM0NTc3ODkwIiwibmFtZSI6IkdvZ2kiLCJpYXQiOjM1MTYyMzkwMjJ9.pZm2pmR7FoyI0hwfSF_OMuE7tD3MVqeN6-D2UuVSYnQ.eyJzdWIiOiIxMzM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9yaWFuIiwiaWF0IjoxNTE2MjM5MDIyfQ.UCSQHuC44ByGLwA7F5gcYea2rruRlbH6_kXuVv7_6Rg"
 }
