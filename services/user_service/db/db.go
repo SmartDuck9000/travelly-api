@@ -7,21 +7,35 @@ import (
 	"time"
 )
 
-type TravellyDb interface {
+type UserProfileDB interface {
 	Open() error
 	configureConnectionPools() error
 
-	GetUser(userId int) *User
-	GetTours(userId int) []Tour
-	GetCityTours(tourId int) []CityTour
+	GetUser(userId int) *UserData
+	GetTours(userId int) []TourData
+	GetCityTours(tourId int) []CityTourData
 
-	GetEvents(cityTourId int) []Event
-	GetRestaurantBookings(cityTourId int) []RestaurantBooking
-	GetTickets(cityTourId int) [2]Ticket
-	GetHotel(cityTourId int) *Hotel
+	GetEvents(cityTourId int) []EventData
+	GetRestaurantBookings(cityTourId int) []RestaurantBookingData
+	GetTickets(cityTourId int) [2]TicketData
+	GetHotel(cityTourId int) *HotelData
+
+	CreateTour(tour *TourEntity) error
+	CreateCityTour(cityTour *CityTourEntity) error
+	CreateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error
+
+	UpdateUser(user *UserEntity) error
+	UpdateTour(tour *TourEntity) error
+	UpdateCityTour(cityTour *CityTourEntity) error
+	UpdateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error
+
+	DeleteUser(userId int) error
+	DeleteTour(tourId int) error
+	DeleteCityTour(cityTourId int) error
+	DeleteRestaurantBooking(restaurantBookingId int) error
 }
 
-type TravellyPostgres struct {
+type UserProfilePostgres struct {
 	url             string
 	maxIdleConn     int
 	maxOpenConn     int
@@ -29,8 +43,8 @@ type TravellyPostgres struct {
 	conn            *gorm.DB
 }
 
-func CreateUserServiceDb(conf config.UserServiceDbConfig) *TravellyPostgres {
-	return &TravellyPostgres{
+func CreateUserServiceDb(conf config.UserServiceDbConfig) *UserProfilePostgres {
+	return &UserProfilePostgres{
 		url:             conf.URL,
 		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool
 		maxOpenConn:     conf.MaxOpenConn,     // maximum number of open connections to the database
@@ -39,7 +53,7 @@ func CreateUserServiceDb(conf config.UserServiceDbConfig) *TravellyPostgres {
 	}
 }
 
-func (db TravellyPostgres) Open() error {
+func (db *UserProfilePostgres) Open() error {
 	var err error
 	db.conn, err = gorm.Open(postgres.Open(db.url), &gorm.Config{})
 	if err == nil {
@@ -48,7 +62,7 @@ func (db TravellyPostgres) Open() error {
 	return err
 }
 
-func (db TravellyPostgres) configureConnectionPools() error {
+func (db UserProfilePostgres) configureConnectionPools() error {
 	sqlDB, err := db.conn.DB()
 	if err != nil {
 		return err
@@ -61,14 +75,14 @@ func (db TravellyPostgres) configureConnectionPools() error {
 	return nil
 }
 
-func (db TravellyPostgres) GetUser(userId int) *User {
-	var user User
+func (db UserProfilePostgres) GetUser(userId int) *UserData {
+	var user UserData
 	db.conn.Table("users").Select("id, first_name, last_name, photo_url").Where("id = ?", userId).Scan(&user)
 	return &user
 }
 
-func (db TravellyPostgres) GetTours(userId int) []Tour {
-	var tours []Tour
+func (db UserProfilePostgres) GetTours(userId int) []TourData {
+	var tours []TourData
 	db.conn.
 		Table("tours").
 		Select("id, user_id, tour_name, tour_price, tour_date_from, tour_date_to").
@@ -76,8 +90,8 @@ func (db TravellyPostgres) GetTours(userId int) []Tour {
 	return tours
 }
 
-func (db TravellyPostgres) GetCityTours(tourId int) []CityTour {
-	var cityTours []CityTour
+func (db UserProfilePostgres) GetCityTours(tourId int) []CityTourData {
+	var cityTours []CityTourData
 	db.conn.
 		Table("city_tours").
 		Select("city_tours.id, tour_id, country_name, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotel_name").
@@ -88,8 +102,8 @@ func (db TravellyPostgres) GetCityTours(tourId int) []CityTour {
 	return cityTours
 }
 
-func (db TravellyPostgres) GetEvents(cityTourId int) []Event {
-	var events []Event
+func (db UserProfilePostgres) GetEvents(cityTourId int) []EventData {
+	var events []EventData
 	db.conn.
 		Table("city_tours").
 		Select("events.id, event_name, event_start, event_end, event_price, event_rating, max_persons, cur_persons").
@@ -99,8 +113,8 @@ func (db TravellyPostgres) GetEvents(cityTourId int) []Event {
 	return events
 }
 
-func (db TravellyPostgres) GetRestaurantBookings(cityTourId int) []RestaurantBooking {
-	var restaurantBookings []RestaurantBooking
+func (db UserProfilePostgres) GetRestaurantBookings(cityTourId int) []RestaurantBookingData {
+	var restaurantBookings []RestaurantBookingData
 	db.conn.
 		Table("city_tours").
 		Select("restaurant_bookings.id, restaurant_id, booking_time, rest_name, avg_price, rest_rating").
@@ -111,8 +125,8 @@ func (db TravellyPostgres) GetRestaurantBookings(cityTourId int) []RestaurantBoo
 	return restaurantBookings
 }
 
-func (db TravellyPostgres) getTicket(ticketId int) *Ticket {
-	var ticket Ticket
+func (db UserProfilePostgres) getTicket(ticketId int) *TicketData {
+	var ticket TicketData
 	db.conn.
 		Table("tickets").
 		Select("tickets.id, transport_type, price, ticket_date, orig_ts.station_name, orig_ts.station_addr, dest_ts.station_name, dest_ts.station_addr, company_name, company_rating").
@@ -124,9 +138,9 @@ func (db TravellyPostgres) getTicket(ticketId int) *Ticket {
 	return &ticket
 }
 
-func (db TravellyPostgres) GetTickets(cityTourId int) [2]Ticket {
-	var ticketIds CityTourTicketID
-	var tickets [2]Ticket
+func (db UserProfilePostgres) GetTickets(cityTourId int) [2]TicketData {
+	var ticketIds CityTourTicketIdData
+	var tickets [2]TicketData
 
 	db.conn.
 		Table("city_tours").
@@ -139,12 +153,69 @@ func (db TravellyPostgres) GetTickets(cityTourId int) [2]Ticket {
 	return tickets
 }
 
-func (db TravellyPostgres) GetHotel(cityTourId int) *Hotel {
-	var hotel Hotel
+func (db UserProfilePostgres) GetHotel(cityTourId int) *HotelData {
+	var hotel HotelData
 	db.conn.
 		Table("city_tours").
 		Select("hotels.id, hotel_name, stars, hotel_rating").
 		Joins("JOIN hotels ON city_tours.hotel_id = hotels.id").
 		Where("city_tours.id = ?", cityTourId).Scan(&hotel)
 	return &hotel
+}
+
+func (db UserProfilePostgres) CreateTour(tour *TourEntity) error {
+	res := db.conn.Select("userId", "tourName", "tourPrice", "tourDateFrom", "tourDateTo").Create(tour)
+	return res.Error
+}
+
+func (db UserProfilePostgres) CreateCityTour(cityTour *CityTourEntity) error {
+	res := db.conn.
+		Select("tourId", "cityId", "cityTourPrice", "dateFrom", "dateTo", "ticketArrivalId", "ticketDepartureId", "hotelId").
+		Create(cityTour)
+	return res.Error
+}
+
+func (db UserProfilePostgres) CreateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error {
+	res := db.conn.Select("restaurantId", "bookingTime").Create(restaurantBooking)
+	return res.Error
+}
+
+func (db UserProfilePostgres) UpdateUser(user *UserEntity) error {
+	res := db.conn.Save(user)
+	return res.Error
+}
+
+func (db UserProfilePostgres) UpdateTour(tour *TourEntity) error {
+	res := db.conn.Save(tour)
+	return res.Error
+}
+
+func (db UserProfilePostgres) UpdateCityTour(cityTour *CityTourEntity) error {
+	res := db.conn.Save(cityTour)
+	return res.Error
+}
+
+func (db UserProfilePostgres) UpdateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error {
+	res := db.conn.Save(restaurantBooking)
+	return res.Error
+}
+
+func (db UserProfilePostgres) DeleteUser(userId int) error {
+	res := db.conn.Delete(&UserEntity{}, userId)
+	return res.Error
+}
+
+func (db UserProfilePostgres) DeleteTour(tourId int) error {
+	res := db.conn.Delete(&TourEntity{}, tourId)
+	return res.Error
+}
+
+func (db UserProfilePostgres) DeleteCityTour(cityTourId int) error {
+	res := db.conn.Delete(&CityTourEntity{}, cityTourId)
+	return res.Error
+}
+
+func (db UserProfilePostgres) DeleteRestaurantBooking(restaurantBookingId int) error {
+	res := db.conn.Delete(&RestaurantBookingEntity{}, restaurantBookingId)
+	return res.Error
 }

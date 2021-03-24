@@ -12,7 +12,7 @@ type UserServiceInterface interface {
 
 type UserServiceAPI struct {
 	server *gin.Engine
-	db     db.TravellyDb
+	db     db.UserProfileDB
 	host   string
 	port   string
 }
@@ -32,6 +32,20 @@ func CreateServer(conf config.UserServiceConfig) *UserServiceAPI {
 	api.server.GET("/api/users/tours/city_tours/restaurant_bookings", api.getCityTourRestaurantBookings)
 	api.server.GET("/api/users/tours/city_tours/tickets", api.getCityTourTickets)
 	api.server.GET("/api/users/tours/city_tours/hotels", api.getCityTourHotel)
+
+	api.server.POST("/api/users/tours", api.postTour)
+	api.server.POST("/api/users/city_tours", api.postCityTour)
+	api.server.POST("/api/users/restaurant_bookings", api.postRestaurantBooking)
+
+	api.server.PUT("/api/users", api.updateUser)
+	api.server.PUT("/api/users/tours", api.updateTour)
+	api.server.PUT("/api/users/city_tours", api.updateCityTour)
+	api.server.PUT("/api/users/restaurant_bookings", api.updateRestaurantBooking)
+
+	api.server.DELETE("/api/users", api.deleteUser)
+	api.server.DELETE("/api/users/tours", api.deleteTour)
+	api.server.DELETE("/api/users/city_tours", api.deleteCityTour)
+	api.server.DELETE("/api/users/restaurant_bookings", api.deleteRestaurantBooking)
 
 	return &api
 }

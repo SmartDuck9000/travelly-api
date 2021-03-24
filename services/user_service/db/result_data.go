@@ -1,13 +1,13 @@
 package db
 
-type User struct {
+type UserData struct {
 	userId    int
 	firstName string
 	lastName  string
 	photoUrl  string
 }
 
-type Tour struct {
+type TourData struct {
 	tourId int
 	userId int
 
@@ -18,7 +18,7 @@ type Tour struct {
 	tourDateTo   string
 }
 
-type CityTour struct {
+type CityTourData struct {
 	cityTourId int
 	tourId     int
 
@@ -35,12 +35,12 @@ type CityTour struct {
 	hotelName string
 }
 
-type CityTourTicketID struct {
+type CityTourTicketIdData struct {
 	ticketArrivalId   int
 	ticketDepartureId int
 }
 
-type Ticket struct {
+type TicketData struct {
 	ticketId      int
 	transportType string
 	price         float64
@@ -55,7 +55,7 @@ type Ticket struct {
 	companyRating float64
 }
 
-type Hotel struct {
+type HotelData struct {
 	hotelId   int
 	hotelName string
 
@@ -63,7 +63,7 @@ type Hotel struct {
 	hotelRating float64
 }
 
-type Event struct {
+type EventData struct {
 	eventId   int
 	eventName string
 
@@ -76,7 +76,7 @@ type Event struct {
 	curPersons int
 }
 
-type RestaurantBooking struct {
+type RestaurantBookingData struct {
 	restaurantBookingId int
 	restaurantId        int
 
