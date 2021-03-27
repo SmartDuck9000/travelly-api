@@ -53,6 +53,11 @@ type TicketData struct {
 	companyRating float64
 }
 
+type CityTourTicketData struct {
+	arrivalTicket   TicketData
+	departureTicket TicketData
+}
+
 type HotelData struct {
 	hotelId   int
 	hotelName string

@@ -1,9 +1,9 @@
-package server
+package token_manager
 
 import (
 	"fmt"
-	"github.com/SmartDuck9000/travelly-api/services/auth_service/config"
 	"github.com/dgrijalva/jwt-go"
+	"strings"
 	"time"
 )
 
@@ -11,6 +11,7 @@ type TokenManager interface {
 	CreateAccessToken(id int) (string, error)
 	CreateRefreshToken(id int) (string, error)
 	ParseToken(tokenString string) (*AuthClaims, error)
+	ValidateToken(authHeader string) error
 }
 
 type JWTManager struct {
@@ -26,7 +27,7 @@ type AuthClaims struct {
 	ID int
 }
 
-func CreateJWTManager(conf config.TokenConfig) *JWTManager {
+func CreateJWTManager(conf TokenConfig) TokenManager {
 	return &JWTManager{
 		method:          conf.Method,
 		accessKey:       conf.AccessKey,
@@ -78,4 +79,18 @@ func (m JWTManager) ParseToken(tokenString string) (*AuthClaims, error) {
 	}
 
 	return nil, fmt.Errorf("invalid token")
+}
+
+func (m JWTManager) ValidateToken(authHeader string) error {
+	headerParts := strings.Split(authHeader, " ")
+	if len(headerParts) != 2 {
+		return fmt.Errorf("wrong length of header")
+	}
+
+	if headerParts[0] != "Bearer" {
+		return fmt.Errorf("wrong header")
+	}
+
+	_, err := m.ParseToken(headerParts[1])
+	return err
 }

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type UserProfileDB interface {
+type UserProfileDb interface {
 	Open() error
 	configureConnectionPools() error
 
@@ -17,7 +17,7 @@ type UserProfileDB interface {
 
 	GetEvents(cityTourId int) []EventData
 	GetRestaurantBookings(cityTourId int) []RestaurantBookingData
-	GetTickets(cityTourId int) [2]TicketData
+	GetTickets(cityTourId int) *CityTourTicketData
 	GetHotel(cityTourId int) *HotelData
 
 	CreateTour(tour *TourEntity) error
@@ -43,7 +43,7 @@ type UserProfilePostgres struct {
 	conn            *gorm.DB
 }
 
-func CreateUserServiceDb(conf config.UserServiceDbConfig) *UserProfilePostgres {
+func CreateUserServiceDb(conf config.UserDbConfig) UserProfileDb {
 	return &UserProfilePostgres{
 		url:             conf.URL,
 		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool
@@ -138,19 +138,29 @@ func (db UserProfilePostgres) getTicket(ticketId int) *TicketData {
 	return &ticket
 }
 
-func (db UserProfilePostgres) GetTickets(cityTourId int) [2]TicketData {
+func (db UserProfilePostgres) GetTickets(cityTourId int) *CityTourTicketData {
 	var ticketIds CityTourTicketIdData
-	var tickets [2]TicketData
+	var tickets CityTourTicketData
+	var ticketData *TicketData
 
 	db.conn.
 		Table("city_tours").
 		Select("ticket_arrival_id, ticket_departure_id").
 		Where("id = ?", cityTourId).Scan(&ticketIds)
 
-	tickets[0] = *db.getTicket(ticketIds.ticketArrivalId)
-	tickets[1] = *db.getTicket(ticketIds.ticketDepartureId)
+	ticketData = db.getTicket(ticketIds.ticketArrivalId)
+	if ticketData == nil {
+		return nil
+	}
+	tickets.arrivalTicket = *ticketData
 
-	return tickets
+	ticketData = db.getTicket(ticketIds.ticketDepartureId)
+	if ticketData == nil {
+		return nil
+	}
+	tickets.departureTicket = *ticketData
+
+	return &tickets
 }
 
 func (db UserProfilePostgres) GetHotel(cityTourId int) *HotelData {

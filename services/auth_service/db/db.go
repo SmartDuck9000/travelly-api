@@ -32,7 +32,7 @@ type User struct {
 	PhotoURL  string `json:"photo_url"`
 }
 
-func CreateAuthDB(conf config.AuthDBConfig) *AuthPostgres {
+func CreateAuthDB(conf config.AuthDbConfig) AuthDB {
 	return &AuthPostgres{
 		url:             conf.URL,
 		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool

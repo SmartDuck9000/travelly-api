@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/SmartDuck9000/travelly-api/config_reader"
 	"github.com/SmartDuck9000/travelly-api/services/auth_service/config"
-	"github.com/SmartDuck9000/travelly-api/services/auth_service/server"
+	"github.com/SmartDuck9000/travelly-api/services/auth_service/controller"
 	"log"
 )
 
@@ -17,9 +17,9 @@ func main() {
 		return
 	}
 
-	conf := config.New(configReader)
-	var api server.AuthInterface = server.CreateServer(*conf)
-	err = api.Run()
+	conf := config.CreateAuthControllerConfig(configReader)
+	var authController = controller.CreateAuthController(*conf)
+	err = authController.Run()
 
 	if err != nil {
 		log.Print(err.Error())

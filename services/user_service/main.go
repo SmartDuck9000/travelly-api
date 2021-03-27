@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/SmartDuck9000/travelly-api/config_reader"
 	"github.com/SmartDuck9000/travelly-api/services/user_service/config"
-	"github.com/SmartDuck9000/travelly-api/services/user_service/server"
+	"github.com/SmartDuck9000/travelly-api/services/user_service/controller"
 	"log"
 )
 
@@ -17,9 +17,9 @@ func main() {
 		return
 	}
 
-	conf := config.New(configReader)
-	var api server.UserServiceInterface = server.CreateServer(*conf)
-	err = api.Run()
+	conf := config.CreateUserControllerConfig(configReader)
+	var userController = controller.CreateUserController(*conf)
+	err = userController.Run()
 
 	if err != nil {
 		log.Print(err.Error())
