@@ -85,7 +85,7 @@ func (db UserProfilePostgres) GetTours(userId int) []TourData {
 	var tours []TourData
 	db.conn.
 		Table("tours").
-		Select("id, user_id, tour_name, tour_price, tour_date_from, tour_date_to").
+		Select("id, tour_name, tour_price, tour_date_from, tour_date_to").
 		Where("user_id = ?", userId).Scan(&tours)
 	return tours
 }
@@ -94,7 +94,7 @@ func (db UserProfilePostgres) GetCityTours(tourId int) []CityTourData {
 	var cityTours []CityTourData
 	db.conn.
 		Table("city_tours").
-		Select("city_tours.id, tour_id, country_name, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotel_name").
+		Select("city_tours.id, country_name, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotel_name").
 		Joins("JOIN hotels ON city_tours.hotel_id = hotels.id").
 		Joins("JOIN cities ON city_tours.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").

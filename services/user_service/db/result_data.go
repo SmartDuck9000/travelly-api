@@ -9,7 +9,6 @@ type UserData struct {
 
 type TourData struct {
 	tourId int
-	userId int
 
 	tourName  string
 	tourPrice float64
@@ -20,7 +19,6 @@ type TourData struct {
 
 type CityTourData struct {
 	cityTourId int
-	tourId     int
 
 	countryName   string
 	cityName      string

@@ -66,3 +66,146 @@ Example:
   "password": "awesome_password"
 }
 ```
+
+# User profile
+
+### GET
+- `/api/users?user_id=` - returns JSON with data about user profile
+  
+returning JSON example:
+```json
+{
+  "user_id": 1,
+  "first_name": "John",
+  "last_name":  "Dorian",
+  "photo_url": null
+}
+```
+
+- `/api/users/tours?user_id=` - returns JSON with an array of user's tour data
+
+returning JSON example:
+```json
+[
+  {
+
+    "tour_id": 1,
+    "tour_name": "German",
+    "tour_price": 1000.0,
+    "tour_date_from": "2021-06-01",
+    "tour_date_to": "2021-06-15"
+  }
+]
+```
+
+- `/api/users/tours/city_tours?tour_id=` - returns JSON with an array of data about tours in city
+
+returning JSON example:
+```json
+[
+  {
+    "city_tour_id": 1,
+    "country_name": "German",
+    "city_name": "Berlin",
+    "city_tour_price": 1000.0,
+    "date_from": "2021-06-01",
+    "date_to": "2021-06-15",
+    "ticket_arrival_id": 25,
+    "ticket_departure_id": 67,
+    "hotel_name": "Radisson Blu Hotel"
+  }
+]
+```
+
+- `/api/users/tours/city_tours/events?city_tour_id=` - returns JSON with an array of events in city tour
+
+returning JSON example:
+```json
+[
+  {
+    "event_id": 1,
+    "event_name": "Art festival",
+    "event_start": "2021-06-05",
+    "event_end": "2021-06-09",
+    "price": 50.0,
+    "rating": 4.1,
+    "max_persons": 600,
+    "cur_persons": 230
+  }
+]
+```
+
+- `/api/users/tours/city_tours/restaurant_bookings?city_tour_id=` - returns JSON with an array of restaurant bookings in city tour
+
+returning JSON example:
+```json
+[
+  {
+    "restaurant_booking_id": 1,
+    "restaurant_id": 1,
+    "booking_time": "2021-06-03", 
+    "restaurant_name": "Die Eselin von A.",
+    "average_price": 65.0,
+    "rating": 4.3
+  }
+]
+```
+
+- `/api/users/tours/city_tours/tickets?city_tour_id=` - returns JSON with an array of two tickets to and from city
+
+returning JSON example:
+```json
+[
+  {
+    "ticket_id": 1,
+    "transport_type": "airplane",
+    "price": 100.0,
+    "date": "2020-06-01",
+    "orig_station_name": "Шереметьево",
+    "orig_station_addr": "Московская область, Химки, Международное шоссе, 1А",
+    "dst_station_name": "Flughafen Berlin Brandenburg",
+    "dst_station_addr": "Willy-Brandt-Platz, 12529 Schönefeld",
+    "company_name": "S7",
+    "company_rating": 4.6
+  },
+  {
+    "ticket_id": 2,
+    "transport_type": "airplane",
+    "price": 100.0,
+    "date": "2020-06-15",
+    "orig_station_name": "Flughafen Berlin Brandenburg",
+    "orig_station_addr": "Willy-Brandt-Platz, 12529 Schönefeld",
+    "dst_station_name": "Шереметьево",
+    "dst_station_addr": "Московская область, Химки, Международное шоссе, 1А",
+    "company_name": "S7",
+    "company_rating": 4.6
+  }
+]
+```
+- `/api/users/tours/city_tours/hotels?city_tour_id=` - returns JSON with data about hotel in city tour
+
+```json
+{
+  "hotel_id": 1,
+  "hotel_name": "Radisson Blu Hotel",
+  "stars": 4,
+  "hotel_rating": 4.8
+}
+```
+
+### POST
+- `/api/users/tours`
+- `/api/users/city_tours`
+- `/api/users/restaurant_bookings`
+
+### PUT
+- `/api/users`
+- `/api/users/tours`
+- `/api/users/city_tours`
+- `/api/users/restaurant_bookings`
+
+### DELETE
+- `/api/users?user_id=`
+- `/api/users/tours?tour_id=`
+- `/api/users/city_tours?city_tour_id=`
+- `/api/users/restaurant_bookings?restaurant_booking_id=`

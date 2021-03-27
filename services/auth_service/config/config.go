@@ -1,8 +1,7 @@
 package config
 
 import (
-	"os"
-	"strconv"
+	"github.com/SmartDuck9000/travelly-api/config_reader"
 	"time"
 )
 
@@ -28,52 +27,22 @@ type AuthServiceConfig struct {
 	Port  string
 }
 
-// New returns a new Config struct
-func New() *AuthServiceConfig {
+func New(reader config_reader.ConfigReader) *AuthServiceConfig {
 	return &AuthServiceConfig{
 		DB: AuthDBConfig{
-			URL:             getEnv("DB_URL", ""),
-			MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),
-			MaxOpenConn:     getIntEnv("MAX_OPEN_CONN", 100),
-			ConnMaxLifetime: getHoursEnv("CONN_MAX_LIFETIME", 1),
+			URL:             reader.GetString("DB_URL", ""),
+			MaxIdleConn:     reader.GetInt("MAX_IDLE_CONN", 10),
+			MaxOpenConn:     reader.GetInt("MAX_OPEN_CONN", 100),
+			ConnMaxLifetime: reader.GetHours("CONN_MAX_LIFETIME", 1),
 		},
 		Token: TokenConfig{
-			Method:          getEnv("SIGNING_METHOD", ""),
-			AccessKey:       getEnv("ACCESS_KEY", ""),
-			RefreshKey:      getEnv("REFRESH_KEY", ""),
-			AccessLifeTime:  getHoursEnv("ACCESS_LIFETIME_HOURS", 1),
-			RefreshLifeTime: getHoursEnv("REFRESH_LIFETIME_HOURS", 24),
+			Method:          reader.GetString("SIGNING_METHOD", ""),
+			AccessKey:       reader.GetString("ACCESS_KEY", ""),
+			RefreshKey:      reader.GetString("REFRESH_KEY", ""),
+			AccessLifeTime:  reader.GetHours("ACCESS_LIFETIME_HOURS", 1),
+			RefreshLifeTime: reader.GetHours("REFRESH_LIFETIME_HOURS", 24),
 		},
-		Host: getEnv("HOST", ""),
-		Port: getEnv("PORT", ""),
+		Host: reader.GetString("HOST", ""),
+		Port: reader.GetString("PORT", ""),
 	}
-}
-
-// Simple helper function to read an environment or return a default value
-func getEnv(key string, defaultVal string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
-	}
-
-	return defaultVal
-}
-
-// Simple helper function to read an environment variable into integer or return a default value
-func getIntEnv(name string, defaultVal int) int {
-	valueStr := getEnv(name, "")
-	if value, err := strconv.Atoi(valueStr); err == nil {
-		return value
-	}
-
-	return defaultVal
-}
-
-// Simple helper function to read an environment variable into time.Hour or return a default value
-func getHoursEnv(name string, defaultVal int) time.Duration {
-	valueStr := getEnv(name, "")
-	if value, err := strconv.Atoi(valueStr); err == nil {
-		return time.Hour * time.Duration(value)
-	}
-
-	return time.Hour * time.Duration(defaultVal)
 }
