@@ -151,12 +151,12 @@ returning JSON example:
 ]
 ```
 
-- `/api/users/tours/city_tours/tickets?city_tour_id=` - returns JSON with an array of two tickets to and from city
+- `/api/users/tours/city_tours/tickets?city_tour_id=` - returns JSON with two structure with tickets
 
 returning JSON example:
 ```json
-[
-  {
+{
+  "access_token": {
     "ticket_id": 1,
     "transport_type": "airplane",
     "price": 100.0,
@@ -168,7 +168,7 @@ returning JSON example:
     "company_name": "S7",
     "company_rating": 4.6
   },
-  {
+  "refresh_token": {
     "ticket_id": 2,
     "transport_type": "airplane",
     "price": 100.0,
@@ -180,7 +180,7 @@ returning JSON example:
     "company_name": "S7",
     "company_rating": 4.6
   }
-]
+}
 ```
 - `/api/users/tours/city_tours/hotels?city_tour_id=` - returns JSON with data about hotel in city tour
 
@@ -194,18 +194,108 @@ returning JSON example:
 ```
 
 ### POST
-- `/api/users/tours`
-- `/api/users/city_tours`
-- `/api/users/restaurant_bookings`
+- `/api/users/tours` - creates new tour
+  
+posted JSON example:
+
+```json
+{
+  "id": 0,
+  "user_id": 1,
+  "tour_name": "German",
+  "tour_price": 0.0,
+  "tour_date_from": "2021-06-01",
+  "tour_date_to": "2021-06-15"
+}
+```
+
+- `/api/users/city_tours` - creates new tour in city
+
+posted JSON example:
+```json
+{
+  "id": 0,
+  "user_id": 1,
+  "city_id": 1,
+  "city_tour_price": 1000.0,
+  "date_from": "2021-06-01",
+  "date_to": "2021-06-15",
+  "ticket_arrival_id": 1,
+  "ticket_departure_id": 2,
+  "hotel_id": 1
+}
+```
+
+- `/api/users/restaurant_bookings` - creates new booking in restaurant
+
+posted JSON example:
+```json
+{
+  "id": 0,
+  "restaurant_id": 1,
+  "booking_time": "2021-06-03"
+}
+```
 
 ### PUT
-- `/api/users`
-- `/api/users/tours`
-- `/api/users/city_tours`
-- `/api/users/restaurant_bookings`
+- `/api/users` - updates user info
+
+input JSON example:
+```json
+{
+  "id": 1,
+  "email": "qwerty@gmail.com",
+  "password": "qwerty12345",
+  "first_name": "John",
+  "last_name": "Dorian",
+  "photo_url": null
+}
+```
+
+- `/api/users/tours` - updates tour info
+
+input JSON example:
+```json
+{
+  "id": 0,
+  "user_id": 1,
+  "tour_name": "German",
+  "tour_price": 0.0,
+  "tour_date_from": "2021-06-01",
+  "tour_date_to": "2021-06-15"
+}
+```
+
+- `/api/users/city_tours` - updates city tour info
+
+input JSON example:
+```json
+{
+  "id": 0,
+  "user_id": 1,
+  "city_id": 1,
+  "city_tour_price": 1000.0,
+  "date_from": "2021-06-01",
+  "date_to": "2021-06-15",
+  "ticket_arrival_id": 1,
+  "ticket_departure_id": 2,
+  "hotel_id": 1
+}
+```
+
+- `/api/users/restaurant_bookings` - updates info about booking in restaurant
+
+posted JSON example:
+```json
+{
+  "id": 0,
+  "restaurant_id": 1,
+  "booking_time": "2021-06-03"
+}
+```
 
 ### DELETE
-- `/api/users?user_id=`
-- `/api/users/tours?tour_id=`
-- `/api/users/city_tours?city_tour_id=`
-- `/api/users/restaurant_bookings?restaurant_booking_id=`
+- `/api/users?user_id=` - deletes user
+- `/api/users/tours?tour_id=` - deletes tour
+- `/api/users/city_tours?city_tour_id=` - deletes city tour
+- `/api/users/restaurant_bookings?restaurant_booking_id=` - deletes booking in restaurant
