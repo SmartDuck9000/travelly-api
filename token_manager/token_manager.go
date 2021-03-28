@@ -10,7 +10,8 @@ import (
 type TokenManager interface {
 	CreateAccessToken(id int) (string, error)
 	CreateRefreshToken(id int) (string, error)
-	ParseToken(tokenString string) (*AuthClaims, error)
+	ParseRefreshToken(tokenString string) (*AuthClaims, error)
+	ParseAccessToken(tokenString string) (*AuthClaims, error)
 	ValidateToken(authHeader string) error
 }
 
@@ -61,13 +62,33 @@ func (m JWTManager) CreateRefreshToken(id int) (string, error) {
 	return token.SignedString([]byte(m.refreshKey))
 }
 
-func (m JWTManager) ParseToken(tokenString string) (*AuthClaims, error) {
+func (m JWTManager) ParseRefreshToken(tokenString string) (*AuthClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &AuthClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %s", token.Header["alg"])
 		}
 
 		return m.refreshKey, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(AuthClaims); ok && token.Valid {
+		return &claims, nil
+	}
+
+	return nil, fmt.Errorf("invalid token")
+}
+
+func (m JWTManager) ParseAccessToken(tokenString string) (*AuthClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &AuthClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %s", token.Header["alg"])
+		}
+
+		return m.accessKey, nil
 	})
 
 	if err != nil {
@@ -91,6 +112,6 @@ func (m JWTManager) ValidateToken(authHeader string) error {
 		return fmt.Errorf("wrong header")
 	}
 
-	_, err := m.ParseToken(headerParts[1])
+	_, err := m.ParseAccessToken(headerParts[1])
 	return err
 }

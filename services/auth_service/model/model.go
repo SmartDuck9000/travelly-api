@@ -47,7 +47,7 @@ func (model AuthModel) RefreshToken(authHeader string) (*AuthData, error) {
 		return nil, fmt.Errorf("wrong header")
 	}
 
-	claims, err := model.tokenManager.ParseToken(headerParts[1])
+	claims, err := model.tokenManager.ParseRefreshToken(headerParts[1])
 	if err != nil {
 		return nil, err
 	}
