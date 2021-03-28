@@ -25,6 +25,15 @@ services:
         ports:
             - 5432
 
+    profile:
+        build: ./services/user_service
+        restart: unless-stopped
+        container_name: travelly_api_profile
+        depends_on:
+            - postgres
+        ports:
+            - 5001:5001
+
     auth:
         build: ./services/auth_service
         restart: unless-stopped
@@ -34,11 +43,11 @@ services:
         ports:
             - 5002:5002
 
-    profile:
-        build: ./services/user_service
+    info:
+        build: ./services/full_info_service
         restart: unless-stopped
-        container_name: travelly_api_profile
+        container_name: travelly_api_info
         depends_on:
             - postgres
         ports:
-            - 5001:5001
+            - 5005:5005
