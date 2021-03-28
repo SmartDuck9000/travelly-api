@@ -33,3 +33,12 @@ services:
             - postgres
         ports:
             - 5002:5002
+
+    profile:
+        build: ./services/user_service
+        restart: unless-stopped
+        container_name: travelly_api_profile
+        depends_on:
+            - postgres
+        ports:
+            - 5001:5001
