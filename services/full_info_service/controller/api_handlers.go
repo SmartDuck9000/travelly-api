@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"errors"
 	"github.com/SmartDuck9000/travelly-api/services/full_info_service/db"
+	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -26,7 +28,12 @@ func (controller FullInfoController) getHotel(c *gin.Context) {
 		hotel, err = controller.model.GetHotel(id, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			var statusCode = http.StatusBadRequest
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -54,7 +61,12 @@ func (controller FullInfoController) getEvent(c *gin.Context) {
 		event, err = controller.model.GetEvent(id, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			var statusCode = http.StatusBadRequest
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -82,7 +94,12 @@ func (controller FullInfoController) getRestaurant(c *gin.Context) {
 		restaurant, err = controller.model.GetRestaurant(id, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			var statusCode = http.StatusBadRequest
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {

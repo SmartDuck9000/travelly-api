@@ -79,7 +79,7 @@ func (m JWTManager) ParseRefreshToken(tokenString string) (*AuthClaims, error) {
 		return &claims, nil
 	}
 
-	return nil, fmt.Errorf("invalid token")
+	return nil, InvalidTokenError{}
 }
 
 func (m JWTManager) ParseAccessToken(tokenString string) (*AuthClaims, error) {
@@ -99,7 +99,7 @@ func (m JWTManager) ParseAccessToken(tokenString string) (*AuthClaims, error) {
 		return &claims, nil
 	}
 
-	return nil, fmt.Errorf("invalid token")
+	return nil, InvalidTokenError{}
 }
 
 func (m JWTManager) ValidateToken(authHeader string) error {

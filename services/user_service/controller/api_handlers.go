@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"errors"
 	"github.com/SmartDuck9000/travelly-api/services/user_service/db"
+	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -26,7 +28,12 @@ func (controller UserController) getUser(c *gin.Context) {
 		user, err = controller.model.GetUser(userId, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			var statusCode = http.StatusNotFound
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -54,7 +61,12 @@ func (controller UserController) getTours(c *gin.Context) {
 		tours, err = controller.model.GetTours(userId, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			var statusCode = http.StatusNotFound
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -82,7 +94,12 @@ func (controller UserController) getCityTours(c *gin.Context) {
 		cityTours, err = controller.model.GetCityTours(tourId, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			var statusCode = http.StatusNotFound
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -110,7 +127,12 @@ func (controller UserController) getCityTourEvents(c *gin.Context) {
 		events, err = controller.model.GetCityTourEvents(cityTourId, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			var statusCode = http.StatusNotFound
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -138,7 +160,12 @@ func (controller UserController) getCityTourRestaurantBookings(c *gin.Context) {
 		restaurantBookings, err = controller.model.GetCityTourRestaurantBookings(cityTourId, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			var statusCode = http.StatusNotFound
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -166,7 +193,12 @@ func (controller UserController) getCityTourTickets(c *gin.Context) {
 		tickets, err = controller.model.GetCityTourTickets(cityTourId, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			var statusCode = http.StatusNotFound
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -194,7 +226,12 @@ func (controller UserController) getCityTourHotel(c *gin.Context) {
 		hotel, err = controller.model.GetCityTourHotel(cityTourId, authHeader)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{
+			var statusCode = http.StatusNotFound
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
 				"error": err.Error(),
 			})
 		} else {
@@ -223,7 +260,12 @@ func (controller UserController) postTour(c *gin.Context) {
 
 	err = controller.model.CreateTour(&tour, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -251,7 +293,12 @@ func (controller UserController) postCityTour(c *gin.Context) {
 
 	err = controller.model.CreateCityTour(&cityTour, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -279,7 +326,12 @@ func (controller UserController) postRestaurantBooking(c *gin.Context) {
 
 	err = controller.model.CreateRestaurantBooking(&rb, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -307,7 +359,12 @@ func (controller UserController) updateUser(c *gin.Context) {
 
 	err = controller.model.UpdateUser(&user, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -335,7 +392,12 @@ func (controller UserController) updateTour(c *gin.Context) {
 
 	err = controller.model.UpdateTour(&tour, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -363,7 +425,12 @@ func (controller UserController) updateCityTour(c *gin.Context) {
 
 	err = controller.model.UpdateCityTour(&cityTour, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -391,7 +458,12 @@ func (controller UserController) updateRestaurantBooking(c *gin.Context) {
 
 	err = controller.model.UpdateRestaurantBooking(&rb, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -418,7 +490,12 @@ func (controller UserController) deleteUser(c *gin.Context) {
 
 	err = controller.model.DeleteUser(userId, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -445,7 +522,12 @@ func (controller UserController) deleteTour(c *gin.Context) {
 
 	err = controller.model.DeleteTour(tourId, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -472,7 +554,12 @@ func (controller UserController) deleteCityTour(c *gin.Context) {
 
 	err = controller.model.DeleteCityTour(cityTourId, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
@@ -499,7 +586,12 @@ func (controller UserController) deleteRestaurantBooking(c *gin.Context) {
 
 	err = controller.model.DeleteRestaurantBooking(rbId, authHeader)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
 			"error": err.Error(),
 		})
 	} else {
