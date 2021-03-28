@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -11,9 +12,9 @@ type FeedDB interface {
 	Open() error
 	configureConnectionPools() error
 
-	GetHotels(parameters FeedParameters) []Hotel
-	GetEvents(parameters FeedParameters) []Event
-	GetRestaurants(parameters FeedParameters) []Restaurant
+	GetHotels(filter HotelFilterParameters) ([]Hotel, error)
+	GetEvents(filter EventsFilterParameters) ([]Event, error)
+	GetRestaurants(filter RestaurantFilterParameters) ([]Restaurant, error)
 }
 
 type FeedPostgres struct {
@@ -24,13 +25,59 @@ type FeedPostgres struct {
 	conn            *gorm.DB
 }
 
-type FilterParameters struct {
+type HotelFilterParameters struct {
+	limit     int
+	offset    int
+	orderBy   string
+	orderType string
+
+	hotelName  string
+	starsFrom  int
+	starsTo    int
+	ratingFrom float64
+	ratingTo   float64
+	priceFrom  float64
+	priceTo    float64
+
+	nearSea  bool
+	cityName string
 }
 
-type FeedParameters struct {
-	OrderBy    string
-	Filter     FilterParameters
-	SearchText string
+type EventsFilterParameters struct {
+	limit  int
+	offset int
+
+	eventName string
+	orderBy   string
+	orderType string
+
+	from       int
+	to         int
+	ratingFrom float64
+	ratingTo   float64
+	priceFrom  float64
+	priceTo    float64
+
+	cityName string
+}
+
+type RestaurantFilterParameters struct {
+	limit  int
+	offset int
+
+	restaurantName string
+	orderBy        string
+	orderType      string
+
+	ratingFrom float64
+	ratingTo   float64
+	priceFrom  float64
+	priceTo    float64
+
+	childMenu   bool
+	smokingRoom bool
+
+	cityName string
 }
 
 func CreateFeedServiceDB(conf config.FeedDBConfig) FeedDB {
@@ -65,41 +112,115 @@ func (db FeedPostgres) configureConnectionPools() error {
 	return nil
 }
 
-func (db FeedPostgres) GetHotels(parameters FeedParameters) []Hotel {
+func (db FeedPostgres) GetHotels(filter HotelFilterParameters) ([]Hotel, error) {
 	var hotels []Hotel
+	var order string
 
-	db.conn.
+	if filter.orderType == "inc" {
+		order = filter.orderBy + " " + "ASC"
+	} else if filter.orderType == "dec" {
+		order = filter.orderBy + " " + "DESC"
+	} else {
+		return nil, fmt.Errorf("wrong order type")
+	}
+
+	res := db.conn.
 		Table("hotels").
 		Select("hotels.id, hotel_name, stars, hotel_rating, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
-		Order(orderedBy).Scan(&hotels)
+		Where("stars BETWEEN ? AND ?", filter.starsFrom, filter.starsTo).
+		Where("hotel_rating BETWEEN ? AND ?", filter.ratingFrom, filter.ratingTo).
+		Where("avg_price BETWEEN ? AND ?", filter.priceFrom, filter.priceTo)
 
-	return hotels
+	if filter.hotelName != "" {
+		res = res.Where("hotel_name LIKE ?", filter.hotelName)
+	}
+
+	if filter.cityName != "" {
+		res = res.Where("city_name LIKE ?", filter.cityName)
+	}
+
+	if filter.nearSea {
+		res = res.Where("near_sea = ?", filter.nearSea)
+	}
+
+	res = res.Order(order).Offset(filter.offset).Limit(filter.limit).Scan(&hotels)
+
+	return hotels, res.Error
 }
 
-func (db FeedPostgres) GetEvents(parameters FeedParameters) []Event {
+func (db FeedPostgres) GetEvents(filter EventsFilterParameters) ([]Event, error) {
 	var events []Event
+	var order string
 
-	db.conn.
+	if filter.orderType == "inc" {
+		order = filter.orderBy + " " + "ASC"
+	} else if filter.orderType == "dec" {
+		order = filter.orderBy + " " + "DESC"
+	} else {
+		return nil, fmt.Errorf("wrong order type")
+	}
+
+	res := db.conn.
 		Table("events").
 		Select("events.id, event_name, event_start, event_end, event_rating, max_persons, cur_persons, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
-		Order(orderedBy).Scan(&events)
+		Where("event_start <= ? AND event_end <= ?", filter.from, filter.to).
+		Where("event_rating BETWEEN ? AND ?", filter.ratingFrom, filter.ratingTo).
+		Where("event_price BETWEEN ? AND ?", filter.priceFrom, filter.priceTo)
 
-	return events
+	if filter.eventName != "" {
+		res = res.Where("event_name LIKE ?", filter.eventName)
+	}
+
+	if filter.cityName != "" {
+		res = res.Where("city_name LIKE ?", filter.cityName)
+	}
+
+	res = res.Order(order).Offset(filter.offset).Limit(filter.limit).Scan(&events)
+
+	return events, res.Error
 }
 
-func (db FeedPostgres) GetRestaurants(parameters FeedParameters) []Restaurant {
+func (db FeedPostgres) GetRestaurants(filter RestaurantFilterParameters) ([]Restaurant, error) {
 	var restaurants []Restaurant
+	var order string
 
-	db.conn.
+	if filter.orderType == "inc" {
+		order = filter.orderBy + " " + "ASC"
+	} else if filter.orderType == "dec" {
+		order = filter.orderBy + " " + "DESC"
+	} else {
+		return nil, fmt.Errorf("wrong order type")
+	}
+
+	res := db.conn.
 		Table("restaurants").
 		Select("restaurants.id, rest_name, rest_rating, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
-		Order(orderedBy).Scan(&restaurants)
+		Where("rest_rating BETWEEN ? AND ?", filter.ratingFrom, filter.ratingTo).
+		Where("avg_price BETWEEN ? AND ?", filter.priceFrom, filter.priceTo)
 
-	return restaurants
+	if filter.restaurantName != "" {
+		res = res.Where("rest_name LIKE ?", filter.restaurantName)
+	}
+
+	if filter.cityName != "" {
+		res = res.Where("city_name LIKE ?", filter.cityName)
+	}
+
+	if filter.childMenu {
+		res = res.Where("child_menu = ?", filter.childMenu)
+	}
+
+	if filter.smokingRoom {
+		res = res.Where("smoking_room = ?", filter.smokingRoom)
+	}
+
+	res = res.Order(order).Offset(filter.offset).Limit(filter.limit).Scan(&restaurants)
+
+	return restaurants, res.Error
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func (controller FeedController) getHotels(c *gin.Context) {
-	var feedParameters db.FeedParameters
+	var filterParameters db.HotelFilterParameters
 	var hotels []db.Hotel
 
 	authHeader := c.GetHeader("Authorization")
@@ -18,7 +18,7 @@ func (controller FeedController) getHotels(c *gin.Context) {
 		return
 	}
 
-	err := c.Bind(&feedParameters)
+	err := c.Bind(&filterParameters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -26,7 +26,7 @@ func (controller FeedController) getHotels(c *gin.Context) {
 		return
 	}
 
-	hotels, err = controller.model.GetHotels(feedParameters, authHeader)
+	hotels, err = controller.model.GetHotels(filterParameters, authHeader)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -37,7 +37,7 @@ func (controller FeedController) getHotels(c *gin.Context) {
 }
 
 func (controller FeedController) getEvents(c *gin.Context) {
-	var feedParameters db.FeedParameters
+	var filterParameters db.EventsFilterParameters
 	var events []db.Event
 
 	authHeader := c.GetHeader("Authorization")
@@ -48,7 +48,7 @@ func (controller FeedController) getEvents(c *gin.Context) {
 		return
 	}
 
-	err := c.Bind(&feedParameters)
+	err := c.Bind(&filterParameters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -56,7 +56,7 @@ func (controller FeedController) getEvents(c *gin.Context) {
 		return
 	}
 
-	events, err = controller.model.GetEvents(feedParameters, authHeader)
+	events, err = controller.model.GetEvents(filterParameters, authHeader)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -67,7 +67,7 @@ func (controller FeedController) getEvents(c *gin.Context) {
 }
 
 func (controller FeedController) getRestaurants(c *gin.Context) {
-	var feedParameters db.FeedParameters
+	var filterParameters db.RestaurantFilterParameters
 	var restaurants []db.Restaurant
 
 	authHeader := c.GetHeader("Authorization")
@@ -78,7 +78,7 @@ func (controller FeedController) getRestaurants(c *gin.Context) {
 		return
 	}
 
-	err := c.Bind(&feedParameters)
+	err := c.Bind(&filterParameters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -86,7 +86,7 @@ func (controller FeedController) getRestaurants(c *gin.Context) {
 		return
 	}
 
-	restaurants, err = controller.model.GetRestaurants(feedParameters, authHeader)
+	restaurants, err = controller.model.GetRestaurants(filterParameters, authHeader)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
