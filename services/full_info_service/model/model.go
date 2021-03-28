@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/SmartDuck9000/travelly-api/services/full_info_service/config"
 	"github.com/SmartDuck9000/travelly-api/services/full_info_service/db"
+	"github.com/SmartDuck9000/travelly-api/token_manager"
 )
 
 type FullInfoModelInterface interface {
@@ -14,12 +15,14 @@ type FullInfoModelInterface interface {
 }
 
 type FullInfoModel struct {
-	db db.FullInfoDb
+	db           db.FullInfoDb
+	tokenManager token_manager.TokenManager
 }
 
 func CreateFullInfoModel(config config.FullInfoModelConfig) FullInfoModelInterface {
 	return &FullInfoModel{
-		db: db.CreateFullInfoDB(*config.Db),
+		db:           db.CreateFullInfoDB(*config.Db),
+		tokenManager: token_manager.CreateJWTManager(*config.TokenConfig),
 	}
 }
 
@@ -52,5 +55,5 @@ func (model FullInfoModel) GetRestaurant(id int, authHeader string) (*db.Restaur
 }
 
 func (model FullInfoModel) validateToken(authHeader string) error {
-	return nil
+	return model.tokenManager.ValidateToken(authHeader)
 }

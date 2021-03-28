@@ -1,8 +1,8 @@
 package config
 
 import (
-	"os"
-	"strconv"
+	"github.com/SmartDuck9000/travelly-api/config_reader"
+	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"time"
 )
 
@@ -14,7 +14,8 @@ type FullInfoDbConfig struct {
 }
 
 type FullInfoModelConfig struct {
-	Db *FullInfoDbConfig
+	Db          *FullInfoDbConfig
+	TokenConfig *token_manager.TokenConfig
 }
 
 type FullInfoControllerConfig struct {
@@ -23,54 +24,26 @@ type FullInfoControllerConfig struct {
 	Port  string
 }
 
-func CreateFullInfoDbConfig() *FullInfoDbConfig {
+func CreateFullInfoDbConfig(reader config_reader.ConfigReader) *FullInfoDbConfig {
 	return &FullInfoDbConfig{
-		URL:             getEnv("DB_URL", ""),
-		MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),
-		MaxOpenConn:     getIntEnv("MAX_OPEN_CONN", 100),
-		ConnMaxLifetime: getHoursEnv("CONN_MAX_LIFETIME", 1),
+		URL:             reader.GetString("DB_URL", ""),
+		MaxIdleConn:     reader.GetInt("MAX_IDLE_CONN", 10),
+		MaxOpenConn:     reader.GetInt("MAX_OPEN_CONN", 100),
+		ConnMaxLifetime: reader.GetHours("CONN_MAX_LIFETIME", 1),
 	}
 }
 
-func CreateFullInfoModelConfig() *FullInfoModelConfig {
+func CreateFullInfoModelConfig(reader config_reader.ConfigReader) *FullInfoModelConfig {
 	return &FullInfoModelConfig{
-		Db: CreateFullInfoDbConfig(),
+		Db:          CreateFullInfoDbConfig(reader),
+		TokenConfig: token_manager.CreateTokenConfig(reader),
 	}
 }
 
-func CreateFullInfoControllerConfig() *FullInfoControllerConfig {
+func CreateFullInfoControllerConfig(reader config_reader.ConfigReader) *FullInfoControllerConfig {
 	return &FullInfoControllerConfig{
-		Model: CreateFullInfoModelConfig(),
-		Host:  getEnv("HOST", ""),
-		Port:  getEnv("PORT", ""),
+		Model: CreateFullInfoModelConfig(reader),
+		Host:  reader.GetString("HOST", ""),
+		Port:  reader.GetString("PORT", ""),
 	}
-}
-
-// Simple helper function to read an environment or return a default value
-func getEnv(key string, defaultVal string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
-	}
-
-	return defaultVal
-}
-
-// Simple helper function to read an environment variable into integer or return a default value
-func getIntEnv(name string, defaultVal int) int {
-	valueStr := getEnv(name, "")
-	if value, err := strconv.Atoi(valueStr); err == nil {
-		return value
-	}
-
-	return defaultVal
-}
-
-// Simple helper function to read an environment variable into time.Hour or return a default value
-func getHoursEnv(name string, defaultVal int) time.Duration {
-	valueStr := getEnv(name, "")
-	if value, err := strconv.Atoi(valueStr); err == nil {
-		return time.Hour * time.Duration(value)
-	}
-
-	return time.Hour * time.Duration(defaultVal)
 }
