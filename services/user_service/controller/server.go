@@ -18,6 +18,8 @@ type UserController struct {
 }
 
 func CreateUserController(conf config.UserControllerConfig) UserControllerInterface {
+	gin.SetMode(gin.ReleaseMode)
+
 	var controller = UserController{
 		server: gin.Default(),
 		model:  model.CreateUserModel(*conf.ModelConfig),
