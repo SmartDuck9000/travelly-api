@@ -6,30 +6,43 @@ import (
 	"time"
 )
 
-type FullInfoDBConfig struct {
+type FullInfoDbConfig struct {
 	URL             string
 	MaxIdleConn     int
 	MaxOpenConn     int
 	ConnMaxLifetime time.Duration
 }
 
-type FullInfoConfig struct {
-	DB   FullInfoDBConfig
-	Host string
-	Port string
+type FullInfoModelConfig struct {
+	Db *FullInfoDbConfig
 }
 
-// New returns a new Config struct
-func New() *FullInfoConfig {
-	return &FullInfoConfig{
-		DB: FullInfoDBConfig{
-			URL:             getEnv("DB_URL", ""),
-			MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),
-			MaxOpenConn:     getIntEnv("MAX_OPEN_CONN", 100),
-			ConnMaxLifetime: getHoursEnv("CONN_MAX_LIFETIME", 1),
-		},
-		Host: getEnv("HOST", ""),
-		Port: getEnv("PORT", ""),
+type FullInfoControllerConfig struct {
+	Model *FullInfoModelConfig
+	Host  string
+	Port  string
+}
+
+func CreateFullInfoDbConfig() *FullInfoDbConfig {
+	return &FullInfoDbConfig{
+		URL:             getEnv("DB_URL", ""),
+		MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),
+		MaxOpenConn:     getIntEnv("MAX_OPEN_CONN", 100),
+		ConnMaxLifetime: getHoursEnv("CONN_MAX_LIFETIME", 1),
+	}
+}
+
+func CreateFullInfoModelConfig() *FullInfoModelConfig {
+	return &FullInfoModelConfig{
+		Db: CreateFullInfoDbConfig(),
+	}
+}
+
+func CreateFullInfoControllerConfig() *FullInfoControllerConfig {
+	return &FullInfoControllerConfig{
+		Model: CreateFullInfoModelConfig(),
+		Host:  getEnv("HOST", ""),
+		Port:  getEnv("PORT", ""),
 	}
 }
 

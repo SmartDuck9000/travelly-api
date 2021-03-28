@@ -11,9 +11,9 @@ type FullInfoDb interface {
 	Open() error
 	configureConnectionPools() error
 
-	GetHotel(id int) *Hotel
-	GetEvent(id int) *Event
-	GetRestaurant(id int) *Restaurant
+	GetHotel(id int) (*Hotel, error)
+	GetEvent(id int) (*Event, error)
+	GetRestaurant(id int) (*Restaurant, error)
 }
 
 type FullInfoPostgres struct {
@@ -46,7 +46,7 @@ func (db FullInfoPostgres) configureConnectionPools() error {
 	return nil
 }
 
-func CreateFullInfoDB(conf config.FullInfoDBConfig) *FullInfoPostgres {
+func CreateFullInfoDB(conf config.FullInfoDbConfig) FullInfoDb {
 	return &FullInfoPostgres{
 		url:             conf.URL,
 		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool
@@ -56,41 +56,41 @@ func CreateFullInfoDB(conf config.FullInfoDBConfig) *FullInfoPostgres {
 	}
 }
 
-func (db FullInfoPostgres) GetHotel(id int) *Hotel {
+func (db FullInfoPostgres) GetHotel(id int) (*Hotel, error) {
 	var hotel Hotel
 
-	db.conn.
+	res := db.conn.
 		Table("hotels").
 		Select("hotels.id, hotel_name, hotel_description, hotel_addr, stars, hotel_rating, avg_price, near_sea, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("hotels.id = ?", id).Scan(&hotel)
 
-	return &hotel
+	return &hotel, res.Error
 }
 
-func (db FullInfoPostgres) GetEvent(id int) *Event {
+func (db FullInfoPostgres) GetEvent(id int) (*Event, error) {
 	var event Event
 
-	db.conn.
+	res := db.conn.
 		Table("events").
 		Select("events.id, event_name, event_description, event_addr, country_name, city_name, event_start, event_end, event_price, event_rating, max_persons, cur_persons, languages").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("events.id = ?", id).Scan(&event)
 
-	return &event
+	return &event, res.Error
 }
 
-func (db FullInfoPostgres) GetRestaurant(id int) *Restaurant {
+func (db FullInfoPostgres) GetRestaurant(id int) (*Restaurant, error) {
 	var restaurant Restaurant
 
-	db.conn.
+	res := db.conn.
 		Table("restaurants").
 		Select("restaurants.id, rest_name, rest_description, rest_addr, avg_price, rest_rating, child_menu, smoking_room, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("restaurants.id = ?", id).Scan(&restaurant)
 
-	return &restaurant
+	return &restaurant, res.Error
 }
