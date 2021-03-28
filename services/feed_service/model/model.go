@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/config"
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/db"
+	"github.com/SmartDuck9000/travelly-api/token_manager"
 )
 
 type FeedModelInterface interface {
@@ -14,12 +15,14 @@ type FeedModelInterface interface {
 }
 
 type FeedModel struct {
-	db db.FeedDB
+	db           db.FeedDB
+	tokenManager token_manager.TokenManager
 }
 
 func CreateFeedModel(config config.FeedModelConfig) FeedModelInterface {
 	return &FeedModel{
-		db: db.CreateFeedServiceDB(*config.DbConfig),
+		db:           db.CreateFeedServiceDB(*config.DbConfig),
+		tokenManager: token_manager.CreateJWTManager(*config.TokenConfig),
 	}
 }
 
@@ -49,5 +52,5 @@ func (model FeedModel) GetRestaurants(filter db.RestaurantFilterParameters, auth
 }
 
 func (model FeedModel) validateToken(authHeader string) error {
-	return nil
+	return model.tokenManager.ValidateToken(authHeader)
 }
