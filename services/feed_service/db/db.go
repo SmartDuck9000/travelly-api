@@ -11,9 +11,9 @@ type FeedDB interface {
 	Open() error
 	configureConnectionPools() error
 
-	GetHotels(orderedBy string) []Hotel
-	GetEvents(orderedBy string) []Event
-	GetRestaurants(orderedBy string) []Restaurant
+	GetHotels(parameters FeedParameters) []Hotel
+	GetEvents(parameters FeedParameters) []Event
+	GetRestaurants(parameters FeedParameters) []Restaurant
 }
 
 type FeedPostgres struct {
@@ -24,7 +24,16 @@ type FeedPostgres struct {
 	conn            *gorm.DB
 }
 
-func CreateFeedServiceDB(conf config.FeedDBConfig) *FeedPostgres {
+type FilterParameters struct {
+}
+
+type FeedParameters struct {
+	OrderBy    string
+	Filter     FilterParameters
+	SearchText string
+}
+
+func CreateFeedServiceDB(conf config.FeedDBConfig) FeedDB {
 	return &FeedPostgres{
 		url:             conf.URL,
 		maxIdleConn:     conf.MaxIdleConn,     // maximum number of connections in the idle connection pool
@@ -56,7 +65,7 @@ func (db FeedPostgres) configureConnectionPools() error {
 	return nil
 }
 
-func (db FeedPostgres) GetHotels(orderedBy string) []Hotel {
+func (db FeedPostgres) GetHotels(parameters FeedParameters) []Hotel {
 	var hotels []Hotel
 
 	db.conn.
@@ -69,7 +78,7 @@ func (db FeedPostgres) GetHotels(orderedBy string) []Hotel {
 	return hotels
 }
 
-func (db FeedPostgres) GetEvents(orderedBy string) []Event {
+func (db FeedPostgres) GetEvents(parameters FeedParameters) []Event {
 	var events []Event
 
 	db.conn.
@@ -82,7 +91,7 @@ func (db FeedPostgres) GetEvents(orderedBy string) []Event {
 	return events
 }
 
-func (db FeedPostgres) GetRestaurants(orderedBy string) []Restaurant {
+func (db FeedPostgres) GetRestaurants(parameters FeedParameters) []Restaurant {
 	var restaurants []Restaurant
 
 	db.conn.

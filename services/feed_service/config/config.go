@@ -13,23 +13,36 @@ type FeedDBConfig struct {
 	ConnMaxLifetime time.Duration
 }
 
-type FeedServiceConfig struct {
-	DB   FeedDBConfig
-	Host string
-	Port string
+type FeedControllerConfig struct {
+	ModelConfig *FeedModelConfig
+	Host        string
+	Port        string
 }
 
-// New returns a new Config struct
-func New() *FeedServiceConfig {
-	return &FeedServiceConfig{
-		DB: FeedDBConfig{
-			URL:             getEnv("DB_URL", ""),
-			MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),
-			MaxOpenConn:     getIntEnv("MAX_OPEN_CONN", 100),
-			ConnMaxLifetime: getHoursEnv("CONN_MAX_LIFETIME", 1),
-		},
-		Host: getEnv("HOST", ""),
-		Port: getEnv("PORT", ""),
+type FeedModelConfig struct {
+	DbConfig *FeedDBConfig
+}
+
+func CreateFeedDbConfig() *FeedDBConfig {
+	return &FeedDBConfig{
+		URL:             getEnv("DB_URL", ""),
+		MaxIdleConn:     getIntEnv("MAX_IDLE_CONN", 10),
+		MaxOpenConn:     getIntEnv("MAX_OPEN_CONN", 100),
+		ConnMaxLifetime: getHoursEnv("CONN_MAX_LIFETIME", 1),
+	}
+}
+
+func CreateFeedModelConfig() *FeedModelConfig {
+	return &FeedModelConfig{
+		DbConfig: CreateFeedDbConfig(),
+	}
+}
+
+func CreateFeedControllerConfig() *FeedControllerConfig {
+	return &FeedControllerConfig{
+		ModelConfig: CreateFeedModelConfig(),
+		Host:        getEnv("HOST", ""),
+		Port:        getEnv("PORT", ""),
 	}
 }
 
