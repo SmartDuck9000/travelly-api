@@ -25,9 +25,9 @@ func CreateFullInfoController(conf config.FullInfoControllerConfig) FullInfoCont
 		port:   conf.Port,
 	}
 
-	controller.server.GET("/controller/info/hotels", controller.getHotel)
-	controller.server.GET("/controller/info/events", controller.getEvent)
-	controller.server.GET("/controller/info/restaurants", controller.getRestaurant)
+	controller.server.GET("/api/info/hotels", controller.getHotel)
+	controller.server.GET("/api/info/events", controller.getEvent)
+	controller.server.GET("/api/info/restaurants", controller.getRestaurant)
 
 	return &controller
 }

@@ -156,7 +156,7 @@ returning JSON example:
 returning JSON example:
 ```json
 {
-  "access_token": {
+  "arrival_ticket": {
     "ticket_id": 1,
     "transport_type": "airplane",
     "price": 100.0,
@@ -168,7 +168,7 @@ returning JSON example:
     "company_name": "S7",
     "company_rating": 4.6
   },
-  "refresh_token": {
+  "departure_ticket": {
     "ticket_id": 2,
     "transport_type": "airplane",
     "price": 100.0,
@@ -299,3 +299,207 @@ posted JSON example:
 - `/api/users/tours?tour_id=` - deletes tour
 - `/api/users/city_tours?city_tour_id=` - deletes city tour
 - `/api/users/restaurant_bookings?restaurant_booking_id=` - deletes booking in restaurant
+
+# Info
+
+### GET
+- `/api/info/hotels?id=` - returns JSON with full info about a hotel with given `id`
+
+result JSON example:
+```json
+{
+  "hotel_id": 1,
+  "hotel_name": "Radisson Blu Hotel",
+  "hotel_description": "Luxury Berlin hotel",
+  "hotel_addr": "",
+  "stars": "4",
+  "hotel_rating": 4.6,
+  "average_price": 50.0,
+  "near_sea": true,
+  "country_name": "German",
+  "city_name": "Berlin"
+}
+```
+
+- `/api/info/events?id=` - returns JSON with full info about an event with given `id`
+  
+result JSON example:
+```json
+{
+  "event_id": 1,
+  "event_name": "Art festival",
+  "event_description": "Festival of moder arts",
+  "event_addr": "",
+  "country_name": "German",
+  "city_name": "Berlin",
+  "event_start": "2021-06-05",
+  "event_end": "2021-06-09",
+  "price": 50.0,
+  "rating": 4.1,
+  "max_persons": 10,
+  "cur_persons": 3,
+  "languages": ["German", "English"]
+}
+```
+
+- `/api/info/restaurants?id=` - returns JSON with full info about a restaurant with given `id`
+
+result JSON example:
+```json
+{
+  "restaurant_id": 1,
+  "restaurant_name": "Die Eselin von A.",
+  "restaurant_description": "", 
+  "restaurant_addr": "",
+  "average_price": 65.0, 
+  "rating": 4.3,
+  "child_menu": true,
+  "smoking_room": false,
+  "country_name": "German",
+  "city_name": "Berlin"
+}
+```
+
+# Feed
+
+order_type should be "inc" for increase sorting or "dec" for decrease sorting
+
+### GET
+- `/api/feed/hotels` - returns array of hotel data, gets JSON with filter data
+
+if near_sea is false, method will return hotels with both true and false values of near_sea field
+
+filter data JSON example:
+```json
+{
+  "limit": 20,
+  "offset": 10,
+  "order_by": "hotel_name",
+  "order_type": "inc",
+  "hotel_name": "Radisson Blu Hotel",
+  "stars_from": 3,
+  "stars_to": 4,
+  "rating_from": 4.0,
+  "rating_to": 5.0,
+  "price_from": 0.0,
+  "price_to": 50.0,
+  "near_sea": false,
+  "city_name": "Berlin"
+}
+```
+
+result JSON example:
+```json
+[
+  {
+    "hotel_id": 1,
+    "hotel_name": "Radisson Blu Hotel",
+    "stars": 4,
+    "hotel_rating": 4.6,
+    "country_name": "German",
+    "city_name": "Berlin"
+  },
+  {
+    "hotel_id": 2,
+    "hotel_name": "Berlin Hotel",
+    "stars": 3,
+    "hotel_rating": 3.2,
+    "country_name": "German",
+    "city_name": "Berlin"
+  }
+]
+```
+
+- `/api/feed/events` - returns array of event data, gets JSON with filter data
+
+filter data JSON example:
+```json
+{
+  "limit": 20,
+  "offset": 10,
+  "order_by": "event_name",
+  "order_type": "inc",
+  "event_name": "Art",
+  "from": "2021-06-01",
+  "to": "2021-06-01",
+  "rating_from": 4.0,
+  "rating_to": 5.0,
+  "price_from": 0.0,
+  "price_to": 50.0,
+  "city_name": "Berlin"
+}
+```
+
+result JSON example:
+
+```json
+[
+  {
+    "event_id": 1,
+    "event_name": "Art festival",
+    "event_start": "2021-06-05",
+    "event_end": "2021-06-06",
+    "rating": 4.0,
+    "max_persons": 10,
+    "cur_persons": 4,
+    "country_name": "German",
+    "city_name": "Berlin"
+  },
+  {
+    "event_id": 2,
+    "event_name": "Food festival",
+    "event_start": "2021-06-03",
+    "event_end": "2021-06-10",
+    "rating": 4.2,
+    "max_persons": 20,
+    "cur_persons": 12,
+    "country_name": "German",
+    "city_name": "Berlin"
+  }
+]
+```
+
+- `/api/feed/restaurants` - returns array of restaurant data, gets JSON with filter data
+
+if child_menu is false, method will return hotels with both true and false values of child_menu field
+
+if smoking_room is false, method will return hotels with both true and false values of smoking_room field
+
+filter data JSON example:
+```json
+{
+  "limit": 20,
+  "offset": 10,
+  "order_by": "restaurant_name",
+  "order_type": "inc",
+  "restaurant_name": "",
+  "rating_from": 4.0,
+  "rating_to": 5.0,
+  "price_from": 0.0,
+  "price_to": 50.0,
+  "child_menu": true,
+  "smoking_room": false,
+  "city_name": "Berlin"
+}
+```
+
+result JSON example:
+
+```json
+[
+  {
+    "restaurant_id": 1,
+    "restaurantName": "Die Eselin von A.",
+    "rating": 4.2,
+    "country_name": "German",
+    "city_name": "Berlin"
+  },
+  {
+    "restaurant_id": 2,
+    "restaurantName": "Berlin central restaurant",
+    "rating": 3.8,
+    "country_name": "German",
+    "city_name": "Berlin"
+  }
+]
+```

@@ -25,9 +25,9 @@ func CreateFeedController(conf config.FeedControllerConfig) FeedControllerInterf
 		port:   conf.Port,
 	}
 
-	controller.server.GET("/controller/feed/hotels", controller.getHotels)
-	controller.server.GET("/controller/feed/events", controller.getEvents)
-	controller.server.GET("/controller/feed/restaurants", controller.getRestaurants)
+	controller.server.GET("/api/feed/hotels", controller.getHotels)
+	controller.server.GET("/api/feed/events", controller.getEvents)
+	controller.server.GET("/api/feed/restaurants", controller.getRestaurants)
 
 	return &controller
 }

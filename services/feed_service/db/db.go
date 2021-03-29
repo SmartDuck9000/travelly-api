@@ -25,61 +25,6 @@ type FeedPostgres struct {
 	conn            *gorm.DB
 }
 
-type HotelFilterParameters struct {
-	limit     int
-	offset    int
-	orderBy   string
-	orderType string
-
-	hotelName  string
-	starsFrom  int
-	starsTo    int
-	ratingFrom float64
-	ratingTo   float64
-	priceFrom  float64
-	priceTo    float64
-
-	nearSea  bool
-	cityName string
-}
-
-type EventsFilterParameters struct {
-	limit  int
-	offset int
-
-	eventName string
-	orderBy   string
-	orderType string
-
-	from       int
-	to         int
-	ratingFrom float64
-	ratingTo   float64
-	priceFrom  float64
-	priceTo    float64
-
-	cityName string
-}
-
-type RestaurantFilterParameters struct {
-	limit  int
-	offset int
-
-	restaurantName string
-	orderBy        string
-	orderType      string
-
-	ratingFrom float64
-	ratingTo   float64
-	priceFrom  float64
-	priceTo    float64
-
-	childMenu   bool
-	smokingRoom bool
-
-	cityName string
-}
-
 func CreateFeedServiceDB(conf config.FeedDBConfig) FeedDB {
 	return &FeedPostgres{
 		url:             conf.URL,
