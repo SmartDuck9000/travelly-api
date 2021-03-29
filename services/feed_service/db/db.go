@@ -15,6 +15,7 @@ type FeedDB interface {
 	GetHotels(filter HotelFilterParameters) ([]Hotel, error)
 	GetEvents(filter EventsFilterParameters) ([]Event, error)
 	GetRestaurants(filter RestaurantFilterParameters) ([]Restaurant, error)
+	GetTickets(filter TicketFilterParameters) ([]Ticket, error)
 }
 
 type FeedPostgres struct {
@@ -168,4 +169,49 @@ func (db FeedPostgres) GetRestaurants(filter RestaurantFilterParameters) ([]Rest
 	res = res.Order(order).Offset(filter.offset).Limit(filter.limit).Scan(&restaurants)
 
 	return restaurants, res.Error
+}
+
+func (db FeedPostgres) GetTickets(filter TicketFilterParameters) ([]Ticket, error) {
+	var tickets []Ticket
+	var order string
+
+	if filter.orderType == "inc" {
+		order = filter.orderBy + " " + "ASC"
+	} else if filter.orderType == "dec" {
+		order = filter.orderBy + " " + "DESC"
+	} else {
+		return nil, fmt.Errorf("wrong order type")
+	}
+
+	res := db.conn.
+		Table("tickets").
+		Select("tickets.id, transport_type, price, ticket_date, "+
+			"orig_c.country_name, orig_city.city_name, "+
+			"dest_c.country_name, dest_city.city_name, "+
+			"company_name, company_rating").
+		Joins("JOIN transport_companies on tickets.company_id = transport_companies.id").
+		Joins("JOIN transport_stations orig_ts ON tickets.orig_station_id = orig_ts.id").
+		Joins("JOIN cities orig_city ON orig_ts.city_id = orig_city.id").
+		Joins("JOIN countries orig_c ON orig_city.country_id = orig_c.id").
+		Joins("JOIN transport_stations dest_ts ON tickets.dest_station_id = dest_ts.id").
+		Joins("JOIN cities dest_city ON dest_ts.city_id = dest_city.id").
+		Joins("JOIN countries dest_c ON dest_city.country_id = dest_c.id").
+		Where("ticket_date BETWEEN ? AND ?", filter.dateFrom, filter.dateTo).
+		Where("price BETWEEN ? AND ?", filter.priceFrom, filter.priceTo)
+
+	if filter.transportType != "" {
+		res = res.Where("transport_type LIKE ?", filter.transportType)
+	}
+
+	if filter.origCityName != "" {
+		res = res.Where("orig_city.city_name LIKE ?", filter.origCityName)
+	}
+
+	if filter.destCityName != "" {
+		res = res.Where("dest_city.city_name LIKE ?", filter.destCityName)
+	}
+
+	res = res.Order(order).Offset(filter.offset).Limit(filter.limit).Scan(&tickets)
+
+	return tickets, res.Error
 }

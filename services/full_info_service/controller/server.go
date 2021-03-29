@@ -28,6 +28,7 @@ func CreateFullInfoController(conf config.FullInfoControllerConfig) FullInfoCont
 	controller.server.GET("/api/info/hotels", controller.getHotel)
 	controller.server.GET("/api/info/events", controller.getEvent)
 	controller.server.GET("/api/info/restaurants", controller.getRestaurant)
+	controller.server.GET("/api/info/tickets", controller.getTicket)
 
 	return &controller
 }

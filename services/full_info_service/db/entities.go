@@ -51,3 +51,24 @@ type Restaurant struct {
 	countryName string
 	cityName    string
 }
+
+type Ticket struct {
+	ticketId int
+
+	companyName   string
+	companyRating string
+
+	origStationName string
+	origStationAddr string
+	origCountryName string
+	origCityName    string
+
+	destStationName string
+	destStationAddr string
+	destCityName    string
+	destCountryName string
+
+	transportType string
+	price         float64
+	ticketDate    string
+}

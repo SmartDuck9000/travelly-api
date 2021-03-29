@@ -112,3 +112,38 @@ func (controller FeedController) getRestaurants(c *gin.Context) {
 		c.JSON(http.StatusOK, restaurants)
 	}
 }
+
+func (controller FeedController) getTickets(c *gin.Context) {
+	var filterParameters db.TicketFilterParameters
+	var tickets []db.Ticket
+
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "no authorization header",
+		})
+		return
+	}
+
+	err := c.Bind(&filterParameters)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	tickets, err = controller.model.GetTickets(filterParameters, authHeader)
+	if err != nil {
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
+			"error": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, tickets)
+	}
+}

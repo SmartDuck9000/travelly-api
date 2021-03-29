@@ -33,3 +33,15 @@ type Restaurant struct {
 	countryName string
 	cityName    string
 }
+
+type Ticket struct {
+	ticketId      int
+	transportType string
+	price         float64
+	date          string
+
+	origCountryName string
+	origCityName    string
+	destCountryName string
+	destCityName    string
+}

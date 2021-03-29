@@ -107,3 +107,36 @@ func (controller FullInfoController) getRestaurant(c *gin.Context) {
 		}
 	}
 }
+
+func (controller FullInfoController) getTicket(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "no authorization header",
+		})
+		return
+	}
+
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	} else {
+		var ticket *db.Ticket
+		ticket, err = controller.model.GetTicket(id, authHeader)
+
+		if err != nil {
+			var statusCode = http.StatusBadRequest
+			if errors.Is(err, token_manager.InvalidTokenError{}) {
+				statusCode = http.StatusUnauthorized
+			}
+
+			c.JSON(statusCode, gin.H{
+				"error": err.Error(),
+			})
+		} else {
+			c.JSON(http.StatusOK, *ticket)
+		}
+	}
+}

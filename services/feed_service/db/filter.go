@@ -25,8 +25,8 @@ type EventsFilterParameters struct {
 	orderType string
 
 	eventName  string
-	from       int
-	to         int
+	from       string
+	to         string
 	ratingFrom float64
 	ratingTo   float64
 	priceFrom  float64
@@ -51,4 +51,20 @@ type RestaurantFilterParameters struct {
 	smokingRoom bool
 
 	cityName string
+}
+
+type TicketFilterParameters struct {
+	limit     int
+	offset    int
+	orderBy   string
+	orderType string
+
+	transportType string
+	dateFrom      string
+	dateTo        string
+	priceFrom     float64
+	priceTo       float64
+
+	origCityName string
+	destCityName string
 }

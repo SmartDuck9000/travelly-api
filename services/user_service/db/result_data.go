@@ -44,10 +44,10 @@ type TicketData struct {
 	price         float64
 	date          string
 
-	origStationName string
-	origStationAddr string
-	dstStationName  string
-	dstStationAddr  string
+	origCountryName string
+	origCityName    string
+	destCountryName string
+	destCityName    string
 
 	companyName   string
 	companyRating float64
