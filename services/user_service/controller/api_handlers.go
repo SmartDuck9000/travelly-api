@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"errors"
 	"github.com/SmartDuck9000/travelly-api/services/user_service/db"
-	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -29,7 +27,7 @@ func (controller UserController) getUser(c *gin.Context) {
 
 		if err != nil {
 			var statusCode = http.StatusNotFound
-			if errors.Is(err, token_manager.InvalidTokenError{}) {
+			if err.Error() == "invalid token" {
 				statusCode = http.StatusUnauthorized
 			}
 
@@ -62,7 +60,7 @@ func (controller UserController) getTours(c *gin.Context) {
 
 		if err != nil {
 			var statusCode = http.StatusNotFound
-			if errors.Is(err, token_manager.InvalidTokenError{}) {
+			if err.Error() == "invalid token" {
 				statusCode = http.StatusUnauthorized
 			}
 
@@ -95,7 +93,7 @@ func (controller UserController) getCityTours(c *gin.Context) {
 
 		if err != nil {
 			var statusCode = http.StatusNotFound
-			if errors.Is(err, token_manager.InvalidTokenError{}) {
+			if err.Error() == "invalid token" {
 				statusCode = http.StatusUnauthorized
 			}
 
@@ -128,7 +126,7 @@ func (controller UserController) getCityTourEvents(c *gin.Context) {
 
 		if err != nil {
 			var statusCode = http.StatusNotFound
-			if errors.Is(err, token_manager.InvalidTokenError{}) {
+			if err.Error() == "invalid token" {
 				statusCode = http.StatusUnauthorized
 			}
 
@@ -161,7 +159,7 @@ func (controller UserController) getCityTourRestaurantBookings(c *gin.Context) {
 
 		if err != nil {
 			var statusCode = http.StatusNotFound
-			if errors.Is(err, token_manager.InvalidTokenError{}) {
+			if err.Error() == "invalid token" {
 				statusCode = http.StatusUnauthorized
 			}
 
@@ -194,7 +192,7 @@ func (controller UserController) getCityTourTickets(c *gin.Context) {
 
 		if err != nil {
 			var statusCode = http.StatusNotFound
-			if errors.Is(err, token_manager.InvalidTokenError{}) {
+			if err.Error() == "invalid token" {
 				statusCode = http.StatusUnauthorized
 			}
 
@@ -227,7 +225,7 @@ func (controller UserController) getCityTourHotel(c *gin.Context) {
 
 		if err != nil {
 			var statusCode = http.StatusNotFound
-			if errors.Is(err, token_manager.InvalidTokenError{}) {
+			if err.Error() == "invalid token" {
 				statusCode = http.StatusUnauthorized
 			}
 
@@ -261,7 +259,7 @@ func (controller UserController) postTour(c *gin.Context) {
 	err = controller.model.CreateTour(&tour, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -294,7 +292,7 @@ func (controller UserController) postCityTour(c *gin.Context) {
 	err = controller.model.CreateCityTour(&cityTour, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -327,7 +325,7 @@ func (controller UserController) postRestaurantBooking(c *gin.Context) {
 	err = controller.model.CreateRestaurantBooking(&rb, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -360,7 +358,7 @@ func (controller UserController) updateUser(c *gin.Context) {
 	err = controller.model.UpdateUser(&user, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -393,7 +391,7 @@ func (controller UserController) updateTour(c *gin.Context) {
 	err = controller.model.UpdateTour(&tour, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -426,7 +424,7 @@ func (controller UserController) updateCityTour(c *gin.Context) {
 	err = controller.model.UpdateCityTour(&cityTour, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -459,7 +457,7 @@ func (controller UserController) updateRestaurantBooking(c *gin.Context) {
 	err = controller.model.UpdateRestaurantBooking(&rb, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -491,7 +489,7 @@ func (controller UserController) deleteUser(c *gin.Context) {
 	err = controller.model.DeleteUser(userId, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -523,7 +521,7 @@ func (controller UserController) deleteTour(c *gin.Context) {
 	err = controller.model.DeleteTour(tourId, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -555,7 +553,7 @@ func (controller UserController) deleteCityTour(c *gin.Context) {
 	err = controller.model.DeleteCityTour(cityTourId, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -587,7 +585,7 @@ func (controller UserController) deleteRestaurantBooking(c *gin.Context) {
 	err = controller.model.DeleteRestaurantBooking(rbId, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if errors.Is(err, token_manager.InvalidTokenError{}) {
+		if err.Error() == "invalid token" {
 			statusCode = http.StatusUnauthorized
 		}
 

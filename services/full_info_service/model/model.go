@@ -12,6 +12,7 @@ type FullInfoModelInterface interface {
 	GetHotel(id int, authHeader string) (*db.Hotel, error)
 	GetEvent(id int, authHeader string) (*db.Event, error)
 	GetRestaurant(id int, authHeader string) (*db.Restaurant, error)
+	GetTicket(id int, authHeader string) (*db.Ticket, error)
 }
 
 type FullInfoModel struct {
@@ -52,6 +53,14 @@ func (model FullInfoModel) GetRestaurant(id int, authHeader string) (*db.Restaur
 	}
 
 	return model.db.GetRestaurant(id)
+}
+
+func (model FullInfoModel) GetTicket(id int, authHeader string) (*db.Ticket, error) {
+	if err := model.validateToken(authHeader); err != nil {
+		return nil, err
+	}
+
+	return model.db.GetTicket(id)
 }
 
 func (model FullInfoModel) validateToken(authHeader string) error {

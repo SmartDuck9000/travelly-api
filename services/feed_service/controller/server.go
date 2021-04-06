@@ -18,6 +18,8 @@ type FeedController struct {
 }
 
 func CreateFeedController(conf config.FeedControllerConfig) FeedControllerInterface {
+	gin.SetMode(gin.ReleaseMode)
+
 	var controller = FeedController{
 		server: gin.Default(),
 		model:  model.CreateFeedModel(*conf.ModelConfig),
@@ -28,6 +30,7 @@ func CreateFeedController(conf config.FeedControllerConfig) FeedControllerInterf
 	controller.server.GET("/api/feed/hotels", controller.getHotels)
 	controller.server.GET("/api/feed/events", controller.getEvents)
 	controller.server.GET("/api/feed/restaurants", controller.getRestaurants)
+	controller.server.GET("/api/feed/tickets", controller.getTickets)
 
 	return &controller
 }

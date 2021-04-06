@@ -129,10 +129,17 @@ func (db UserProfilePostgres) getTicket(ticketId int) *TicketData {
 	var ticket TicketData
 	db.conn.
 		Table("tickets").
-		Select("tickets.id, transport_type, price, ticket_date, orig_ts.station_name, orig_ts.station_addr, dest_ts.station_name, dest_ts.station_addr, company_name, company_rating").
+		Select("tickets.id, transport_type, price, ticket_date, "+
+			"orig_c.country_name, orig_city.city_name, "+
+			"dest_c.country_name, dest_city.city_name, "+
+			"company_name, company_rating").
 		Joins("JOIN transport_companies on tickets.company_id = transport_companies.id").
 		Joins("JOIN transport_stations orig_ts ON tickets.orig_station_id = orig_ts.id").
+		Joins("JOIN cities orig_city ON orig_ts.city_id = orig_city.id").
+		Joins("JOIN countries orig_c ON orig_city.country_id = orig_c.id").
 		Joins("JOIN transport_stations dest_ts ON tickets.dest_station_id = dest_ts.id").
+		Joins("JOIN cities dest_city ON dest_ts.city_id = dest_city.id").
+		Joins("JOIN countries dest_c ON dest_city.country_id = dest_c.id").
 		Where("id = ?", ticketId).Scan(&ticket)
 
 	return &ticket
