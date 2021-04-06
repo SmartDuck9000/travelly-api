@@ -18,6 +18,8 @@ type FullInfoController struct {
 }
 
 func CreateFullInfoController(conf config.FullInfoControllerConfig) FullInfoControllerInterface {
+	gin.SetMode(gin.ReleaseMode)
+
 	var controller = FullInfoController{
 		server: gin.Default(),
 		model:  model.CreateFullInfoModel(*conf.Model),

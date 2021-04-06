@@ -18,6 +18,8 @@ type FeedController struct {
 }
 
 func CreateFeedController(conf config.FeedControllerConfig) FeedControllerInterface {
+	gin.SetMode(gin.ReleaseMode)
+
 	var controller = FeedController{
 		server: gin.Default(),
 		model:  model.CreateFeedModel(*conf.ModelConfig),
