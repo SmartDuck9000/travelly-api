@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"errors"
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/db"
+	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -29,7 +31,7 @@ func (controller FeedController) getHotels(c *gin.Context) {
 	hotels, err = controller.model.GetHotels(filterParameters, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if err.Error() == "invalid token" {
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -64,7 +66,7 @@ func (controller FeedController) getEvents(c *gin.Context) {
 	events, err = controller.model.GetEvents(filterParameters, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if err.Error() == "invalid token" {
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -99,7 +101,7 @@ func (controller FeedController) getRestaurants(c *gin.Context) {
 	restaurants, err = controller.model.GetRestaurants(filterParameters, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if err.Error() == "invalid token" {
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
 			statusCode = http.StatusUnauthorized
 		}
 
@@ -134,7 +136,7 @@ func (controller FeedController) getTickets(c *gin.Context) {
 	tickets, err = controller.model.GetTickets(filterParameters, authHeader)
 	if err != nil {
 		var statusCode = http.StatusBadRequest
-		if err.Error() == "invalid token" {
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
 			statusCode = http.StatusUnauthorized
 		}
 
