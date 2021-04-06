@@ -27,9 +27,9 @@ func CreateAuthController(conf config.AuthControllerConfig) AuthControllerInterf
 		port:   conf.Port,
 	}
 
-	controller.server.GET("/controller/auth/", controller.refreshToken)
-	controller.server.POST("/controller/auth/email_register", controller.register)
-	controller.server.POST("/controller/auth/login", controller.login)
+	controller.server.GET("/api/auth/", controller.refreshToken)
+	controller.server.POST("/api/auth/email_register", controller.register)
+	controller.server.POST("/api/auth/login", controller.login)
 
 	return &controller
 }
