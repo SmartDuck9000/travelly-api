@@ -1,17 +1,6 @@
 version: "3"
 
 services:
-    nginx:
-        image: nginx:mainline-alpine
-        restart: unless-stopped
-        container_name: travelly_nginx
-        depends_on:
-            - auth
-        volumes:
-            - ./.docker/etc/nginx/nginx.conf:/usr/local/etc/nginx/nginx.conf
-        ports:
-            - 5050:5050
-
     postgres:
         image: postgres:13-alpine
         restart: unless-stopped
@@ -21,7 +10,7 @@ services:
             - POSTGRES_USER=${POSTGRES_USER:-smart_duck}
             - POSTGRES_DB=${POSTGRES_DB:-travelly_db}
         volumes:
-            - ./.docker/data/postgresql/:/Library/PostgreSQL/13/data/
+            - ./.docker/data/postgresql/:/var/lib/postgresql/data/
         ports:
             - 5432
 

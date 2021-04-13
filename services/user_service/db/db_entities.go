@@ -1,45 +1,45 @@
 package db
 
 type UserEntity struct {
-	id       int
-	email    string
-	password string
+	Id       int
+	Email    string
+	Password string
 
-	firstName string
-	lastName  string
+	FirstName string
+	LastName  string
 
-	photoUrl string
+	PhotoUrl string
 }
 
 type TourEntity struct {
-	id     int
-	userId int
+	Id     int `json:"id"`
+	UserId int `json:"user_id"`
 
-	tourName  string
-	tourPrice float64
+	TourName  string  `json:"tour_name"`
+	TourPrice float64 `json:"tour_price"`
 
-	tourDateFrom string
-	tourDateTo   string
+	TourDateFrom string `json:"tour_date_from"`
+	TourDateTo   string `json:"tour_date_to"`
 }
 
 type CityTourEntity struct {
-	id     int
-	userId int
-	cityId int
+	Id     int `json:"id"`
+	UserId int `json:"user_id"`
+	CityId int `json:"city_id"`
 
-	cityTourPrice float64
+	CityTourPrice float64 `json:"city_tour_price"`
 
-	dateFrom string
-	dateTo   string
+	DateFrom string `json:"date_from"`
+	DateTo   string `json:"date_to"`
 
-	ticketArrivalId   int
-	ticketDepartureId int
+	TicketArrivalId   int `json:"ticket_arrival_id"`
+	TicketDepartureId int `json:"ticket_departure_id"`
 
-	hotelId int
+	HotelId int `json:"hotel_id"`
 }
 
 type RestaurantBookingEntity struct {
-	id           int
-	restaurantId int
-	bookingTime  string
+	Id           int    `json:"id"`
+	RestaurantId int    `json:"restaurant_id"`
+	BookingTime  string `json:"booking_time"`
 }

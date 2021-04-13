@@ -21,9 +21,9 @@ type AuthModel struct {
 }
 
 type AuthData struct {
-	userId       int
-	accessToken  string
-	refreshToken string
+	UserId       int    `json:"user_id"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func CreateAuthModel(config config.AuthModelConfig) AuthModelInterface {
@@ -89,8 +89,8 @@ func (model AuthModel) getAuthData(userId int) (*AuthData, error) {
 	}
 
 	return &AuthData{
-		userId:       userId,
-		accessToken:  accessToken,
-		refreshToken: refreshToken,
+		UserId:       userId,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}, nil
 }

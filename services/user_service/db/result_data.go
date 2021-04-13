@@ -1,91 +1,91 @@
 package db
 
 type UserData struct {
-	userId    int
-	firstName string
-	lastName  string
-	photoUrl  string
+	UserId    int    `json:"user_id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	PhotoUrl  string `json:"photo_url"`
 }
 
 type TourData struct {
-	tourId int
+	TourId int `json:"tour_id"`
 
-	tourName  string
-	tourPrice float64
+	TourName  string  `json:"tour_name"`
+	TourPrice float64 `json:"tour_price"`
 
-	tourDateFrom string
-	tourDateTo   string
+	TourDateFrom string `json:"tour_date_from"`
+	TourDateTo   string `json:"tour_date_to"`
 }
 
 type CityTourData struct {
-	cityTourId int
+	CityTourId int `json:"city_tour_id"`
 
-	countryName   string
-	cityName      string
-	cityTourPrice float64
+	CountryName   string  `json:"country_name"`
+	CityName      string  `json:"city_name"`
+	CityTourPrice float64 `json:"city_tour_price"`
 
-	dateFrom string
-	dateTo   string
+	DateFrom string `json:"date_from"`
+	DateTo   string `json:"date_to"`
 
-	ticketArrivalId   int
-	ticketDepartureId int
+	TicketArrivalId   int `json:"ticket_arrival_id"`
+	TicketDepartureId int `json:"ticket_departure_id"`
 
-	hotelName string
+	HotelName string `json:"hotel_name"`
 }
 
 type CityTourTicketIdData struct {
-	ticketArrivalId   int
-	ticketDepartureId int
+	TicketArrivalId   int `json:"ticket_arrival_id"`
+	TicketDepartureId int `json:"ticket_departure_id"`
 }
 
 type TicketData struct {
-	ticketId      int
-	transportType string
-	price         float64
-	date          string
+	TicketId      int     `json:"ticket_id"`
+	TransportType string  `json:"transport_type"`
+	Price         float64 `json:"price"`
+	Date          string  `json:"date"`
 
-	origCountryName string
-	origCityName    string
-	destCountryName string
-	destCityName    string
+	OrigCountryName string `json:"orig_country_name"`
+	OrigCityName    string `json:"orig_city_name"`
+	DestCountryName string `json:"dest_country_name"`
+	DestCityName    string `json:"dest_city_name"`
 
-	companyName   string
-	companyRating float64
+	CompanyName   string  `json:"company_name"`
+	CompanyRating float64 `json:"company_rating"`
 }
 
 type CityTourTicketData struct {
-	arrivalTicket   TicketData
-	departureTicket TicketData
+	ArrivalTicket   TicketData `json:"arrival_ticket"`
+	DepartureTicket TicketData `json:"departure_ticket"`
 }
 
 type HotelData struct {
-	hotelId   int
-	hotelName string
+	HotelId   int    `json:"hotel_id"`
+	HotelName string `json:"hotel_name"`
 
-	stars       int
-	hotelRating float64
+	Stars       int     `json:"stars"`
+	HotelRating float64 `json:"hotel_rating"`
 }
 
 type EventData struct {
-	eventId   int
-	eventName string
+	EventId   int    `json:"event_id"`
+	EventName string `json:"event_name"`
 
-	eventStart string
-	eventEnd   string
-	price      float64
-	rating     float64
+	EventStart string  `json:"event_start"`
+	EventEnd   string  `json:"event_end"`
+	Price      float64 `json:"price"`
+	Rating     float64 `json:"rating"`
 
-	maxPersons int
-	curPersons int
+	MaxPersons int `json:"max_persons"`
+	CurPersons int `json:"cur_persons"`
 }
 
 type RestaurantBookingData struct {
-	restaurantBookingId int
-	restaurantId        int
+	RestaurantBookingId int `json:"restaurant_booking_id"`
+	RestaurantId        int `json:"restaurant_id"`
 
-	bookingTime    string
-	restaurantName string
+	BookingTime    string `json:"booking_time"`
+	RestaurantName string `json:"restaurant_name"`
 
-	averagePrice float64
-	rating       float64
+	AveragePrice float64 `json:"average_price"`
+	Rating       float64 `json:"rating"`
 }

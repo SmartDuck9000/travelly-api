@@ -1,74 +1,74 @@
 package db
 
 type Hotel struct {
-	hotelId          int
-	hotelName        string
-	hotelDescription string
-	hotelAddr        string
+	HotelId          int    `json:"hotel_id"`
+	HotelName        string `json:"hotel_name"`
+	HotelDescription string `json:"hotel_description"`
+	HotelAddr        string `json:"hotel_addr"`
 
-	stars        int
-	hotelRating  float64
-	averagePrice float64
+	Stars        int     `json:"stars"`
+	HotelRating  float64 `json:"hotel_rating"`
+	AveragePrice float64 `json:"average_price"`
 
-	nearSea bool
+	NearSea bool `json:"near_sea"`
 
-	countryName string
-	cityName    string
+	CountryName string `json:"country_name"`
+	CityName    string `json:"city_name"`
 }
 
 type Event struct {
-	eventId          int
-	eventName        string
-	eventDescription string
-	eventAddr        string
+	EventId          int    `json:"event_id"`
+	EventName        string `json:"event_name"`
+	EventDescription string `json:"event_description"`
+	EventAddr        string `json:"event_addr"`
 
-	countryName string
-	cityName    string
+	CountryName string `json:"country_name"`
+	CityName    string `json:"city_name"`
 
-	eventStart string
-	eventEnd   string
-	price      float64
-	rating     float64
+	EventStart string  `json:"event_start"`
+	EventEnd   string  `json:"event_end"`
+	Price      float64 `json:"price"`
+	Rating     float64 `json:"rating"`
 
-	maxPersons int
-	curPersons int
-	languages  []string
+	MaxPersons int      `json:"max_persons"`
+	CurPersons int      `json:"cur_persons"`
+	Languages  []string `json:"languages"`
 }
 
 type Restaurant struct {
-	restaurantId int
+	RestaurantId int `json:"restaurant_id"`
 
-	restaurantName        string
-	restaurantDescription string
-	restaurantAddr        string
+	RestaurantName        string `json:"restaurant_name"`
+	RestaurantDescription string `json:"restaurant_description"`
+	RestaurantAddr        string `json:"restaurant_addr"`
 
-	averagePrice float64
-	rating       float64
+	AveragePrice float64 `json:"average_price"`
+	Rating       float64 `json:"rating"`
 
-	childMenu   bool
-	smokingRoom bool
+	ChildMenu   bool `json:"child_menu"`
+	SmokingRoom bool `json:"smoking_room"`
 
-	countryName string
-	cityName    string
+	CountryName string `json:"country_name"`
+	CityName    string `json:"city_name"`
 }
 
 type Ticket struct {
-	ticketId int
+	TicketId int `json:"ticket_id"`
 
-	companyName   string
-	companyRating string
+	CompanyName   string `json:"company_name"`
+	CompanyRating string `json:"company_rating"`
 
-	origStationName string
-	origStationAddr string
-	origCountryName string
-	origCityName    string
+	OrigStationName string `json:"orig_station_name"`
+	OrigStationAddr string `json:"orig_station_addr"`
+	OrigCountryName string `json:"orig_country_name"`
+	OrigCityName    string `json:"orig_city_name"`
 
-	destStationName string
-	destStationAddr string
-	destCityName    string
-	destCountryName string
+	DestStationName string `json:"dest_station_name"`
+	DestStationAddr string `json:"dest_station_addr"`
+	DestCityName    string `json:"dest_city_name"`
+	DestCountryName string `json:"dest_country_name"`
 
-	transportType string
-	price         float64
-	ticketDate    string
+	TransportType string  `json:"transport_type"`
+	Price         float64 `json:"price"`
+	TicketDate    string  `json:"ticket_date"`
 }

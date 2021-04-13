@@ -155,17 +155,17 @@ func (db UserProfilePostgres) GetTickets(cityTourId int) *CityTourTicketData {
 		Select("ticket_arrival_id, ticket_departure_id").
 		Where("id = ?", cityTourId).Scan(&ticketIds)
 
-	ticketData = db.getTicket(ticketIds.ticketArrivalId)
+	ticketData = db.getTicket(ticketIds.TicketArrivalId)
 	if ticketData == nil {
 		return nil
 	}
-	tickets.arrivalTicket = *ticketData
+	tickets.ArrivalTicket = *ticketData
 
-	ticketData = db.getTicket(ticketIds.ticketDepartureId)
+	ticketData = db.getTicket(ticketIds.TicketDepartureId)
 	if ticketData == nil {
 		return nil
 	}
-	tickets.departureTicket = *ticketData
+	tickets.DepartureTicket = *ticketData
 
 	return &tickets
 }

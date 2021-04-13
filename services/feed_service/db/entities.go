@@ -1,47 +1,47 @@
 package db
 
 type Hotel struct {
-	hotelId     int
-	hotelName   string
-	stars       int
-	hotelRating float64
+	HotelId     int     `json:"hotel_id"`
+	HotelName   string  `json:"hotel_name"`
+	Stars       int     `json:"stars"`
+	HotelRating float64 `json:"hotel_rating"`
 
-	countryName string
-	cityName    string
+	CountryName string `json:"country_name"`
+	CityName    string `json:"city_name"`
 }
 
 type Event struct {
-	eventId   int
-	eventName string
+	EventId   int    `json:"event_id"`
+	EventName string `json:"event_name"`
 
-	eventStart string
-	eventEnd   string
-	rating     float64
+	EventStart string  `json:"event_start"`
+	EventEnd   string  `json:"event_end"`
+	Rating     float64 `json:"rating"`
 
-	maxPersons int
-	curPersons int
+	MaxPersons int `json:"max_persons"`
+	CurPersons int `json:"cur_persons"`
 
-	countryName string
-	cityName    string
+	CountryName string `json:"country_name"`
+	CityName    string `json:"city_name"`
 }
 
 type Restaurant struct {
-	restaurantId   int
-	restaurantName string
-	rating         float64
+	RestaurantId   int     `json:"restaurant_id"`
+	RestaurantName string  `json:"restaurant_name"`
+	Rating         float64 `json:"rating"`
 
-	countryName string
-	cityName    string
+	CountryName string `json:"country_name"`
+	CityName    string `json:"city_name"`
 }
 
 type Ticket struct {
-	ticketId      int
-	transportType string
-	price         float64
-	date          string
+	TicketId      int     `json:"ticket_id"`
+	TransportType string  `json:"transport_type"`
+	Price         float64 `json:"price"`
+	Date          string  `json:"date"`
 
-	origCountryName string
-	origCityName    string
-	destCountryName string
-	destCityName    string
+	OrigCountryName string `json:"orig_country_name"`
+	OrigCityName    string `json:"orig_city_name"`
+	DestCountryName string `json:"dest_country_name"`
+	DestCityName    string `json:"dest_city_name"`
 }
