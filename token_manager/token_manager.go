@@ -72,7 +72,7 @@ func (m JWTManager) ParseRefreshToken(tokenString string) (*AuthClaims, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, InvalidTokenError{}
 	}
 
 	if claims, ok := token.Claims.(AuthClaims); ok && token.Valid {
