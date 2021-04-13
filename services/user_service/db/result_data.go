@@ -1,14 +1,14 @@
 package db
 
 type UserData struct {
-	UserId    int    `json:"user_id"`
+	Id        int    `json:"user_id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	PhotoUrl  string `json:"photo_url"`
 }
 
 type TourData struct {
-	TourId int `json:"tour_id"`
+	Id int `json:"tour_id"`
 
 	TourName  string  `json:"tour_name"`
 	TourPrice float64 `json:"tour_price"`
@@ -18,7 +18,7 @@ type TourData struct {
 }
 
 type CityTourData struct {
-	CityTourId int `json:"city_tour_id"`
+	Id int `json:"city_tour_id"`
 
 	CountryName   string  `json:"country_name"`
 	CityName      string  `json:"city_name"`
@@ -39,7 +39,7 @@ type CityTourTicketIdData struct {
 }
 
 type TicketData struct {
-	TicketId      int     `json:"ticket_id"`
+	Id            int     `json:"ticket_id"`
 	TransportType string  `json:"transport_type"`
 	Price         float64 `json:"price"`
 	Date          string  `json:"date"`
@@ -59,7 +59,7 @@ type CityTourTicketData struct {
 }
 
 type HotelData struct {
-	HotelId   int    `json:"hotel_id"`
+	Id        int    `json:"hotel_id"`
 	HotelName string `json:"hotel_name"`
 
 	Stars       int     `json:"stars"`
@@ -67,7 +67,7 @@ type HotelData struct {
 }
 
 type EventData struct {
-	EventId   int    `json:"event_id"`
+	Id        int    `json:"event_id"`
 	EventName string `json:"event_name"`
 
 	EventStart string  `json:"event_start"`
@@ -80,8 +80,8 @@ type EventData struct {
 }
 
 type RestaurantBookingData struct {
-	RestaurantBookingId int `json:"restaurant_booking_id"`
-	RestaurantId        int `json:"restaurant_id"`
+	Id           int `json:"restaurant_booking_id"`
+	RestaurantId int `json:"restaurant_id"`
 
 	BookingTime    string `json:"booking_time"`
 	RestaurantName string `json:"restaurant_name"`
