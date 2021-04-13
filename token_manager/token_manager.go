@@ -68,7 +68,7 @@ func (m JWTManager) ParseRefreshToken(tokenString string) (*AuthClaims, error) {
 			return nil, fmt.Errorf("unexpected signing method: %s", token.Header["alg"])
 		}
 
-		return m.refreshKey, nil
+		return []byte(m.refreshKey), nil
 	})
 
 	if err != nil {
@@ -88,7 +88,7 @@ func (m JWTManager) ParseAccessToken(tokenString string) (*AuthClaims, error) {
 			return nil, fmt.Errorf("unexpected signing method: %s", token.Header["alg"])
 		}
 
-		return m.accessKey, nil
+		return []byte(m.accessKey), nil
 	})
 
 	if err != nil {
