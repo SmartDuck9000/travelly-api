@@ -74,7 +74,7 @@ func (model AuthModel) Login(user db.User) (*AuthData, error) {
 		return nil, fmt.Errorf("wrong password")
 	}
 
-	return model.getAuthData(user.ID)
+	return model.getAuthData(userData.ID)
 }
 
 func (model AuthModel) getAuthData(userId int) (*AuthData, error) {

@@ -12,7 +12,7 @@ services:
         volumes:
             - ./.docker/data/postgresql/:/var/lib/postgresql/data/
         ports:
-            - 5432
+            - 0.0.0.0:5000:5432
 
     profile:
         build: ./services/user_service
