@@ -53,7 +53,7 @@ func (m JWTManager) CreateAccessToken(id int) (string, error) {
 func (m JWTManager) CreateRefreshToken(id int) (string, error) {
 	token := jwt.NewWithClaims(jwt.GetSigningMethod(m.method), &AuthClaims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(m.accessLifetime).Unix(),
+			ExpiresAt: time.Now().Add(m.refreshLifetime).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		ID: id,
