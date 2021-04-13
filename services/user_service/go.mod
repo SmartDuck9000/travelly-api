@@ -1,0 +1,1 @@
+module "github.com/SmartDuck9000/travelly-api/services/user_service"
