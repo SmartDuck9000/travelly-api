@@ -75,8 +75,9 @@ func (m JWTManager) ParseRefreshToken(tokenString string) (*AuthClaims, error) {
 		return nil, InvalidTokenError{}
 	}
 
-	if claims, ok := token.Claims.(AuthClaims); ok && token.Valid {
-		return &claims, nil
+	claims, ok := token.Claims.(*AuthClaims)
+	if ok && token.Valid {
+		return claims, nil
 	}
 
 	return nil, InvalidTokenError{}
@@ -95,8 +96,9 @@ func (m JWTManager) ParseAccessToken(tokenString string) (*AuthClaims, error) {
 		return nil, InvalidTokenError{}
 	}
 
-	if claims, ok := token.Claims.(AuthClaims); ok && token.Valid {
-		return &claims, nil
+	claims, ok := token.Claims.(*AuthClaims)
+	if ok && token.Valid {
+		return claims, nil
 	}
 
 	return nil, InvalidTokenError{}
