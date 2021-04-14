@@ -12,6 +12,7 @@ type UserProfileDb interface {
 	configureConnectionPools() error
 
 	GetUser(userId int) *UserData
+	GetUserPassword(userId int) (string, error)
 	GetTours(userId int) []TourData
 	GetCityTours(tourId int) []CityTourData
 
@@ -79,6 +80,12 @@ func (db UserProfilePostgres) GetUser(userId int) *UserData {
 	var user UserData
 	db.conn.Table("users").Select("id, first_name, last_name, photo_url").Where("id = ?", userId).Scan(&user)
 	return &user
+}
+
+func (db UserProfilePostgres) GetUserPassword(userId int) (string, error) {
+	var password string
+	res := db.conn.Table("users").Select("password").Where("id = ?", userId).Scan(&password)
+	return password, res.Error
 }
 
 func (db UserProfilePostgres) GetTours(userId int) []TourData {

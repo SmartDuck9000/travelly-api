@@ -3,6 +3,7 @@ package controller
 import (
 	"errors"
 	"github.com/SmartDuck9000/travelly-api/services/user_service/db"
+	"github.com/SmartDuck9000/travelly-api/services/user_service/model"
 	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -348,7 +349,7 @@ func (controller UserController) updateUser(c *gin.Context) {
 		return
 	}
 
-	var user db.UserEntity
+	var user model.UpdateUserData
 	err := c.Bind(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

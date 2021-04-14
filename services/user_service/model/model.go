@@ -22,7 +22,7 @@ type UserModelInterface interface {
 	CreateCityTour(cityTour *db.CityTourEntity, authHeader string) error
 	CreateRestaurantBooking(restaurantBooking *db.RestaurantBookingEntity, authHeader string) error
 
-	UpdateUser(user *db.UserEntity, authHeader string) error
+	UpdateUser(user *UpdateUserData, authHeader string) error
 	UpdateTour(tour *db.TourEntity, authHeader string) error
 	UpdateCityTour(cityTour *db.CityTourEntity, authHeader string) error
 	UpdateRestaurantBooking(restaurantBooking *db.RestaurantBookingEntity, authHeader string) error
@@ -36,6 +36,18 @@ type UserModelInterface interface {
 type UserModel struct {
 	db           db.UserProfileDb
 	tokenManager token_manager.TokenManager
+}
+
+type UpdateUserData struct {
+	Id        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+
+	Email       string `json:"email"`
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+
+	PhotoUrl string `json:"photo_url"`
 }
 
 func CreateUserModel(config config.UserModelConfig) *UserModel {
@@ -161,11 +173,35 @@ func (model UserModel) CreateRestaurantBooking(restaurantBooking *db.RestaurantB
 	return model.db.CreateRestaurantBooking(restaurantBooking)
 }
 
-func (model UserModel) UpdateUser(user *db.UserEntity, authHeader string) error {
+func (model UserModel) UpdateUser(user *UpdateUserData, authHeader string) error {
 	if err := model.validateToken(authHeader); err != nil {
 		return err
 	}
-	return model.db.UpdateUser(user)
+
+	curPassword, err := model.db.GetUserPassword(user.Id)
+	if err != nil {
+		return err
+	}
+
+	if curPassword != user.OldPassword {
+		return fmt.Errorf("can't update user, wrong password")
+	}
+
+	var password = user.OldPassword
+	if user.NewPassword != "" {
+		password = user.NewPassword
+	}
+
+	var userEntity = db.UserEntity{
+		Id:        user.Id,
+		Email:     user.Email,
+		Password:  password,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		PhotoUrl:  user.PhotoUrl,
+	}
+
+	return model.db.UpdateUser(&userEntity)
 }
 
 func (model UserModel) UpdateTour(tour *db.TourEntity, authHeader string) error {

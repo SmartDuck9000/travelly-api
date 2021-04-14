@@ -1,14 +1,14 @@
 package db
 
 type UserEntity struct {
-	Id       int
-	Email    string
-	Password string
+	Id       int    `json:"id"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 
-	FirstName string
-	LastName  string
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 
-	PhotoUrl string
+	PhotoUrl string `json:"photo_url"`
 }
 
 type TourEntity struct {
