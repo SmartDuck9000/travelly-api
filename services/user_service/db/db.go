@@ -21,14 +21,14 @@ type UserProfileDb interface {
 	GetTickets(cityTourId int) *CityTourTicketData
 	GetHotel(cityTourId int) *HotelData
 
-	CreateTour(tour *TourEntity) error
-	CreateCityTour(cityTour *CityTourEntity) error
-	CreateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error
+	CreateTour(tour *Tour) error
+	CreateCityTour(cityTour *CityTour) error
+	CreateRestaurantBooking(restaurantBooking *RestaurantBooking) error
 
-	UpdateUser(user *UserEntity) error
-	UpdateTour(tour *TourEntity) error
-	UpdateCityTour(cityTour *CityTourEntity) error
-	UpdateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error
+	UpdateUser(user *User) error
+	UpdateTour(tour *Tour) error
+	UpdateCityTour(cityTour *CityTour) error
+	UpdateRestaurantBooking(restaurantBooking *RestaurantBooking) error
 
 	DeleteUser(userId int) error
 	DeleteTour(tourId int) error
@@ -187,59 +187,59 @@ func (db UserProfilePostgres) GetHotel(cityTourId int) *HotelData {
 	return &hotel
 }
 
-func (db UserProfilePostgres) CreateTour(tour *TourEntity) error {
+func (db UserProfilePostgres) CreateTour(tour *Tour) error {
 	res := db.conn.Select("userId", "tourName", "tourPrice", "tourDateFrom", "tourDateTo").Create(tour)
 	return res.Error
 }
 
-func (db UserProfilePostgres) CreateCityTour(cityTour *CityTourEntity) error {
+func (db UserProfilePostgres) CreateCityTour(cityTour *CityTour) error {
 	res := db.conn.
 		Select("tourId", "cityId", "cityTourPrice", "dateFrom", "dateTo", "ticketArrivalId", "ticketDepartureId", "hotelId").
 		Create(cityTour)
 	return res.Error
 }
 
-func (db UserProfilePostgres) CreateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error {
+func (db UserProfilePostgres) CreateRestaurantBooking(restaurantBooking *RestaurantBooking) error {
 	res := db.conn.Select("restaurantId", "bookingTime").Create(restaurantBooking)
 	return res.Error
 }
 
-func (db UserProfilePostgres) UpdateUser(user *UserEntity) error {
+func (db UserProfilePostgres) UpdateUser(user *User) error {
 	res := db.conn.Save(user)
 	return res.Error
 }
 
-func (db UserProfilePostgres) UpdateTour(tour *TourEntity) error {
+func (db UserProfilePostgres) UpdateTour(tour *Tour) error {
 	res := db.conn.Save(tour)
 	return res.Error
 }
 
-func (db UserProfilePostgres) UpdateCityTour(cityTour *CityTourEntity) error {
+func (db UserProfilePostgres) UpdateCityTour(cityTour *CityTour) error {
 	res := db.conn.Save(cityTour)
 	return res.Error
 }
 
-func (db UserProfilePostgres) UpdateRestaurantBooking(restaurantBooking *RestaurantBookingEntity) error {
+func (db UserProfilePostgres) UpdateRestaurantBooking(restaurantBooking *RestaurantBooking) error {
 	res := db.conn.Save(restaurantBooking)
 	return res.Error
 }
 
 func (db UserProfilePostgres) DeleteUser(userId int) error {
-	res := db.conn.Delete(&UserEntity{}, userId)
+	res := db.conn.Delete(&User{}, userId)
 	return res.Error
 }
 
 func (db UserProfilePostgres) DeleteTour(tourId int) error {
-	res := db.conn.Delete(&TourEntity{}, tourId)
+	res := db.conn.Delete(&Tour{}, tourId)
 	return res.Error
 }
 
 func (db UserProfilePostgres) DeleteCityTour(cityTourId int) error {
-	res := db.conn.Delete(&CityTourEntity{}, cityTourId)
+	res := db.conn.Delete(&CityTour{}, cityTourId)
 	return res.Error
 }
 
 func (db UserProfilePostgres) DeleteRestaurantBooking(restaurantBookingId int) error {
-	res := db.conn.Delete(&RestaurantBookingEntity{}, restaurantBookingId)
+	res := db.conn.Delete(&RestaurantBooking{}, restaurantBookingId)
 	return res.Error
 }

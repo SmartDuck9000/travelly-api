@@ -250,7 +250,7 @@ func (controller UserController) postTour(c *gin.Context) {
 		return
 	}
 
-	var tour db.TourEntity
+	var tour db.Tour
 	err := c.Bind(&tour)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -283,7 +283,7 @@ func (controller UserController) postCityTour(c *gin.Context) {
 		return
 	}
 
-	var cityTour db.CityTourEntity
+	var cityTour db.CityTour
 	err := c.Bind(&cityTour)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -316,7 +316,7 @@ func (controller UserController) postRestaurantBooking(c *gin.Context) {
 		return
 	}
 
-	var rb db.RestaurantBookingEntity
+	var rb db.RestaurantBooking
 	err := c.Bind(&rb)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -382,7 +382,7 @@ func (controller UserController) updateTour(c *gin.Context) {
 		return
 	}
 
-	var tour db.TourEntity
+	var tour db.Tour
 	err := c.Bind(&tour)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -415,7 +415,7 @@ func (controller UserController) updateCityTour(c *gin.Context) {
 		return
 	}
 
-	var cityTour db.CityTourEntity
+	var cityTour db.CityTour
 	err := c.Bind(&cityTour)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -448,7 +448,7 @@ func (controller UserController) updateRestaurantBooking(c *gin.Context) {
 		return
 	}
 
-	var rb db.RestaurantBookingEntity
+	var rb db.RestaurantBooking
 	err := c.Bind(&rb)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

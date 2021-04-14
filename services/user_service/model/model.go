@@ -18,14 +18,14 @@ type UserModelInterface interface {
 	GetCityTourTickets(cityTourId int, authHeader string) (*db.CityTourTicketData, error)
 	GetCityTourHotel(cityTourId int, authHeader string) (*db.HotelData, error)
 
-	CreateTour(tour *db.TourEntity, authHeader string) error
-	CreateCityTour(cityTour *db.CityTourEntity, authHeader string) error
-	CreateRestaurantBooking(restaurantBooking *db.RestaurantBookingEntity, authHeader string) error
+	CreateTour(tour *db.Tour, authHeader string) error
+	CreateCityTour(cityTour *db.CityTour, authHeader string) error
+	CreateRestaurantBooking(restaurantBooking *db.RestaurantBooking, authHeader string) error
 
 	UpdateUser(user *UpdateUserData, authHeader string) error
-	UpdateTour(tour *db.TourEntity, authHeader string) error
-	UpdateCityTour(cityTour *db.CityTourEntity, authHeader string) error
-	UpdateRestaurantBooking(restaurantBooking *db.RestaurantBookingEntity, authHeader string) error
+	UpdateTour(tour *db.Tour, authHeader string) error
+	UpdateCityTour(cityTour *db.CityTour, authHeader string) error
+	UpdateRestaurantBooking(restaurantBooking *db.RestaurantBooking, authHeader string) error
 
 	DeleteUser(userId int, authHeader string) error
 	DeleteTour(tourId int, authHeader string) error
@@ -152,21 +152,21 @@ func (model UserModel) GetCityTourHotel(cityTourId int, authHeader string) (*db.
 	return hotel, nil
 }
 
-func (model UserModel) CreateTour(tour *db.TourEntity, authHeader string) error {
+func (model UserModel) CreateTour(tour *db.Tour, authHeader string) error {
 	if err := model.validateToken(authHeader); err != nil {
 		return err
 	}
 	return model.db.CreateTour(tour)
 }
 
-func (model UserModel) CreateCityTour(cityTour *db.CityTourEntity, authHeader string) error {
+func (model UserModel) CreateCityTour(cityTour *db.CityTour, authHeader string) error {
 	if err := model.validateToken(authHeader); err != nil {
 		return err
 	}
 	return model.db.CreateCityTour(cityTour)
 }
 
-func (model UserModel) CreateRestaurantBooking(restaurantBooking *db.RestaurantBookingEntity, authHeader string) error {
+func (model UserModel) CreateRestaurantBooking(restaurantBooking *db.RestaurantBooking, authHeader string) error {
 	if err := model.validateToken(authHeader); err != nil {
 		return err
 	}
@@ -192,7 +192,7 @@ func (model UserModel) UpdateUser(user *UpdateUserData, authHeader string) error
 		password = user.NewPassword
 	}
 
-	var userEntity = db.UserEntity{
+	var userEntity = db.User{
 		Id:        user.Id,
 		Email:     user.Email,
 		Password:  password,
@@ -204,21 +204,21 @@ func (model UserModel) UpdateUser(user *UpdateUserData, authHeader string) error
 	return model.db.UpdateUser(&userEntity)
 }
 
-func (model UserModel) UpdateTour(tour *db.TourEntity, authHeader string) error {
+func (model UserModel) UpdateTour(tour *db.Tour, authHeader string) error {
 	if err := model.validateToken(authHeader); err != nil {
 		return err
 	}
 	return model.db.UpdateTour(tour)
 }
 
-func (model UserModel) UpdateCityTour(cityTour *db.CityTourEntity, authHeader string) error {
+func (model UserModel) UpdateCityTour(cityTour *db.CityTour, authHeader string) error {
 	if err := model.validateToken(authHeader); err != nil {
 		return err
 	}
 	return model.db.UpdateCityTour(cityTour)
 }
 
-func (model UserModel) UpdateRestaurantBooking(restaurantBooking *db.RestaurantBookingEntity, authHeader string) error {
+func (model UserModel) UpdateRestaurantBooking(restaurantBooking *db.RestaurantBooking, authHeader string) error {
 	if err := model.validateToken(authHeader); err != nil {
 		return err
 	}

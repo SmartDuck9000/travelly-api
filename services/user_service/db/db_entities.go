@@ -1,6 +1,6 @@
 package db
 
-type UserEntity struct {
+type User struct {
 	Id       int    `json:"id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -11,7 +11,7 @@ type UserEntity struct {
 	PhotoUrl string `json:"photo_url"`
 }
 
-type TourEntity struct {
+type Tour struct {
 	Id     int `json:"id"`
 	UserId int `json:"user_id"`
 
@@ -22,7 +22,7 @@ type TourEntity struct {
 	TourDateTo   string `json:"tour_date_to"`
 }
 
-type CityTourEntity struct {
+type CityTour struct {
 	Id     int `json:"id"`
 	UserId int `json:"user_id"`
 	CityId int `json:"city_id"`
@@ -38,7 +38,7 @@ type CityTourEntity struct {
 	HotelId int `json:"hotel_id"`
 }
 
-type RestaurantBookingEntity struct {
+type RestaurantBooking struct {
 	Id           int    `json:"id"`
 	RestaurantId int    `json:"restaurant_id"`
 	BookingTime  string `json:"booking_time"`
