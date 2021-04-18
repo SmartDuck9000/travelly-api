@@ -20,7 +20,7 @@ func (controller FeedController) getHotels(c *gin.Context) {
 		return
 	}
 
-	err := c.Bind(&filterParameters)
+	err := c.BindJSON(&filterParameters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -55,7 +55,7 @@ func (controller FeedController) getEvents(c *gin.Context) {
 		return
 	}
 
-	err := c.Bind(&filterParameters)
+	err := c.BindJSON(&filterParameters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -90,7 +90,7 @@ func (controller FeedController) getRestaurants(c *gin.Context) {
 		return
 	}
 
-	err := c.Bind(&filterParameters)
+	err := c.BindJSON(&filterParameters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -125,7 +125,7 @@ func (controller FeedController) getTickets(c *gin.Context) {
 		return
 	}
 
-	err := c.Bind(&filterParameters)
+	err := c.BindJSON(&filterParameters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

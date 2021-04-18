@@ -36,7 +36,7 @@ func CreateFeedServiceDB(conf config.FeedDBConfig) FeedDB {
 	}
 }
 
-func (db FeedPostgres) Open() error {
+func (db *FeedPostgres) Open() error {
 	var err error
 	db.conn, err = gorm.Open(postgres.Open(db.url), &gorm.Config{})
 	if err == nil {
