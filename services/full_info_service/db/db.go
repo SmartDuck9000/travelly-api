@@ -25,7 +25,7 @@ type FullInfoPostgres struct {
 	conn            *gorm.DB
 }
 
-func (db FullInfoPostgres) Open() error {
+func (db *FullInfoPostgres) Open() error {
 	var err error
 	db.conn, err = gorm.Open(postgres.Open(db.url), &gorm.Config{})
 	if err == nil {
@@ -34,7 +34,7 @@ func (db FullInfoPostgres) Open() error {
 	return err
 }
 
-func (db FullInfoPostgres) configureConnectionPools() error {
+func (db *FullInfoPostgres) configureConnectionPools() error {
 	sqlDB, err := db.conn.DB()
 	if err != nil {
 		return err
