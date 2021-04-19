@@ -6,9 +6,9 @@ type Hotel struct {
 	HotelDescription string `json:"hotel_description"`
 	HotelAddr        string `json:"hotel_addr"`
 
-	Stars        int     `json:"stars"`
-	HotelRating  float64 `json:"hotel_rating"`
-	AveragePrice float64 `json:"average_price"`
+	Stars       int     `json:"stars"`
+	HotelRating float64 `json:"hotel_rating"`
+	AvgPrice    float64 `json:"average_price"`
 
 	NearSea bool `json:"near_sea"`
 
@@ -42,8 +42,8 @@ type Restaurant struct {
 	RestaurantDescription string `json:"restaurant_description"`
 	RestaurantAddr        string `json:"restaurant_addr"`
 
-	AveragePrice float64 `json:"average_price"`
-	Rating       float64 `json:"rating"`
+	AvgPrice float64 `json:"average_price"`
+	Rating   float64 `json:"rating"`
 
 	ChildMenu   bool `json:"child_menu"`
 	SmokingRoom bool `json:"smoking_room"`
