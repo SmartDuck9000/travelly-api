@@ -72,7 +72,7 @@ func (db FeedPostgres) GetHotels(filter HotelFilterParameters) ([]Hotel, error) 
 
 	res := db.conn.
 		Table("hotels").
-		Select("hotels.id, hotel_name, stars, hotel_rating, country_name, city_name").
+		Select("hotels.id AS hotel_id, hotel_name, stars, hotel_rating, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("stars BETWEEN ? AND ?", filter.StarsFrom, filter.StarsTo).
@@ -110,7 +110,7 @@ func (db FeedPostgres) GetEvents(filter EventsFilterParameters) ([]Event, error)
 
 	res := db.conn.
 		Table("events").
-		Select("events.id, event_name, event_start, event_end, event_rating, max_persons, cur_persons, country_name, city_name").
+		Select("events.id AS event_id, event_name, event_start, event_end, event_rating, max_persons, cur_persons, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("event_start <= ? AND event_end <= ?", filter.From, filter.To).
@@ -144,7 +144,7 @@ func (db FeedPostgres) GetRestaurants(filter RestaurantFilterParameters) ([]Rest
 
 	res := db.conn.
 		Table("restaurants").
-		Select("restaurants.id, rest_name, rest_rating, country_name, city_name").
+		Select("restaurants.id AS restaurant_id, rest_name, rest_rating, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("rest_rating BETWEEN ? AND ?", filter.RatingFrom, filter.RatingTo).
@@ -185,7 +185,7 @@ func (db FeedPostgres) GetTickets(filter TicketFilterParameters) ([]Ticket, erro
 
 	res := db.conn.
 		Table("tickets").
-		Select("tickets.id, transport_type, price, ticket_date, "+
+		Select("tickets.id AS ticket_id, transport_type, price, ticket_date, "+
 			"orig_c.country_name, orig_city.city_name, "+
 			"dest_c.country_name, dest_city.city_name, "+
 			"company_name, company_rating").
