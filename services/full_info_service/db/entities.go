@@ -43,12 +43,12 @@ type Event struct {
 type Restaurant struct {
 	RestaurantId int `json:"restaurant_id"`
 
-	RestaurantName        string `json:"restaurant_name"`
-	RestaurantDescription string `json:"restaurant_description"`
-	RestaurantAddr        string `json:"restaurant_addr"`
+	RestName        string `json:"restaurant_name"`
+	RestDescription string `json:"restaurant_description"`
+	RestAddr        string `json:"restaurant_addr"`
 
-	AvgPrice float64 `json:"average_price"`
-	Rating   float64 `json:"rating"`
+	AvgPrice   string  `json:"average_price"`
+	RestRating float64 `json:"rating"`
 
 	ChildMenu   bool `json:"child_menu"`
 	SmokingRoom bool `json:"smoking_room"`

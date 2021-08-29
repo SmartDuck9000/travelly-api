@@ -75,6 +75,7 @@ func (db FeedPostgres) GetHotels(filter HotelFilterParameters) ([]Hotel, error) 
 		Select("hotels.id AS hotel_id, hotel_name, stars, hotel_rating, country_name, city_name").
 		Joins("JOIN cities ON hotels.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
+		Where("hotels.id <> 0").
 		Where("stars BETWEEN ? AND ?", filter.StarsFrom, filter.StarsTo).
 		Where("hotel_rating BETWEEN ? AND ?", filter.RatingFrom, filter.RatingTo).
 		Where("avg_price BETWEEN ? AND ?", filter.PriceFrom, filter.PriceTo)
@@ -192,9 +193,9 @@ func (db FeedPostgres) GetTickets(filter TicketFilterParameters) ([]Ticket, erro
 
 	res := db.conn.
 		Table("tickets").
-		Select("tickets.id AS ticket_id, transport_type, price, ticket_date, "+
-			"orig_c.country_name, orig_city.city_name, "+
-			"dest_c.country_name, dest_city.city_name, "+
+		Select("tickets.id AS ticket_id, transport_type, price, ticket_date AS date, "+
+			"orig_c.country_name AS orig_country_name, orig_city.city_name AS orig_city_name, "+
+			"dest_c.country_name AS dest_country_name, dest_city.city_name AS dest_city_name, "+
 			"company_name, company_rating").
 		Joins("JOIN transport_companies on tickets.company_id = transport_companies.id").
 		Joins("JOIN transport_stations orig_ts ON tickets.orig_station_id = orig_ts.id").
@@ -203,6 +204,7 @@ func (db FeedPostgres) GetTickets(filter TicketFilterParameters) ([]Ticket, erro
 		Joins("JOIN transport_stations dest_ts ON tickets.dest_station_id = dest_ts.id").
 		Joins("JOIN cities dest_city ON dest_ts.city_id = dest_city.id").
 		Joins("JOIN countries dest_c ON dest_city.country_id = dest_c.id").
+		Where("tickets.id <> 0").
 		Where("price BETWEEN ? AND ?", filter.PriceFrom, filter.PriceTo)
 
 	if filter.DateFrom != "" {

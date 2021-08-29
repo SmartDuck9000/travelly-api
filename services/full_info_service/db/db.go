@@ -89,7 +89,7 @@ func (db FullInfoPostgres) GetEvent(id int) (*Event, error) {
 	res := db.conn.
 		Table("events").
 		Select("events.id AS event_id, event_name, event_description, event_addr, country_name, city_name, event_start, event_end, event_price, event_rating, max_persons, cur_persons, languages").
-		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN cities ON events.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("events.id = ?", id).Scan(&event)
 
@@ -102,7 +102,7 @@ func (db FullInfoPostgres) GetRestaurant(id int) (*Restaurant, error) {
 	res := db.conn.
 		Table("restaurants").
 		Select("restaurants.id AS restaurant_id, rest_name, rest_description, rest_addr, avg_price, rest_rating, child_menu, smoking_room, country_name, city_name").
-		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Joins("JOIN cities ON restaurants.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("restaurants.id = ?", id).Scan(&restaurant)
 
