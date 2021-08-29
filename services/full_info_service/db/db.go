@@ -11,6 +11,7 @@ type FullInfoDb interface {
 	Open() error
 	configureConnectionPools() error
 
+	GetCities() ([]City, error)
 	GetHotel(id int) (*Hotel, error)
 	GetEvent(id int) (*Event, error)
 	GetRestaurant(id int) (*Restaurant, error)
@@ -55,6 +56,18 @@ func CreateFullInfoDB(conf config.FullInfoDbConfig) FullInfoDb {
 		connMaxLifetime: conf.ConnMaxLifetime, // maximum amount of time a connection may be reused
 		conn:            nil,
 	}
+}
+
+func (db FullInfoPostgres) GetCities() ([]City, error) {
+	var cities []City
+
+	res := db.conn.
+		Table("cities").
+		Select("id AS city_id, city_name").
+		Order("city_name").
+		Scan(&cities)
+
+	return cities, res.Error
 }
 
 func (db FullInfoPostgres) GetHotel(id int) (*Hotel, error) {

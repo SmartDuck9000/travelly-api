@@ -1,5 +1,10 @@
 package db
 
+type City struct {
+	CityId   int    `json:"city_id"`
+	CityName string `json:"city_name"`
+}
+
 type Hotel struct {
 	HotelId          int    `json:"hotel_id"`
 	HotelName        string `json:"hotel_name"`
@@ -8,7 +13,7 @@ type Hotel struct {
 
 	Stars       int     `json:"stars"`
 	HotelRating float64 `json:"hotel_rating"`
-	AvgPrice    float64 `json:"average_price"`
+	AvgPrice    string  `json:"average_price"`
 
 	NearSea bool `json:"near_sea"`
 

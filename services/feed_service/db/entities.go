@@ -35,10 +35,10 @@ type Restaurant struct {
 }
 
 type Ticket struct {
-	TicketId      int     `json:"ticket_id"`
-	TransportType string  `json:"transport_type"`
-	Price         float64 `json:"price"`
-	Date          string  `json:"date"`
+	TicketId      int    `json:"ticket_id"`
+	TransportType string `json:"transport_type"`
+	Price         string `json:"price"`
+	Date          string `json:"date"`
 
 	OrigCountryName string `json:"orig_country_name"`
 	OrigCityName    string `json:"orig_city_name"`

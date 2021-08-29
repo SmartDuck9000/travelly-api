@@ -24,7 +24,7 @@ type Tour struct {
 
 type CityTour struct {
 	Id     int `json:"id"`
-	UserId int `json:"user_id"`
+	TourId int `json:"tour_id"`
 	CityId int `json:"city_id"`
 
 	CityTourPrice float64 `json:"city_tour_price"`

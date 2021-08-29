@@ -10,8 +10,8 @@ type UserData struct {
 type TourData struct {
 	Id int `json:"tour_id"`
 
-	TourName  string  `json:"tour_name"`
-	TourPrice float64 `json:"tour_price"`
+	TourName  string `json:"tour_name"`
+	TourPrice string `json:"tour_price"`
 
 	TourDateFrom string `json:"tour_date_from"`
 	TourDateTo   string `json:"tour_date_to"`
@@ -20,9 +20,9 @@ type TourData struct {
 type CityTourData struct {
 	Id int `json:"city_tour_id"`
 
-	CountryName   string  `json:"country_name"`
-	CityName      string  `json:"city_name"`
-	CityTourPrice float64 `json:"city_tour_price"`
+	CountryName   string `json:"country_name"`
+	CityName      string `json:"city_name"`
+	CityTourPrice string `json:"city_tour_price"`
 
 	DateFrom string `json:"date_from"`
 	DateTo   string `json:"date_to"`
@@ -30,7 +30,7 @@ type CityTourData struct {
 	TicketArrivalId   int `json:"ticket_arrival_id"`
 	TicketDepartureId int `json:"ticket_departure_id"`
 
-	HotelName string `json:"hotel_name"`
+	HotelId int `json:"hotel_id"`
 }
 
 type CityTourTicketIdData struct {
@@ -39,10 +39,10 @@ type CityTourTicketIdData struct {
 }
 
 type TicketData struct {
-	Id            int     `json:"ticket_id"`
-	TransportType string  `json:"transport_type"`
-	Price         float64 `json:"price"`
-	Date          string  `json:"date"`
+	Id            int    `json:"ticket_id"`
+	TransportType string `json:"transport_type"`
+	Price         string `json:"price"`
+	Date          string `json:"date"`
 
 	OrigCountryName string `json:"orig_country_name"`
 	OrigCityName    string `json:"orig_city_name"`
@@ -72,7 +72,7 @@ type EventData struct {
 
 	EventStart string  `json:"event_start"`
 	EventEnd   string  `json:"event_end"`
-	Price      float64 `json:"price"`
+	Price      string  `json:"price"`
 	Rating     float64 `json:"rating"`
 
 	MaxPersons int `json:"max_persons"`
@@ -86,6 +86,6 @@ type RestaurantBookingData struct {
 	BookingTime    string `json:"booking_time"`
 	RestaurantName string `json:"restaurant_name"`
 
-	AveragePrice float64 `json:"average_price"`
+	AveragePrice string  `json:"average_price"`
 	Rating       float64 `json:"rating"`
 }

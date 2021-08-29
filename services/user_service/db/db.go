@@ -94,6 +94,9 @@ func (db UserProfilePostgres) GetTours(userId int) []TourData {
 		Table("tours").
 		Select("id, tour_name, tour_price, tour_date_from, tour_date_to").
 		Where("user_id = ?", userId).Scan(&tours)
+	if tours == nil {
+		return []TourData{}
+	}
 	return tours
 }
 
@@ -101,7 +104,7 @@ func (db UserProfilePostgres) GetCityTours(tourId int) []CityTourData {
 	var cityTours []CityTourData
 	db.conn.
 		Table("city_tours").
-		Select("city_tours.id, country_name, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotel_name").
+		Select("city_tours.id, country_name, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotels.id AS hotel_id").
 		Joins("JOIN hotels ON city_tours.hotel_id = hotels.id").
 		Joins("JOIN cities ON city_tours.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
@@ -188,13 +191,13 @@ func (db UserProfilePostgres) GetHotel(cityTourId int) *HotelData {
 }
 
 func (db UserProfilePostgres) CreateTour(tour *Tour) error {
-	res := db.conn.Select("userId", "tourName", "tourPrice", "tourDateFrom", "tourDateTo").Create(tour)
+	res := db.conn.Select("UserId", "TourName", "TourPrice", "TourDateFrom", "TourDateTo").Create(tour)
 	return res.Error
 }
 
 func (db UserProfilePostgres) CreateCityTour(cityTour *CityTour) error {
 	res := db.conn.
-		Select("tourId", "cityId", "cityTourPrice", "dateFrom", "dateTo", "ticketArrivalId", "ticketDepartureId", "hotelId").
+		Select("TourId", "CityId", "CityTourPrice", "DateFrom", "DateTo", "TicketArrivalId", "TicketDepartureId", "HotelId").
 		Create(cityTour)
 	return res.Error
 }

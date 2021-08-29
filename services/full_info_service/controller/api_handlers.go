@@ -9,6 +9,31 @@ import (
 	"strconv"
 )
 
+func (controller FullInfoController) getCities(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "no authorization header",
+		})
+		return
+	}
+
+	cities, err := controller.model.GetCities(authHeader)
+
+	if err != nil {
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
+			"error": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, cities)
+	}
+}
+
 func (controller FullInfoController) getHotel(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {

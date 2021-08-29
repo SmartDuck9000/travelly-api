@@ -9,6 +9,7 @@ import (
 type FullInfoModelInterface interface {
 	Run() error
 
+	GetCities(authHeader string) ([]db.City, error)
 	GetHotel(id int, authHeader string) (*db.Hotel, error)
 	GetEvent(id int, authHeader string) (*db.Event, error)
 	GetRestaurant(id int, authHeader string) (*db.Restaurant, error)
@@ -29,6 +30,14 @@ func CreateFullInfoModel(config config.FullInfoModelConfig) FullInfoModelInterfa
 
 func (model FullInfoModel) Run() error {
 	return model.db.Open()
+}
+
+func (model FullInfoModel) GetCities(authHeader string) ([]db.City, error) {
+	if err := model.validateToken(authHeader); err != nil {
+		return nil, err
+	}
+
+	return model.db.GetCities()
 }
 
 func (model FullInfoModel) GetHotel(id int, authHeader string) (*db.Hotel, error) {

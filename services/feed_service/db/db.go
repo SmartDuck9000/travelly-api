@@ -110,12 +110,19 @@ func (db FeedPostgres) GetEvents(filter EventsFilterParameters) ([]Event, error)
 
 	res := db.conn.
 		Table("events").
-		Select("events.id AS event_id, event_name, event_start, event_end, event_rating, max_persons, cur_persons, country_name, city_name").
-		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Select("events.id AS event_id, event_name, event_start, event_end, event_rating AS rating, max_persons, cur_persons, country_name, city_name").
+		Joins("JOIN cities ON events.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
-		Where("event_start <= ? AND event_end <= ?", filter.From, filter.To).
 		Where("event_rating BETWEEN ? AND ?", filter.RatingFrom, filter.RatingTo).
 		Where("event_price BETWEEN ? AND ?", filter.PriceFrom, filter.PriceTo)
+
+	if filter.From != "" {
+		res = res.Where("event_start <= ?", filter.From)
+	}
+
+	if filter.To != "" {
+		res = res.Where("event_end <= ?", filter.To)
+	}
 
 	if filter.EventName != "" {
 		res = res.Where("event_name LIKE ?", filter.EventName)
@@ -144,8 +151,8 @@ func (db FeedPostgres) GetRestaurants(filter RestaurantFilterParameters) ([]Rest
 
 	res := db.conn.
 		Table("restaurants").
-		Select("restaurants.id AS restaurant_id, rest_name, rest_rating, country_name, city_name").
-		Joins("JOIN cities ON hotels.city_id = cities.id").
+		Select("restaurants.id AS restaurant_id, rest_name AS restaurant_name, rest_rating AS rating, country_name, city_name").
+		Joins("JOIN cities ON restaurants.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("rest_rating BETWEEN ? AND ?", filter.RatingFrom, filter.RatingTo).
 		Where("avg_price BETWEEN ? AND ?", filter.PriceFrom, filter.PriceTo)
@@ -196,8 +203,15 @@ func (db FeedPostgres) GetTickets(filter TicketFilterParameters) ([]Ticket, erro
 		Joins("JOIN transport_stations dest_ts ON tickets.dest_station_id = dest_ts.id").
 		Joins("JOIN cities dest_city ON dest_ts.city_id = dest_city.id").
 		Joins("JOIN countries dest_c ON dest_city.country_id = dest_c.id").
-		Where("ticket_date BETWEEN ? AND ?", filter.DateFrom, filter.DateTo).
 		Where("price BETWEEN ? AND ?", filter.PriceFrom, filter.PriceTo)
+
+	if filter.DateFrom != "" {
+		res = res.Where("ticket_date >= ?", filter.DateFrom)
+	}
+
+	if filter.DateTo != "" {
+		res = res.Where("ticket_date <= ?", filter.DateTo)
+	}
 
 	if filter.TransportType != "" {
 		res = res.Where("transport_type LIKE ?", filter.TransportType)
