@@ -39,8 +39,8 @@ type CityTour struct {
 }
 
 type CityTourEvent struct {
-	CtId    int `json:"id"`
-	EventId int `json:"restaurant_id"`
+	CtId    int `json:"ct_id"`
+	EventId int `json:"event_id"`
 }
 
 type RestaurantBooking struct {
