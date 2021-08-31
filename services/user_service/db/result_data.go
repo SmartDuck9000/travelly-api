@@ -21,6 +21,7 @@ type CityTourData struct {
 	Id int `json:"city_tour_id"`
 
 	CountryName   string `json:"country_name"`
+	CityId        int    `json:"city_id"`
 	CityName      string `json:"city_name"`
 	CityTourPrice string `json:"city_tour_price"`
 

@@ -23,6 +23,7 @@ type UserProfileDb interface {
 
 	CreateTour(tour *Tour) error
 	CreateCityTour(cityTour *CityTour) error
+	CreateCityTourEvent(cityTourEvent *CityTourEvent) error
 	CreateRestaurantBooking(restaurantBooking *RestaurantBooking) error
 
 	UpdateUser(user *User) error
@@ -104,11 +105,14 @@ func (db UserProfilePostgres) GetCityTours(tourId int) []CityTourData {
 	var cityTours []CityTourData
 	db.conn.
 		Table("city_tours").
-		Select("city_tours.id, country_name, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotels.id AS hotel_id").
+		Select("city_tours.id, country_name, cities.id AS city_id, city_name, city_tour_price, date_from, date_to, ticket_arrival_id, ticket_departure_id, hotels.id AS hotel_id").
 		Joins("JOIN hotels ON city_tours.hotel_id = hotels.id").
 		Joins("JOIN cities ON city_tours.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("tour_id = ?", tourId).Scan(&cityTours)
+	if cityTours == nil {
+		return []CityTourData{}
+	}
 	return cityTours
 }
 
@@ -116,10 +120,13 @@ func (db UserProfilePostgres) GetEvents(cityTourId int) []EventData {
 	var events []EventData
 	db.conn.
 		Table("city_tours").
-		Select("events.id, event_name, event_start, event_end, event_price, event_rating, max_persons, cur_persons").
+		Select("events.id AS id, event_name, event_start, event_end, event_price AS price, event_rating AS rating, max_persons, cur_persons").
 		Joins("JOIN city_tours_events ON city_tours.id = city_tours_events.ct_id").
 		Joins("JOIN events ON city_tours_events.event_id = events.id").
 		Where("city_tours.id = ?", cityTourId).Scan(&events)
+	if events == nil {
+		return []EventData{}
+	}
 	return events
 }
 
@@ -127,11 +134,14 @@ func (db UserProfilePostgres) GetRestaurantBookings(cityTourId int) []Restaurant
 	var restaurantBookings []RestaurantBookingData
 	db.conn.
 		Table("city_tours").
-		Select("restaurant_bookings.id, restaurant_id, booking_time, rest_name, avg_price, rest_rating").
+		Select("restaurant_bookings.id AS id, restaurant_id, booking_time, rest_name AS restaurant_name, avg_price AS average_price, rest_rating AS rating").
 		Joins("JOIN city_tours_rest_bookings ON city_tours.id = city_tours_rest_bookings.ct_id").
 		Joins("JOIN restaurant_bookings ON city_tours_rest_bookings.rb_id = restaurant_bookings.id").
 		Joins("JOIN restaurants ON restaurant_bookings.restaurant_id = restaurants.id").
 		Where("city_tours.id = ?", cityTourId).Scan(&restaurantBookings)
+	if restaurantBookings == nil {
+		return []RestaurantBookingData{}
+	}
 	return restaurantBookings
 }
 
@@ -202,8 +212,24 @@ func (db UserProfilePostgres) CreateCityTour(cityTour *CityTour) error {
 	return res.Error
 }
 
+func (db UserProfilePostgres) CreateCityTourEvent(cityTourEvent *CityTourEvent) error {
+	res := db.conn.Select("CtId", "EventId").Create(cityTourEvent)
+	return res.Error
+}
+
 func (db UserProfilePostgres) CreateRestaurantBooking(restaurantBooking *RestaurantBooking) error {
-	res := db.conn.Select("restaurantId", "bookingTime").Create(restaurantBooking)
+	dao := RestaurantBookingDAO{
+		Id:           0,
+		RestaurantId: restaurantBooking.RestaurantId,
+		BookingTime:  restaurantBooking.BookingTime,
+	}
+	res := db.conn.Select("RestaurantId", "BookingTime").Create(dao)
+
+	ctRb := CityTourRestaurantBooking{
+		CtId: restaurantBooking.CtId,
+		RbId: dao.Id,
+	}
+	res = db.conn.Select("CtId", "RbId").Create(ctRb)
 	return res.Error
 }
 
@@ -219,6 +245,13 @@ func (db UserProfilePostgres) UpdateTour(tour *Tour) error {
 
 func (db UserProfilePostgres) UpdateCityTour(cityTour *CityTour) error {
 	res := db.conn.Save(cityTour)
+	db.conn.Exec(
+		"CALL update_ct_price(?, ?, ?, ?)",
+		cityTour.TicketArrivalId,
+		cityTour.TicketDepartureId,
+		cityTour.HotelId,
+		cityTour.Id,
+	)
 	return res.Error
 }
 

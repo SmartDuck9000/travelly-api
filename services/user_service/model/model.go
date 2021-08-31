@@ -20,6 +20,7 @@ type UserModelInterface interface {
 
 	CreateTour(tour *db.Tour, authHeader string) error
 	CreateCityTour(cityTour *db.CityTour, authHeader string) error
+	CreateCityTourEvent(cityTourEvent *db.CityTourEvent, authHeader string) error
 	CreateRestaurantBooking(restaurantBooking *db.RestaurantBooking, authHeader string) error
 
 	UpdateUser(user *UpdateUserData, authHeader string) error
@@ -164,6 +165,13 @@ func (model UserModel) CreateCityTour(cityTour *db.CityTour, authHeader string) 
 		return err
 	}
 	return model.db.CreateCityTour(cityTour)
+}
+
+func (model UserModel) CreateCityTourEvent(cityTourEvent *db.CityTourEvent, authHeader string) error {
+	if err := model.validateToken(authHeader); err != nil {
+		return err
+	}
+	return model.db.CreateCityTourEvent(cityTourEvent)
 }
 
 func (model UserModel) CreateRestaurantBooking(restaurantBooking *db.RestaurantBooking, authHeader string) error {

@@ -37,6 +37,7 @@ func CreateUserController(conf config.UserControllerConfig) UserControllerInterf
 
 	controller.server.POST("/api/users/tours", controller.postTour)
 	controller.server.POST("/api/users/city_tours", controller.postCityTour)
+	controller.server.POST("/api/users/city_tour_events", controller.postCityTourEvent)
 	controller.server.POST("/api/users/restaurant_bookings", controller.postRestaurantBooking)
 
 	controller.server.PUT("/api/users", controller.updateUser)

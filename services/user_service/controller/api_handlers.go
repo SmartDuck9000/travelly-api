@@ -307,6 +307,39 @@ func (controller UserController) postCityTour(c *gin.Context) {
 	}
 }
 
+func (controller UserController) postCityTourEvent(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "no authorization header",
+		})
+		return
+	}
+
+	var cityTourEvent db.CityTourEvent
+	err := c.Bind(&cityTourEvent)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	err = controller.model.CreateCityTourEvent(&cityTourEvent, authHeader)
+	if err != nil {
+		var statusCode = http.StatusBadRequest
+		if errors.Is(err, token_manager.InvalidTokenError{}) {
+			statusCode = http.StatusUnauthorized
+		}
+
+		c.JSON(statusCode, gin.H{
+			"error": err.Error(),
+		})
+	} else {
+		c.Status(http.StatusOK)
+	}
+}
+
 func (controller UserController) postRestaurantBooking(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {

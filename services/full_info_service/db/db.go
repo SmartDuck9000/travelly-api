@@ -88,7 +88,7 @@ func (db FullInfoPostgres) GetEvent(id int) (*Event, error) {
 
 	res := db.conn.
 		Table("events").
-		Select("events.id AS event_id, event_name, event_description, event_addr, country_name, city_name, event_start, event_end, event_price, event_rating, max_persons, cur_persons, languages").
+		Select("events.id AS event_id, event_name, event_description, event_addr, country_name, city_name, event_start, event_end, event_price AS price, event_rating AS rating, max_persons, cur_persons, languages").
 		Joins("JOIN cities ON events.city_id = cities.id").
 		Joins("JOIN countries ON cities.country_id = countries.id").
 		Where("events.id = ?", id).Scan(&event)
@@ -116,8 +116,10 @@ func (db FullInfoPostgres) GetTicket(id int) (*Ticket, error) {
 		Table("tickets").
 		Select(
 			"tickets.id AS ticket_id, company_name, company_rating, "+
-				"orig_ts.station_name, orig_ts.station_addr, orig_c.country_name, orig_city.city_name, "+
-				"dest_ts.station_name, dest_ts.station_addr, dest_c.country_name, dest_city.city_name, "+
+				"orig_ts.station_name AS orig_station_name, orig_ts.station_addr AS orig_station_addr, "+
+				"orig_c.country_name AS orig_country_name, orig_city.city_name AS orig_city_name, "+
+				"dest_ts.station_name AS dest_station_name, dest_ts.station_addr AS dest_station_addr, "+
+				"dest_c.country_name AS dest_country_name, dest_city.city_name AS dest_city_name, "+
 				"transport_type, price, ticket_date").
 		Joins("JOIN transport_companies on tickets.company_id = transport_companies.id").
 		Joins("JOIN transport_stations orig_ts ON tickets.orig_station_id = orig_ts.id").

@@ -32,7 +32,7 @@ type Event struct {
 
 	EventStart string  `json:"event_start"`
 	EventEnd   string  `json:"event_end"`
-	Price      float64 `json:"price"`
+	Price      string  `json:"price"`
 	Rating     float64 `json:"rating"`
 
 	MaxPersons int      `json:"max_persons"`
@@ -60,8 +60,8 @@ type Restaurant struct {
 type Ticket struct {
 	TicketId int `json:"ticket_id"`
 
-	CompanyName   string `json:"company_name"`
-	CompanyRating string `json:"company_rating"`
+	CompanyName   string  `json:"company_name"`
+	CompanyRating float64 `json:"company_rating"`
 
 	OrigStationName string `json:"orig_station_name"`
 	OrigStationAddr string `json:"orig_station_addr"`
@@ -73,7 +73,7 @@ type Ticket struct {
 	DestCityName    string `json:"dest_city_name"`
 	DestCountryName string `json:"dest_country_name"`
 
-	TransportType string  `json:"transport_type"`
-	Price         float64 `json:"price"`
-	TicketDate    string  `json:"ticket_date"`
+	TransportType string `json:"transport_type"`
+	Price         string `json:"price"`
+	TicketDate    string `json:"ticket_date"`
 }
