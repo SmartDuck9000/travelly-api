@@ -20,7 +20,7 @@ if hotel_id != 0:
 old_price_request = plpy.prepare('SELECT city_tour_price, avg_price, ta.price AS ta_price, td.price AS td_price FROM city_tours ct JOIN hotels h ON ct.hotel_id = h.id JOIN tickets ta ON ta.id = ct.ticket_arrival_id JOIN tickets td ON td.id = ct.ticket_departure_id WHERE ct.id = $1', ['int'])
 old_price_res = plpy.execute(old_price_request, [city_tour_id])[0]
 
-new_price =  old_price_res['city_tour_price'] - old_price_res['avg_price'] - old_price_res['ta_price'] - old_price_res['td_price'] + sum_price
+new_price = old_price_res['city_tour_price'] - old_price_res['avg_price'] - old_price_res['ta_price'] - old_price_res['td_price'] + sum_price
 
 update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
 plpy.execute(update_request, [int(sum_price), city_tour_id])

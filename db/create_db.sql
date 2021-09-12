@@ -118,3 +118,48 @@ CREATE TABLE city_tours_rest_bookings(
     ct_id int NOT NULL REFERENCES city_tours(id),
     rb_id int NOT NULL REFERENCES restaurant_bookings(id)
 )
+
+CREATE USER travelly_registrator WITH PASSWORD 'tReg_0314cf161803';
+GRANT SELECT ON users TO travelly_registrator;
+GRANT INSERT ON users TO travelly_registrator;
+GRANT DELETE ON users TO travelly_registrator;
+
+CREATE USER travelly_reader WITH PASSWORD 'tRd_0314cf161803';
+GRANT SELECT ON cities TO travelly_reader;
+GRANT SELECT ON countries TO travelly_reader;
+GRANT SELECT ON events TO travelly_reader;
+GRANT SELECT ON hotels TO travelly_reader;
+GRANT SELECT ON restaurants TO travelly_reader;
+GRANT SELECT ON tickets TO travelly_reader;
+GRANT SELECT ON transport_companies TO travelly_reader;
+GRANT SELECT ON transport_stations TO travelly_reader;
+
+CREATE USER travelly_user WITH PASSWORD 'tUsr_0314cf161803';
+GRANT SELECT ON users TO travelly_user;
+GRANT UPDATE ON users TO travelly_user;
+GRANT SELECT ON tours TO travelly_user;
+GRANT INSERT ON tours TO travelly_user;
+GRANT DELETE ON tours TO travelly_user;
+GRANT SELECT ON city_tours TO travelly_user;
+GRANT INSERT ON city_tours TO travelly_user;
+GRANT DELETE ON city_tours TO travelly_user;
+GRANT UPDATE ON city_tours TO travelly_user;
+GRANT SELECT ON city_tours_events TO travelly_user;
+GRANT INSERT ON city_tours_events TO travelly_user;
+GRANT DELETE ON city_tours_events TO travelly_user;
+GRANT UPDATE ON city_tours_events TO travelly_user;
+GRANT SELECT ON city_tours_rest_bookings TO travelly_user;
+GRANT INSERT ON city_tours_rest_bookings TO travelly_user;
+GRANT DELETE ON city_tours_rest_bookings TO travelly_user;
+GRANT UPDATE ON city_tours_rest_bookings TO travelly_user;
+GRANT SELECT ON cities TO travelly_user;
+GRANT SELECT ON countries TO travelly_user;
+GRANT SELECT ON events TO travelly_user;
+GRANT SELECT ON hotels TO travelly_user;
+GRANT SELECT ON restaurants TO travelly_user;
+GRANT SELECT ON restaurant_bookings TO travelly_user;
+GRANT INSERT ON restaurant_bookings TO travelly_user;
+GRANT DELETE ON restaurant_bookings TO travelly_user;
+GRANT SELECT ON tickets TO travelly_user;
+GRANT SELECT ON transport_companies TO travelly_user;
+GRANT SELECT ON transport_stations TO travelly_user;
