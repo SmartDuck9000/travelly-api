@@ -38,24 +38,24 @@ type CityTour struct {
 	HotelId int `json:"hotel_id"`
 }
 
-type CityTourEvent struct {
+type CityToursEvent struct {
 	CtId    int `json:"ct_id"`
 	EventId int `json:"event_id"`
 }
 
-type RestaurantBooking struct {
+type RestaurantBookingDTO struct {
 	CtId         int    `json:"id"`
 	RestaurantId int    `json:"restaurant_id"`
 	BookingTime  string `json:"booking_time"`
 }
 
-type RestaurantBookingDAO struct {
+type RestaurantBooking struct {
 	Id           int    `json:"id"`
 	RestaurantId int    `json:"restaurant_id"`
 	BookingTime  string `json:"booking_time"`
 }
 
-type CityTourRestaurantBooking struct {
+type CityToursRestBooking struct {
 	CtId int `json:"ct_id"`
 	RbId int `json:"rb_id"`
 }

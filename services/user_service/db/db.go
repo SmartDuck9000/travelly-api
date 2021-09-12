@@ -23,8 +23,8 @@ type UserProfileDb interface {
 
 	CreateTour(tour *Tour) error
 	CreateCityTour(cityTour *CityTour) error
-	CreateCityTourEvent(cityTourEvent *CityTourEvent) error
-	CreateRestaurantBooking(restaurantBooking *RestaurantBooking) error
+	CreateCityTourEvent(cityTourEvent *CityToursEvent) error
+	CreateRestaurantBooking(restaurantBooking *RestaurantBookingDTO) error
 
 	UpdateUser(user *User) error
 	UpdateTour(tour *Tour) error
@@ -212,20 +212,20 @@ func (db UserProfilePostgres) CreateCityTour(cityTour *CityTour) error {
 	return res.Error
 }
 
-func (db UserProfilePostgres) CreateCityTourEvent(cityTourEvent *CityTourEvent) error {
+func (db UserProfilePostgres) CreateCityTourEvent(cityTourEvent *CityToursEvent) error {
 	res := db.conn.Select("CtId", "EventId").Create(cityTourEvent)
 	return res.Error
 }
 
-func (db UserProfilePostgres) CreateRestaurantBooking(restaurantBooking *RestaurantBooking) error {
-	dao := RestaurantBookingDAO{
+func (db UserProfilePostgres) CreateRestaurantBooking(restaurantBooking *RestaurantBookingDTO) error {
+	dao := RestaurantBooking{
 		Id:           0,
 		RestaurantId: restaurantBooking.RestaurantId,
 		BookingTime:  restaurantBooking.BookingTime,
 	}
-	res := db.conn.Select("RestaurantId", "BookingTime").Create(dao)
+	res := db.conn.Select("RestaurantId", "BookingTime").Create(&dao)
 
-	ctRb := CityTourRestaurantBooking{
+	ctRb := CityToursRestBooking{
 		CtId: restaurantBooking.CtId,
 		RbId: dao.Id,
 	}

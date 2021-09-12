@@ -316,7 +316,7 @@ func (controller UserController) postCityTourEvent(c *gin.Context) {
 		return
 	}
 
-	var cityTourEvent db.CityTourEvent
+	var cityTourEvent db.CityToursEvent
 	err := c.Bind(&cityTourEvent)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -349,7 +349,7 @@ func (controller UserController) postRestaurantBooking(c *gin.Context) {
 		return
 	}
 
-	var rb db.RestaurantBooking
+	var rb db.RestaurantBookingDTO
 	err := c.Bind(&rb)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
