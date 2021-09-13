@@ -30,7 +30,7 @@ CREATE TABLE tickets(
     orig_station_id int NOT NULL REFERENCES transport_stations(id),
     dest_station_id int NOT NULL REFERENCES transport_stations(id),
     transport_type text,
-    price money CONSTRAINT ticket_price_validation CHECK (price::numeric > 0),
+    price money CONSTRAINT ticket_price_validation CHECK (price::numeric >= 0),
     ticket_date date
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE hotels(
     hotel_addr text,
     stars int CONSTRAINT hotel_stars_validation CHECK (1 <= stars AND stars <= 5),
     hotel_rating numeric(2, 1) CONSTRAINT hotel_rating_validation CHECK (1.0 <= hotel_rating AND hotel_rating <= 5.0),
-    avg_price money CONSTRAINT hotel_price_validation CHECK (avg_price::numeric > 0),
+    avg_price money CONSTRAINT hotel_price_validation CHECK (avg_price::numeric >= 0),
     near_sea bool
 );
 
