@@ -4,6 +4,7 @@ import (
 	"github.com/SmartDuck9000/travelly-api/services/user_service/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
@@ -244,14 +245,23 @@ func (db UserProfilePostgres) UpdateTour(tour *Tour) error {
 }
 
 func (db UserProfilePostgres) UpdateCityTour(cityTour *CityTour) error {
-	res := db.conn.Save(cityTour)
 	db.conn.Exec(
-		"CALL travelly_db.update_ct_price(?, ?, ?, ?)",
+		"CALL public.update_ct_price(?, ?, ?, ?)",
 		cityTour.TicketArrivalId,
 		cityTour.TicketDepartureId,
 		cityTour.HotelId,
 		cityTour.Id,
 	)
+	var cityTourPrice string
+	db.conn.
+		Table("city_tours").
+		Select("city_tour_price").
+		Where("id = ?", cityTour.Id).
+		Scan(&cityTourPrice)
+	newCityTour := cityTour
+	newCityTour.CityTourPrice, _ = strconv.ParseFloat(cityTourPrice[1:], 64)
+
+	res := db.conn.Save(&newCityTour)
 	return res.Error
 }
 

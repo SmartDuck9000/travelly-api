@@ -17,11 +17,14 @@ sum_price += float(hotel_price[1:])
 old_price_request = plpy.prepare('SELECT city_tour_price, avg_price, ta.price AS ta_price, td.price AS td_price FROM city_tours ct JOIN hotels h ON ct.hotel_id = h.id JOIN tickets ta ON ta.id = ct.ticket_arrival_id JOIN tickets td ON td.id = ct.ticket_departure_id WHERE ct.id = $1', ['int'])
 old_price_res = plpy.execute(old_price_request, [city_tour_id])[0]
 
-new_price = old_price_res['city_tour_price'] - old_price_res['avg_price'] - old_price_res['ta_price'] - old_price_res['td_price'] + sum_price
+city_tour_price = float(old_price_res['city_tour_price'][1:])
+avg_price = float(old_price_res['avg_price'][1:])
+ticket_price = float(old_price_res['ta_price'][1:]) + float(old_price_res['td_price'][1:])
+
+new_price = city_tour_price - avg_price - ticket_price + sum_price
 
 update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
-plpy.execute(update_request, [int(sum_price), city_tour_id])
-plpy.error("update_ct_price.sum_price: " + str(sum_price))
+plpy.execute(update_request, [int(new_price), city_tour_id])
 
 $$ language plpython3u;
 
@@ -125,13 +128,13 @@ new = TD['new']
 sum_price = 0
 
 ticket_request = plpy.prepare('SELECT price FROM tickets WHERE tickets.id = $1', ['int'])
-sum_price += plpy.execute(ticket_request, [new['ticket_arrival_id']])[0]['price']
+sum_price += float(plpy.execute(ticket_request, [new['ticket_arrival_id']])[0]['price'][1:])
 
 ticket_request = plpy.prepare('SELECT price FROM tickets WHERE tickets.id = $1', ['int'])
-sum_price += plpy.execute(ticket_request, [new['ticket_departure_id']])[0]['price']
+sum_price += float(plpy.execute(ticket_request, [new['ticket_departure_id']])[0]['price'][1:])
 
 hotel_request = plpy.prepare('SELECT avg_price FROM hotels WHERE hotels.id = $1', ['int'])
-sum_price += plpy.execute(hotel_request, [new['hotel_id']])[0]['avg_price']
+sum_price += float(plpy.execute(hotel_request, [new['hotel_id']])[0]['avg_price'][1:])
 
 TD['new']['city_tour_price'] = sum_price
 $$ language plpython3u;
@@ -258,3 +261,40 @@ $$ language plpython3u;
 CREATE TRIGGER ct_price_before_ticket_delete
 BEFORE DELETE ON tickets
 FOR EACH ROW EXECUTE FUNCTION delete_tickets_ct_price();
+
+CREATE OR REPLACE FUNCTION delete_ct() RETURNS TRIGGER AS $$
+old = TD['old']
+
+update_request = plpy.prepare('UPDATE tours SET tour_price = $1 WHERE id = $2', ['int', 'int'])
+request = plpy.prepare('SELECT tour_price FROM tours WHERE tours.id = $1', ['int'])
+tour = plpy.execute(request, [old['tour_id']])
+
+tour_price = 0.0
+if len(tour) > 0:
+    tour_price = float(tour[0]['tour_price'][1:])
+old_city_tour_price = float(old['city_tour_price'][1:])
+plpy.execute(update_request, [int(tour_price - old_city_tour_price), old['tour_id']])
+
+delete_events_request = plpy.prepare('DELETE FROM city_tours_events WHERE ct_id = $1', ['int'])
+plpy.execute(delete_events_request, [old['id']])
+
+delete_tickets_request = plpy.prepare('DELETE FROM city_tours_rest_bookings WHERE ct_id = $1', ['int'])
+plpy.execute(delete_tickets_request, [old['id']])
+
+$$ language plpython3u;
+
+CREATE TRIGGER delete_ct
+BEFORE DELETE ON city_tours
+FOR EACH ROW EXECUTE FUNCTION delete_ct();
+
+CREATE OR REPLACE FUNCTION delete_tour() RETURNS TRIGGER AS $$
+old = TD['old']
+
+delete_request = plpy.prepare('DELETE FROM city_tours WHERE tour_id = $1', ['int'])
+plpy.execute(delete_request, [old['id']])
+
+$$ language plpython3u;
+
+CREATE TRIGGER delete_tour
+BEFORE DELETE ON tours
+FOR EACH ROW EXECUTE FUNCTION delete_tour();
