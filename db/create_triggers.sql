@@ -24,6 +24,7 @@ new_price = old_price_res['city_tour_price'] - old_price_res['avg_price'] - old_
 
 update_request = plpy.prepare('UPDATE city_tours SET city_tour_price = $1 WHERE id = $2', ['int', 'int'])
 plpy.execute(update_request, [int(sum_price), city_tour_id])
+plpy.error("update_ct_price.sum_price: " + str(sum_price))
 
 $$ language plpython3u;
 

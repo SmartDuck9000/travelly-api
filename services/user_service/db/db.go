@@ -246,7 +246,7 @@ func (db UserProfilePostgres) UpdateTour(tour *Tour) error {
 func (db UserProfilePostgres) UpdateCityTour(cityTour *CityTour) error {
 	res := db.conn.Save(cityTour)
 	db.conn.Exec(
-		"CALL update_ct_price(?, ?, ?, ?)",
+		"CALL travelly_db.update_ct_price(?, ?, ?, ?)",
 		cityTour.TicketArrivalId,
 		cityTour.TicketDepartureId,
 		cityTour.HotelId,
