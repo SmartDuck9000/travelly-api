@@ -1,0 +1,1150 @@
+swagger: "2.0"
+info:
+  description: "API for travelly app(app, that helps people to organize their travel plan)"
+  version: "2.0.0"
+  title: "Swagger documentation for travelly API"
+host: "localhost"
+basePath: "/api/v2"
+tags:
+- name: "auth"
+  description: "Authorization on travelly app"
+- name: "users"
+  description: "Access to user profile and tours"
+- name: "info"
+  description: "Access to info about events, restaurants, hotels and tickets"
+- name: "feed"
+  description: "Access to feed for events, restaurants, hotels and tickets"
+
+schemes:
+- "https"
+- "http"
+paths:
+  /auth:
+    get:
+      tags:
+      - "auth"
+      summary: "Update token"
+      description: "Updates access token using refresh token"
+      operationId: "refreshToken"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "access_token"
+        in: "header"
+        description: "Access token"
+        required: true
+        type: "string"
+      - name: "refresh_token"
+        in: "header"
+        description: "Refresh token"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Tokens"
+        "401":
+          description: "Invalid refresh token, need authorization"
+  
+  /auth/login:
+    get:
+      tags:
+      - "auth"
+      summary: "Login user"
+      operationId: "login"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/Login"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/TokensID"
+        "400":
+          description: "Invalid login or password"
+  
+  /auth/email_register:
+    post:
+      tags:
+      - "auth"
+      summary: "Register via email"
+      operationId: "email_register"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        default:
+          description: "successful operation"
+    
+  /users:
+    get:
+      tags:
+      - "users"
+      summary: "Get user"
+      operationId: "get_user"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/UserInfo"
+        "404":
+          description: "User not found"
+        "401":
+          description: "Invalid access token"
+    put:
+      tags:
+      - "users"
+      summary: "Updated user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/UserUpdate"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+        "401":
+          description: "Invalid access token"
+    delete:
+      tags:
+      - "users"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid user id supplied"
+        "404":
+          description: "User not found"
+          
+  /users/tours:
+    get:
+      tags:
+      - "users"
+      summary: "Get tour"
+      operationId: "get_tours"
+      parameters:
+      - name: "user_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ToursRepsonse"
+        "404":
+          description: "Tour not found"
+        "401":
+          description: "Invalid access token"
+    post:
+      tags:
+      - "users"
+      summary: "Create tour"
+      operationId: "create_tour"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/TourCreate"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+    put:
+      tags:
+      - "users"
+      summary: "Updated tour"
+      description: "This can only be done by the logged in user."
+      operationId: "update_tour"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/TourUpdate"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "Tour not found"
+        "401":
+          description: "Invalid access token"
+    delete:
+      tags:
+      - "users"
+      summary: "Delete tour"
+      description: "This can only be done by the logged in user."
+      operationId: "delete_tour"
+      parameters:
+      - name: "tour_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid user id supplied"
+        "404":
+          description: "Tour not found"
+  
+  /users/tours/city_tours:
+    get:
+      tags:
+      - "users"
+      summary: "Get city tour"
+      operationId: "get_city_tours"
+      parameters:
+      - name: "tour_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CityToursRepsonse"
+        "404":
+          description: "City tour not found"
+        "401":
+          description: "Invalid access token"
+    post:
+      tags:
+      - "users"
+      summary: "Create city tour"
+      operationId: "create_city_tour"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/CityTourCreate"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+    put:
+      tags:
+      - "users"
+      summary: "Updated city tour"
+      description: "This can only be done by the logged in user."
+      operationId: "update_city_tour"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/CityTourUpdate"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "City tour not found"
+        "401":
+          description: "Invalid access token"
+    delete:
+      tags:
+      - "users"
+      summary: "Delete city tour"
+      description: "This can only be done by the logged in user."
+      operationId: "delete_city_tour"
+      parameters:
+      - name: "city_tour_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid user id supplied"
+        "404":
+          description: "City tour not found"
+
+  /users/tours/city_tours/events:
+    get:
+      tags:
+      - "users"
+      summary: "Get city tour events"
+      operationId: "get_city_tour_events"
+      parameters:
+      - name: "city_tour_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/EventsRepsonse"
+        "404":
+          description: "City tour events not found"
+        "401":
+          description: "Invalid access token"
+  
+  /users/tours/city_tours/restaurant_bookings:
+    get:
+      tags:
+      - "users"
+      summary: "Get city tour restaurant bookings"
+      operationId: "get_city_tour_restaurant_bookings"
+      parameters:
+      - name: "city_tour_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/RestBookingRepsonse"
+        "404":
+          description: "City tour restaurant bookings not found"
+        "401":
+          description: "Invalid access token"
+  
+  /users/tours/city_tours/tickets:
+    get:
+      tags:
+      - "users"
+      summary: "Get city tour tickets"
+      operationId: "get_city_tour_tickets"
+      parameters:
+      - name: "city_tour_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CityTourTicketsRepsonse"
+        "404":
+          description: "City tour tickets not found"
+        "401":
+          description: "Invalid access token"
+  
+  /users/tours/city_tours/hotels:
+    get:
+      tags:
+      - "users"
+      summary: "Get city tour hotel"
+      operationId: "get_city_tour_hotel"
+      parameters:
+      - name: "city_tour_id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CityTourHotelRepsonse"
+        "404":
+          description: "City tour hotel not found"
+        "401":
+          description: "Invalid access token"
+    
+  /info/cities:
+    get:
+      tags:
+      - "info"
+      summary: "Get info about all cities"
+      operationId: "get_cities"
+      parameters:
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CityInfo"
+        "401":
+          description: "Invalid access token"
+  
+  /info/hotels:
+    get:
+      tags:
+      - "info"
+      summary: "Get info about hotel"
+      operationId: "get_hotel_info"
+      parameters:
+      - name: "id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/HotelInfo"
+        "401":
+          description: "Invalid access token"
+  
+  /info/events:
+    get:
+      tags:
+      - "info"
+      summary: "Get info about event"
+      operationId: "get_event_info"
+      parameters:
+      - name: "id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/EventInfo"
+        "401":
+          description: "Invalid access token"
+  
+  /info/restaurants:
+    get:
+      tags:
+      - "info"
+      summary: "Get info about restaurant"
+      operationId: "get_restaurant_info"
+      parameters:
+      - name: "id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/RestaurantInfo"
+        "401":
+          description: "Invalid access token"
+  
+  /info/tickets:
+    get:
+      tags:
+      - "info"
+      summary: "Get info about restaurant"
+      operationId: "get_ticket_info"
+      parameters:
+      - name: "id"
+        in: "query"
+        required: true
+        type: "integer"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/TicketResponse"
+        "401":
+          description: "Invalid access token"
+  
+  /feed/hotels:
+    get:
+      tags:
+      - "feed"
+      summary: "Get hotel feed"
+      operationId: "hotel_feed"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        description: "Hotel feed filter parameters"
+        schema:
+          $ref: "#/definitions/HotelFilter"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/HotelInfo"
+        "400":
+          description: "Invalid filter parameters"
+        "401":
+          description: "Invalid access token"
+  
+  /feed/events:
+    get:
+      tags:
+      - "feed"
+      summary: "Get event feed"
+      operationId: "event_feed"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        description: "Event feed filter parameters"
+        schema:
+          $ref: "#/definitions/EventFilter"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/HotelInfo"
+        "400":
+          description: "Invalid filter parameters"
+        "401":
+          description: "Invalid access token"
+  
+  /feed/restaurants:
+    get:
+      tags:
+      - "feed"
+      summary: "Get restaurant feed"
+      operationId: "restaurant_feed"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        description: "Restaurant feed filter parameters"
+        schema:
+          $ref: "#/definitions/RestaurantFilter"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/HotelInfo"
+        "400":
+          description: "Invalid filter parameters"
+        "401":
+          description: "Invalid access token"
+  
+  /feed/tickets:
+    get:
+      tags:
+      - "feed"
+      summary: "Get ticket feed"
+      operationId: "ticket_feed"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        description: "Ticket feed filter parameters"
+        schema:
+          $ref: "#/definitions/TicketFilter"
+      - name: "access_token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TicketResponse"
+        "400":
+          description: "Invalid filter parameters"
+        "401":
+          description: "Invalid access token"
+
+definitions:
+  UserInfo:
+    type: "object"
+    properties:
+      user_id:
+        type: "integer"
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      photo_url:
+        type: "string"
+  UserUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+      photo_url:
+        type: "string"
+  User:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+      first_name:
+        type: "string"
+      last_name:
+        type: "string"
+  Tokens:
+    type: "object"
+    properties:
+      access_token:
+        type: "string"
+      refresh_token:
+        type: "string"
+  TokensID:
+    type: "object"
+    properties:
+      user_id:
+        type: "integer"
+      access_token:
+        type: "string"
+      refresh_token:
+        type: "string"
+  Login:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+  
+  ToursRepsonse:
+    type: "object"
+    properties:
+      tour_id:
+        type: "integer"
+      tour_name:
+        type: "string"
+      tour_price:
+        type: "number"
+      tour_date_from:
+        type: "string"
+      tour_date_to:
+        type: "string"
+        
+  CityToursRepsonse:
+    type: "object"
+    properties:
+      city_tour_id:
+        type: "integer"
+      country_name:
+        type: "string"
+      city_name:
+        type: "string"
+      city_tour_price:
+        type: "number"
+      date_from:
+        type: "string"
+      date_to:
+        type: "string"
+      ticket_arrival_id:
+        type: "integer"
+      ticket_departure_id:
+        type: "integer"
+      hotel_name:
+        type: "string"
+        
+  EventsRepsonse:
+    type: "object"
+    properties:
+      event_id:
+        type: "integer"
+      event_name:
+        type: "string"
+      event_start:
+        type: "string"
+      event_end:
+        type: "string"
+      price:
+        type: "number"
+      rating:
+        type: "number"
+      max_persons:
+        type: "integer"
+      cur_persons:
+        type: "integer"
+  
+  RestBookingRepsonse:
+    type: "object"
+    properties:
+      restaurant_booking_id:
+        type: "integer"
+      restaurant_id:
+        type: "integer"
+      booking_time:
+        type: "string"
+      restaurant_name:
+        type: "string"
+      average_price:
+        type: "number"
+      rating:
+        type: "number"
+  
+  TicketResponse:
+    type: "object"
+    properties:
+      ticket_id:
+        type: "integer"
+      transport_type:
+        type: "string"
+      price:
+        type: "number"
+      date:
+        type: "string"
+      orig_station_name:
+        type: "string"
+      orig_station_addr:
+        type: "string"
+      dst_station_name:
+        type: "string"
+      dst_station_addr:
+        type: "string"
+      company_name:
+        type: "string"
+      company_rating:
+        type: "number"
+        
+  CityTourTicketsRepsonse:
+    type: "object"
+    properties:
+      arrival_ticket:
+        type: "object"
+        $ref: "#/definitions/TicketResponse"
+      departure_ticket:
+        type: "object"
+        $ref: "#/definitions/TicketResponse"
+  
+  CityTourHotelRepsonse:
+    type: "object"
+    properties:
+      hotel_id:
+        type: "integer"
+      hotel_name:
+        type: "string"
+      stars:
+        type: "integer"
+      hotel_rating:
+        type: "number"
+        
+  
+  TourCreate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      user_id:
+        type: "integer"
+      tour_name:
+        type: "string"
+      tour_price:
+        type: "number"
+      tour_date_from:
+        type: "string"
+      tour_date_to:
+        type: "string"
+  
+  CityTourCreate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      user_id:
+        type: "integer"
+      city_id:
+        type: "integer"
+      city_tour_price:
+        type: "number"
+      date_from:
+        type: "string"
+      date_to:
+        type: "string"
+      ticket_arrival_id:
+        type: "integer"
+      ticket_departure_id:
+        type: "integer"
+      hotel_id:
+        type: "integer"
+  
+  RestBookingCreate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      restaurant_id:
+        type: "integer"
+      booking_time:
+        type: "string"
+        
+  TourUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      user_id:
+        type: "integer"
+      tour_name:
+        type: "string"
+      tour_price:
+        type: "number"
+      tour_date_from:
+        type: "string"
+      tour_date_to:
+        type: "string"
+        
+  CityTourUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      user_id:
+        type: "integer"
+      city_id:
+        type: "integer"
+      city_tour_price:
+        type: "number"
+      date_from:
+        type: "string"
+      date_to:
+        type: "string"
+      ticket_arrival_id:
+        type: "integer"
+      ticket_departure_id:
+        type: "integer"
+      hotel_id:
+        type: "integer"
+        
+  RestBookingUpdate:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      restaurant_id:
+        type: "integer"
+      booking_time:
+        type: "string"
+        
+  CityInfo:
+    type: "object"
+    properties:
+      city_id:
+        type: "integer"
+      city_name:
+        type: "string"
+        
+  HotelInfo:
+    type: "object"
+    properties:
+      hotel_id:
+        type: "integer"
+      hotel_name:
+        type: "string"
+      hotel_description:
+        type: "string"
+      hotel_addr:
+        type: "string"
+      stars:
+        type: "string"
+      hotel_rating:
+        type: "number"
+      average_price:
+        type: "number"
+      near_sea:
+        type: "boolean"
+      country_name:
+        type: "string"
+      city_name:
+        type: "string"
+  
+  EventInfo:
+    type: "object"
+    properties:
+      event_id:
+        type: "integer"
+      event_name:
+        type: "string"
+      event_description:
+        type: "string"
+      event_addr:
+        type: "string"
+      country_name:
+        type: "string"
+      city_name:
+        type: "string"
+      event_start:
+        type: "string"
+      event_end:
+        type: "string"
+      price:
+        type: "number"
+      rating:
+        type: "number"
+      max_persons:
+        type: "integer"
+      cur_persons:
+        type: "integer"
+        
+  RestaurantInfo:
+    type: "object"
+    properties:
+      restaurant_id:
+        type: "integer"
+      restaurant_name:
+        type: "string"
+      restaurant_description:
+        type: "string"
+      restaurant_addr:
+        type: "string"
+      average_price:
+        type: "number"
+      rating:
+        type: "number"
+      child_menu:
+        type: "boolean"
+      smoking_room:
+        type: "boolean"
+      country_name:
+        type: "string"
+      city_name:
+        type: "string"
+  
+  HotelFilter:
+    type: "object"
+    properties:
+      limit:
+        type: "integer"
+      offset:
+        type: "integer"
+      order_by:
+        type: "string"
+      order_type:
+        type: "string"
+      hotel_name:
+        type: "string"
+      stars_from:
+        type: "integer"
+      stars_to:
+        type: "integer"
+      rating_from:
+        type: "number"
+      rating_to:
+        type: "number"
+      price_from:
+        type: "number"
+      price_to:
+        type: "number"
+      near_sea:
+        type: "boolean"
+      city_name:
+        type: "string"
+  
+  EventFilter:
+    type: "object"
+    properties:
+      limit:
+        type: "integer"
+      offset:
+        type: "integer"
+      order_by:
+        type: "string"
+      order_type:
+        type: "string"
+      event_name:
+        type: "string"
+      from:
+        type: "string"
+      to:
+        type: "string"
+      rating_from:
+        type: "number"
+      rating_to:
+        type: "number"
+      price_from:
+        type: "number"
+      price_to:
+        type: "number"
+      city_name:
+        type: "string"
+        
+  RestaurantFilter:
+    type: "object"
+    properties:
+      limit:
+        type: "integer"
+      offset:
+        type: "integer"
+      order_by:
+        type: "string"
+      order_type:
+        type: "string"
+      restaurant_name:
+        type: "string"
+      rating_from:
+        type: "number"
+      rating_to:
+        type: "number"
+      price_from:
+        type: "number"
+      price_to:
+        type: "number"
+      child_menu:
+        type: "boolean"
+      smoking_room:
+        type: "boolean"
+      city_name:
+        type: "string"
+    
+  TicketFilter:
+    type: "object"
+    properties:
+      limit:
+        type: "integer"
+      offset:
+        type: "integer"
+      order_by:
+        type: "string"
+      order_type:
+        type: "string"
+      transport_type:
+        type: "string"
+      date_from:
+        type: "string"
+      date_to:
+        type: "string"
+      price_from:
+        type: "number"
+      price_to:
+        type: "number"
+      orig_city_name:
+        type: "string"
+      dest_city_name:
+        type: "string"
+
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

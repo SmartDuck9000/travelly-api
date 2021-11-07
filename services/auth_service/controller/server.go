@@ -28,8 +28,8 @@ func CreateAuthController(conf config.AuthControllerConfig) AuthControllerInterf
 	}
 
 	controller.server.GET("/api/v2/auth/", controller.refreshToken)
+	controller.server.GET("/api/v2/auth/login", controller.login)
 	controller.server.POST("/api/v2/auth/email_register", controller.register)
-	controller.server.POST("/api/v2/auth/login", controller.login)
 
 	return &controller
 }
