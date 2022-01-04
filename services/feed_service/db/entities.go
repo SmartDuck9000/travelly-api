@@ -1,6 +1,6 @@
 package db
 
-type Hotel struct {
+type HotelFeedItem struct {
 	HotelId     int     `json:"hotel_id"`
 	HotelName   string  `json:"hotel_name"`
 	Stars       int     `json:"stars"`
@@ -10,7 +10,7 @@ type Hotel struct {
 	CityName    string `json:"city_name"`
 }
 
-type Event struct {
+type EventFeedItem struct {
 	EventId   int    `json:"event_id"`
 	EventName string `json:"event_name"`
 
@@ -25,7 +25,7 @@ type Event struct {
 	CityName    string `json:"city_name"`
 }
 
-type Restaurant struct {
+type RestaurantFeedItem struct {
 	RestaurantId   int     `json:"restaurant_id"`
 	RestaurantName string  `json:"restaurant_name"`
 	Rating         float64 `json:"rating"`
@@ -34,7 +34,7 @@ type Restaurant struct {
 	CityName    string `json:"city_name"`
 }
 
-type Ticket struct {
+type TicketFeedItem struct {
 	TicketId      int    `json:"ticket_id"`
 	TransportType string `json:"transport_type"`
 	Price         string `json:"price"`

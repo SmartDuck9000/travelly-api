@@ -14,6 +14,15 @@ services:
         ports:
             - 0.0.0.0:5000:5432
 
+    nginx:
+        image: nginx:alpine
+        ports:
+            - "80:80"
+            - "5050:5050"
+        volumes:
+             - ./.docker/etc/nginx/:/etc/nginx/
+
+
     profile:
         build: ./services/user_service
         restart: unless-stopped

@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/SmartDuck9000/travelly-api/server/db"
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -12,10 +13,10 @@ type FeedDB interface {
 	Open() error
 	configureConnectionPools() error
 
-	GetHotels(filter HotelFilterParameters) ([]Hotel, error)
-	GetEvents(filter EventsFilterParameters) ([]Event, error)
-	GetRestaurants(filter RestaurantFilterParameters) ([]Restaurant, error)
-	GetTickets(filter TicketFilterParameters) ([]Ticket, error)
+	GetHotels(filter db.HotelFilterParameters) ([]Hotel, error)
+	GetEvents(filter db.EventsFilterParameters) ([]Event, error)
+	GetRestaurants(filter db.RestaurantFilterParameters) ([]Restaurant, error)
+	GetTickets(filter db.TicketFilterParameters) ([]Ticket, error)
 }
 
 type FeedPostgres struct {
@@ -58,7 +59,7 @@ func (db FeedPostgres) configureConnectionPools() error {
 	return nil
 }
 
-func (db FeedPostgres) GetHotels(filter HotelFilterParameters) ([]Hotel, error) {
+func (db FeedPostgres) GetHotels(filter db.HotelFilterParameters) ([]Hotel, error) {
 	var hotels []Hotel
 	var order string
 
@@ -97,7 +98,7 @@ func (db FeedPostgres) GetHotels(filter HotelFilterParameters) ([]Hotel, error) 
 	return hotels, res.Error
 }
 
-func (db FeedPostgres) GetEvents(filter EventsFilterParameters) ([]Event, error) {
+func (db FeedPostgres) GetEvents(filter db.EventsFilterParameters) ([]Event, error) {
 	var events []Event
 	var order string
 
@@ -138,7 +139,7 @@ func (db FeedPostgres) GetEvents(filter EventsFilterParameters) ([]Event, error)
 	return events, res.Error
 }
 
-func (db FeedPostgres) GetRestaurants(filter RestaurantFilterParameters) ([]Restaurant, error) {
+func (db FeedPostgres) GetRestaurants(filter db.RestaurantFilterParameters) ([]Restaurant, error) {
 	var restaurants []Restaurant
 	var order string
 
@@ -179,7 +180,7 @@ func (db FeedPostgres) GetRestaurants(filter RestaurantFilterParameters) ([]Rest
 	return restaurants, res.Error
 }
 
-func (db FeedPostgres) GetTickets(filter TicketFilterParameters) ([]Ticket, error) {
+func (db FeedPostgres) GetTickets(filter db.TicketFilterParameters) ([]Ticket, error) {
 	var tickets []Ticket
 	var order string
 

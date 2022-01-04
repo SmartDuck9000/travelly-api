@@ -1,6 +1,7 @@
 package model
 
 import (
+	db2 "github.com/SmartDuck9000/travelly-api/server/db"
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/config"
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/db"
 	"github.com/SmartDuck9000/travelly-api/token_manager"
@@ -9,10 +10,10 @@ import (
 type FeedModelInterface interface {
 	Run() error
 
-	GetHotels(filter db.HotelFilterParameters, authHeader string) ([]db.Hotel, error)
-	GetEvents(filter db.EventsFilterParameters, authHeader string) ([]db.Event, error)
-	GetRestaurants(filter db.RestaurantFilterParameters, authHeader string) ([]db.Restaurant, error)
-	GetTickets(filter db.TicketFilterParameters, authHeader string) ([]db.Ticket, error)
+	GetHotels(filter db2.HotelFilterParameters, authHeader string) ([]db.Hotel, error)
+	GetEvents(filter db2.EventsFilterParameters, authHeader string) ([]db.Event, error)
+	GetRestaurants(filter db2.RestaurantFilterParameters, authHeader string) ([]db.Restaurant, error)
+	GetTickets(filter db2.TicketFilterParameters, authHeader string) ([]db.Ticket, error)
 }
 
 type FeedModel struct {

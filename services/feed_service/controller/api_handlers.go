@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	db2 "github.com/SmartDuck9000/travelly-api/server/db"
 	"github.com/SmartDuck9000/travelly-api/services/feed_service/db"
 	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"github.com/gin-gonic/gin"

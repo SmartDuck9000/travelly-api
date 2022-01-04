@@ -86,17 +86,13 @@ paths:
         default:
           description: "successful operation"
     
-  /users:
+  /users/id:
     get:
       tags:
       - "users"
       summary: "Get user"
       operationId: "get_user"
       parameters:
-      - name: "user_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -140,10 +136,6 @@ paths:
       description: "This can only be done by the logged in user."
       operationId: "deleteUser"
       parameters:
-      - name: "user_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -154,17 +146,13 @@ paths:
         "404":
           description: "User not found"
           
-  /users/tours:
+  /users/id/tours:
     get:
       tags:
       - "users"
       summary: "Get tour"
       operationId: "get_tours"
       parameters:
-      - name: "user_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -223,6 +211,7 @@ paths:
           description: "Tour not found"
         "401":
           description: "Invalid access token"
+  /users/id/tours/id:
     delete:
       tags:
       - "users"
@@ -230,10 +219,6 @@ paths:
       description: "This can only be done by the logged in user."
       operationId: "delete_tour"
       parameters:
-      - name: "tour_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -244,17 +229,13 @@ paths:
         "404":
           description: "Tour not found"
   
-  /users/tours/city_tours:
+  /users/id/tours/id/city_tours:
     get:
       tags:
       - "users"
       summary: "Get city tour"
       operationId: "get_city_tours"
       parameters:
-      - name: "tour_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -313,6 +294,7 @@ paths:
           description: "City tour not found"
         "401":
           description: "Invalid access token"
+  /users/id/tours/id/city_tours/id:
     delete:
       tags:
       - "users"
@@ -320,10 +302,6 @@ paths:
       description: "This can only be done by the logged in user."
       operationId: "delete_city_tour"
       parameters:
-      - name: "city_tour_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -334,17 +312,13 @@ paths:
         "404":
           description: "City tour not found"
 
-  /users/tours/city_tours/events:
+  /users/id/tours/id/city_tours/id/events:
     get:
       tags:
       - "users"
       summary: "Get city tour events"
       operationId: "get_city_tour_events"
       parameters:
-      - name: "city_tour_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -361,17 +335,13 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /users/tours/city_tours/restaurant_bookings:
+  /users/id/tours/id/city_tours/id/restaurant_bookings:
     get:
       tags:
       - "users"
       summary: "Get city tour restaurant bookings"
       operationId: "get_city_tour_restaurant_bookings"
       parameters:
-      - name: "city_tour_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -388,17 +358,13 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /users/tours/city_tours/tickets:
+  /users/id/tours/id/city_tours/id/tickets:
     get:
       tags:
       - "users"
       summary: "Get city tour tickets"
       operationId: "get_city_tour_tickets"
       parameters:
-      - name: "city_tour_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -415,17 +381,13 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /users/tours/city_tours/hotels:
+  /users/id/tours/id/city_tours/id/hotels:
     get:
       tags:
       - "users"
       summary: "Get city tour hotel"
       operationId: "get_city_tour_hotel"
       parameters:
-      - name: "city_tour_id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -442,7 +404,7 @@ paths:
         "401":
           description: "Invalid access token"
     
-  /info/cities:
+  /cities:
     get:
       tags:
       - "info"
@@ -463,17 +425,13 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /info/hotels:
+  /hotels/id:
     get:
       tags:
       - "info"
       summary: "Get info about hotel"
       operationId: "get_hotel_info"
       parameters:
-      - name: "id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -486,17 +444,13 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /info/events:
+  /events/id:
     get:
       tags:
       - "info"
       summary: "Get info about event"
       operationId: "get_event_info"
       parameters:
-      - name: "id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -509,17 +463,13 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /info/restaurants:
+  /restaurants/id:
     get:
       tags:
       - "info"
       summary: "Get info about restaurant"
       operationId: "get_restaurant_info"
       parameters:
-      - name: "id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -532,17 +482,13 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /info/tickets:
+  /tickets/id:
     get:
       tags:
       - "info"
       summary: "Get info about restaurant"
       operationId: "get_ticket_info"
       parameters:
-      - name: "id"
-        in: "query"
-        required: true
-        type: "integer"
       - name: "access_token"
         in: "header"
         required: true
@@ -555,7 +501,7 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /feed/hotels:
+  /hotels:
     get:
       tags:
       - "feed"
@@ -584,7 +530,7 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /feed/events:
+  /events:
     get:
       tags:
       - "feed"
@@ -613,7 +559,7 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /feed/restaurants:
+  /restaurants:
     get:
       tags:
       - "feed"
@@ -642,7 +588,7 @@ paths:
         "401":
           description: "Invalid access token"
   
-  /feed/tickets:
+  /tickets:
     get:
       tags:
       - "feed"

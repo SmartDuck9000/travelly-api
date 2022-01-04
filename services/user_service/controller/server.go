@@ -6,21 +6,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserControllerInterface interface {
+type ControllerInterface interface {
 	Run() error
 }
 
-type UserController struct {
+type Controller struct {
 	server *gin.Engine
-	model  model.UserModelInterface
+	model  model.ModelInterface
 	host   string
 	port   string
 }
 
-func CreateUserController(conf config.UserControllerConfig) UserControllerInterface {
+func CreateController(conf config.ControllerConfig) ControllerInterface {
 	gin.SetMode(gin.ReleaseMode)
 
-	var controller = UserController{
+	var controller = Controller{
 		server: gin.Default(),
 		model:  model.CreateUserModel(*conf.ModelConfig),
 		host:   conf.Host,
@@ -53,7 +53,7 @@ func CreateUserController(conf config.UserControllerConfig) UserControllerInterf
 	return &controller
 }
 
-func (controller UserController) Run() error {
+func (controller Controller) Run() error {
 	err := controller.model.Run()
 	if err != nil {
 		return err
