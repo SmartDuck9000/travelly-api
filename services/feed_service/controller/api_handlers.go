@@ -3,15 +3,14 @@ package controller
 import (
 	"errors"
 	db2 "github.com/SmartDuck9000/travelly-api/server/db"
-	"github.com/SmartDuck9000/travelly-api/services/feed_service/db"
 	"github.com/SmartDuck9000/travelly-api/token_manager"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (controller FeedController) getHotels(c *gin.Context) {
-	var filterParameters db.HotelFilterParameters
-	var hotels []db.Hotel
+	var filterParameters db2.HotelFilterParameters
+	var hotels []db2.Hotel
 
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
@@ -45,8 +44,8 @@ func (controller FeedController) getHotels(c *gin.Context) {
 }
 
 func (controller FeedController) getEvents(c *gin.Context) {
-	var filterParameters db.EventsFilterParameters
-	var events []db.Event
+	var filterParameters db2.EventsFilterParameters
+	var events []db2.Event
 
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
@@ -80,8 +79,8 @@ func (controller FeedController) getEvents(c *gin.Context) {
 }
 
 func (controller FeedController) getRestaurants(c *gin.Context) {
-	var filterParameters db.RestaurantFilterParameters
-	var restaurants []db.Restaurant
+	var filterParameters db2.RestaurantFilterParameters
+	var restaurants []db2.Restaurant
 
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
@@ -115,8 +114,8 @@ func (controller FeedController) getRestaurants(c *gin.Context) {
 }
 
 func (controller FeedController) getTickets(c *gin.Context) {
-	var filterParameters db.TicketFilterParameters
-	var tickets []db.Ticket
+	var filterParameters db2.TicketFilterParameters
+	var tickets []db2.Ticket
 
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
