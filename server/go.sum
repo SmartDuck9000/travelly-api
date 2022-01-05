@@ -1,5 +1,4 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/SmartDuck9000/travelly-api v0.0.0-20211107145427-fa61d9120dee h1:YSC7Tsw/SAm/40fBP268NhjKTTSD8RgzzGHUgnf+Ru0=
 github.com/SmartDuck9000/travelly-api/config_reader v0.0.0-20210413142821-ec2ba02db4b8/go.mod h1:9Fp+eyefp7Yy30sRFZoWsA6VqQWaXf3UNhUi+5RpJ0U=
 github.com/SmartDuck9000/travelly-api/config_reader v0.0.0-20210413152422-e04c2df20e0a h1:xi75BHJFy5C9RneOcnJ/pnppZq1eOuEP4QlkBi8yTT0=
 github.com/SmartDuck9000/travelly-api/config_reader v0.0.0-20210413152422-e04c2df20e0a/go.mod h1:9Fp+eyefp7Yy30sRFZoWsA6VqQWaXf3UNhUi+5RpJ0U=
