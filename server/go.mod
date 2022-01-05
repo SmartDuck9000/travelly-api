@@ -1,4 +1,4 @@
-module github.com/SmartDuck9000/travelly-api/services/user_service
+module github.com/SmartDuck9000/travelly-api/server
 
 go 1.15
 
