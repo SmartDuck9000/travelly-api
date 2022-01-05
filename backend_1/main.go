@@ -1,4 +1,4 @@
-package backend_1
+package main
 
 import (
 	"github.com/SmartDuck9000/travelly-api/config_reader"
