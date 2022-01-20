@@ -12,7 +12,7 @@ services:
         volumes:
             - ./.docker/data/postgresql/:/var/lib/postgresql/data/
         ports:
-            - "127.0.0.1:5000:5432"
+            - "0.0.0.0:5000:5432"
 
     nginx:
         image: nginx:alpine
@@ -26,26 +26,26 @@ services:
     backend_1:
         build: ./backend_1
         restart: unless-stopped
-        container_name: travelly_api_1
+        container_name: backend_1
         depends_on:
             - postgres
         ports:
-            - "127.0.0.1:5001:5001"
+            - "5001:5001"
 
     backend_2:
         build: ./backend_2
         restart: unless-stopped
-        container_name: travelly_api_2
+        container_name: backend_2
         depends_on:
             - postgres
         ports:
-            - "127.0.0.1:5002:5002"
+            - "5002:5002"
 
     backend_3:
         build: ./backend_3
         restart: unless-stopped
-        container_name: travelly_api_3
+        container_name: backend_3
         depends_on:
             - postgres
         ports:
-            - "127.0.0.1:5003:5003"
+            - "5003:5003"
